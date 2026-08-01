@@ -104,6 +104,7 @@ class WorkService:
             task_count=counts.get(p.id, 0),
             business_objective=p.business_objective,
             plan_status=p.plan_status,
+            plan_error=p.plan_error,
             created_at=p.created_at,
             updated_at=p.updated_at,
         )

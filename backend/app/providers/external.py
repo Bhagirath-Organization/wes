@@ -397,11 +397,27 @@ class OllamaProvider(ExternalProvider):
     cost_per_1k_output = 0.0
 
     def _body(self, request: ExecutionRequest, stream: bool) -> dict:
-        return {
+        # Sprint 24: disable reasoning trace + bound output so CPU-only inference
+        # stays responsive; keep the model resident between calls.
+        body = {
             "model": self._model(request),
             "messages": [{"role": m.role, "content": m.content} for m in request.messages],
             "stream": stream,
+            "think": False,
+            "keep_alive": "30m",
+            "options": {
+                # Honour a per-request budget when the caller sets one (executive
+                # reasoning needs more room than code generation).
+                "num_predict": request.max_tokens or 2560,
+                "temperature": 0.0,
+            },
         }
+        # Phase 1: structured output. Reasoning models narrate in plain prose even
+        # with think disabled, so callers that need machine-readable output ask for
+        # constrained JSON decoding instead of parsing narration.
+        if (request.metadata or {}).get("format") == "json":
+            body["format"] = "json"
+        return body
 
     def _call(self, request: ExecutionRequest) -> tuple[str, int, int, str]:
         data = post_json(

@@ -3,6 +3,7 @@
 from fastapi import APIRouter
 
 from app.api.v1 import (
+    founder,
     ai_employees,
     ai_org,
     ai_roles,
@@ -17,6 +18,7 @@ from app.api.v1 import (
     devops,
     employees,
     execution,
+    ai_ops,
     health,
     jobs,
     knowledge,
@@ -28,6 +30,7 @@ from app.api.v1 import (
     providers,
     quality,
     repository,
+    repository_intelligence,
     sprints,
     tasks,
     work_dashboard,
@@ -37,6 +40,7 @@ api_router = APIRouter()
 api_router.include_router(health.router)
 api_router.include_router(auth.router)
 api_router.include_router(dashboard.router)
+api_router.include_router(founder.router)
 api_router.include_router(companies.router)
 api_router.include_router(departments.router)
 api_router.include_router(employees.router)
@@ -49,6 +53,7 @@ api_router.include_router(notifications.router)
 api_router.include_router(company.router)
 api_router.include_router(audit.router)
 api_router.include_router(learning.router)
+api_router.include_router(ai_ops.router)
 api_router.include_router(sprints.router)
 api_router.include_router(tasks.router)
 api_router.include_router(assignments.router)
@@ -59,6 +64,7 @@ api_router.include_router(providers.router)
 api_router.include_router(orchestration.router)
 api_router.include_router(knowledge.router)
 api_router.include_router(repository.router)
+api_router.include_router(repository_intelligence.router)
 api_router.include_router(development.router)
 api_router.include_router(quality.router)
 api_router.include_router(devops.router)

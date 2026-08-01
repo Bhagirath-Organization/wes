@@ -196,6 +196,13 @@ class PullRequest(UUIDPrimaryKeyMixin, Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+    # P0-B/P0-final: real GitHub Pull Request tracking (nullable → a local draft
+    # that was never pushed simply leaves these empty; fully backward compatible).
+    github_repo: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    github_number: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    github_url: Mapped[str | None] = mapped_column(String(400), nullable=True)
+    merged_sha: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    merged_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class ApprovalHistory(UUIDPrimaryKeyMixin, Base):

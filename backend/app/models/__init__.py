@@ -27,6 +27,8 @@ from app.models.development import (
 from app.models.jobs import Job
 from app.models.notifications import Notification
 from app.models.learning import LearningRule
+from app.models.provider_routing import ProviderRoutingLog
+from app.models.improvement import ImprovementProposal
 from app.models.memory import AgentMemory
 from app.models.security import AuditLog, RefreshToken
 from app.models.devops import (
@@ -120,6 +122,12 @@ from app.models.repository import (
     RepositorySymbol,
     RepositoryTodo,
 )
+from app.models.repository_intelligence import (
+    RepositoryEvent,
+    RepositoryGraphEdge,
+    RepositoryGraphNode,
+    RepositoryIntelligence,
+)
 from app.models.work import (
     ActivityLog,
     Assignment,
@@ -206,6 +214,10 @@ __all__ = [
     "RepositoryMetrics",
     "RepositoryIssue",
     "RepositoryTodo",
+    "RepositoryIntelligence",
+    "RepositoryGraphNode",
+    "RepositoryGraphEdge",
+    "RepositoryEvent",
     "DevelopmentTask",
     "DevelopmentSession",
     "ImplementationPlan",
@@ -245,4 +257,6 @@ __all__ = [
     "RefreshToken",
     "AgentMemory",
     "LearningRule",
+    "ProviderRoutingLog",
+    "ImprovementProposal",
 ]

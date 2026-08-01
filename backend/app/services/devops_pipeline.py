@@ -87,7 +87,10 @@ class PipelineService:
         if task is None:
             raise NotFoundError(f"Development task {task_id} not found")
         status = task.status.value if hasattr(task.status, "value") else task.status
-        if status != "approved":
+        # Founder approval is the gate. Once approved the task may have advanced to
+        # 'merged' (GitHub PR merged) or 'deployed'; all of these are post-approval
+        # and eligible for the pipeline.
+        if status not in ("approved", "merged", "deployed"):
             raise ValidationError(
                 f"Task {task.code} must be Founder-approved before a pipeline can run (status {status})."
             )

@@ -14,6 +14,8 @@ class DevTaskStatus(str, Enum):
     DOCUMENTING = "documenting"
     PR_READY = "pr_ready"
     APPROVED = "approved"
+    MERGED = "merged"        # merged to GitHub after Founder approval
+    DEPLOYED = "deployed"    # deployed after merge
     REJECTED = "rejected"
     CHANGES_REQUESTED = "changes_requested"
     FAILED = "failed"
@@ -97,7 +99,9 @@ class TestStatus(str, Enum):
 
 class PRStatus(str, Enum):
     DRAFT = "draft"
+    OPEN = "open"          # pushed to GitHub, PR opened, awaiting Founder approval
     APPROVED = "approved"
+    MERGED = "merged"      # merged on GitHub after Founder approval
     REJECTED = "rejected"
     CHANGES_REQUESTED = "changes_requested"
 

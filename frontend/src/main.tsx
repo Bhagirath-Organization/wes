@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { SessionProvider } from "./auth/SessionContext";
 import "./styles.css";
+import "./styles/wes.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

@@ -56,8 +56,10 @@ export function ProjectIntake() {
         founder_notes: f.founder_notes || undefined,
       };
       const project = (await workApi.createProject(input)).data;
-      // Submit to the AI CEO: analysis + automatic decomposition (no implementation).
-      await workApi.decompose(project.id);
+      // Submit to the AI CEO: start analysis + decomposition in the BACKGROUND and
+      // navigate straight to the plan page, which shows live progress. Planning runs
+      // local CPU inference (minutes), so we never hold the request open here.
+      await workApi.decomposeAsync(project.id);
       navigate(`/projects/${project.id}/plan`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Submission failed");

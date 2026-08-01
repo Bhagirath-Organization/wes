@@ -15,6 +15,7 @@ export interface Project {
   task_count: number;
   business_objective?: string | null;
   plan_status?: string | null;
+  plan_error?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -170,6 +171,11 @@ export const workApi = {
     http.post<DataResponse<Project>>("/projects", input),
   decompose: (projectId: string) =>
     http.post<DataResponse<ProjectPlan>>(`/projects/${projectId}/decompose`, {}),
+  decomposeAsync: (projectId: string) =>
+    http.post<DataResponse<{ project_id: string; plan_status: string; message: string }>>(
+      `/projects/${projectId}/decompose-async`,
+      {},
+    ),
   plan: (projectId: string) =>
     http.get<DataResponse<ProjectPlan>>(`/projects/${projectId}/plan`),
   approvePlan: (projectId: string) =>

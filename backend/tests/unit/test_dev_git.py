@@ -45,6 +45,11 @@ def test_slugify():
 
 
 def test_generation_produces_valid_python(db_session):
+    # Sprint 24 made a provider mandatory (no template fallback); seed the Mock
+    # provider, which emits a compilable scaffold via the file-block protocol.
+    from app.db.seed_orchestration import seed_orchestration
+
+    seed_orchestration(db_session)
     result = GenerationService(db_session).generate("Add Health Ping Utility")
     assert result.slug == "add_health_ping_utility"
     py = [c for c in result.changes if c.language == "python"]

@@ -608,8 +608,29 @@ class DevelopmentService:
             plan.requirements = json.dumps(requirements)
             self.db.flush()
 
-            # 2. Sandbox + branch.
-            sandbox = self.workspace.create(task.code)
+            # 2. Sandbox + branch. When the GitHub App is configured and a target
+            # repository is resolvable, the sandbox is a real CLONE of that repo, so
+            # a pushed branch yields a clean, minimal PR diff against shared history.
+            # Otherwise (offline test suite / unconfigured deployment) it is a fresh
+            # local sandbox exactly as before — fully backward compatible.
+            sandbox = None
+            self._delivery_repo = None
+            try:
+                from app.services.github_service import GitHubService
+                from app.services.github_delivery import GitHubDeliveryService
+
+                if GitHubService.configured():
+                    dsvc = GitHubDeliveryService(self.db)
+                    repo = dsvc._target_repo(task)
+                    if repo:
+                        base = dsvc._base_branch(task)
+                        token = GitHubService(repo=repo)._installation_token()
+                        sandbox = self.workspace.clone(task.code, repo, token, base)
+                        self._delivery_repo = repo
+            except Exception:
+                sandbox = None  # fall back to a local sandbox on any clone problem
+            if sandbox is None:
+                sandbox = self.workspace.create(task.code)
             git = GitService(sandbox)
             # Seed the existing target file onto main BEFORE branching so a MODIFY
             # produces a real change-only diff (not a whole-new-file diff).
@@ -644,8 +665,14 @@ class DevelopmentService:
                 # Scaffold path — ONLY for an explicit 'new module' decision (the
                 # intent resolver found no existing-file reference). Never a silent
                 # fallback for an existing-code intent.
+                # Phase 5: repository-aware, memory-aware generation (reuse existing
+                # modules; avoid duplication).
+                from app.services.autonomous_engineering import AutonomousEngineeringService
+
+                eng = AutonomousEngineeringService(self.db)
+                eng_context = eng.engineering_context(task.title, task.description)
                 gen = GenerationService(self.db).generate(
-                    task.title, task.description, provider_name
+                    task.title, task.description, provider_name, context=eng_context
                 )
                 changes = []
                 for pc in gen.changes:
@@ -682,6 +709,34 @@ class DevelopmentService:
             failed = sum(r.failed_count for r in runs)
             self._done(s, f"{passed} passed, {failed} failed across {len(runs)} test runs")
 
+            # Phase 5: self-debugging — on failure, root-cause + fix + retest,
+            # never stopping after the first failure.
+            debug_report = {"resolved": failed == 0, "iterations": []}
+            if failed > 0 and py_files:
+                from app.services.autonomous_engineering import (
+                    AutonomousEngineeringService as _AES,
+                )
+
+                sd = self._session(task, DevStage.TESTING, seq)
+                sd.stage = "self_debug"
+                sd.role = "AI Backend Engineer"
+                self._assign_agent(sd)
+                seq += 1
+                debug_report = _AES(self.db).self_debug(
+                    task=task, sandbox=sandbox, git=git, changes=changes,
+                    provider_name=provider_name,
+                )
+                self._done(
+                    sd,
+                    f"Self-debug: resolved={debug_report['resolved']} over "
+                    f"{len(debug_report['iterations'])} iteration(s); "
+                    f"root causes: "
+                    + "; ".join(
+                        i.get("root_cause", "") for i in debug_report["iterations"] if i.get("root_cause")
+                    )[:300],
+                )
+            tests_passed = debug_report["resolved"]
+
             # 5. Review.
             task.status = DevTaskStatus.REVIEWING
             self.db.flush()
@@ -692,6 +747,27 @@ class DevelopmentService:
                 s,
                 f"Review {review.outcome.value if hasattr(review.outcome,'value') else review.outcome} — score {review.score}",
             )
+
+            # Phase 5: senior review board — Chief Architect, QA, Security and
+            # Performance each reason over the REAL diff and may block the merge.
+            from app.services.autonomous_engineering import AutonomousEngineeringService as _AES2
+
+            diff_text = git.diff("main")
+            board = _AES2(self.db).review_board(task, diff_text)
+            for rv in board["reviews"]:
+                rs = self._session(task, DevStage.REVIEW, seq)
+                rs.stage = "board_review"
+                rs.role = rv["role"] or rv["reviewer"]
+                self._assign_agent(rs)
+                seq += 1
+                self._done(
+                    rs,
+                    f"{rv['reviewer']} [{rv['dimension']}] -> {rv['verdict']} (score {rv['score']}) "
+                    f"findings: {'; '.join(rv['findings'][:2]) or 'none'}",
+                    status=SessionStatus.COMPLETED
+                    if rv["verdict"] == "approved"
+                    else SessionStatus.FAILED,
+                )
 
             # 6. Documentation.
             task.status = DevTaskStatus.DOCUMENTING
@@ -760,14 +836,77 @@ class DevelopmentService:
                     f"[{', '.join(r['description'] for r in report)}].",
                 )
 
+            # 6d. Phase 5: merge readiness — aggregate every engineering gate
+            # (tests, quality gate, senior review board, requirements) into a
+            # single, evidence-based mergeable verdict. No fabricated success.
+            merge = _AES2(self.db).merge_readiness(
+                tests_passed=tests_passed,
+                gate_eligible=bool(gate.approval_eligible),
+                board=board,
+                requirements_ok=True,  # verification above returns early on failure
+            )
+            ms = self._session(task, DevStage.QUALITY_GATE, seq)
+            ms.stage = "merge_readiness"
+            ms.role = "AI Chief Architect"
+            self._assign_agent(ms)
+            seq += 1
+            self._done(
+                ms,
+                f"Merge-ready={merge['merge_ready']}; blockers: "
+                + ("; ".join(merge["blockers"]) or "none"),
+                status=SessionStatus.COMPLETED if merge["merge_ready"] else SessionStatus.FAILED,
+            )
+            self._phase5 = {"self_debug": debug_report, "review_board": board, "merge_readiness": merge}
+
             # 7. Pull request draft.
             s = self._session(task, DevStage.PULL_REQUEST, seq)
             seq += 1
             pr = PullRequestService(self.db).create_draft(task, git, plan.summary)
             self._done(
                 s,
-                f"PR draft: {pr.title} (+{pr.additions}/-{pr.deletions}, {pr.files_changed} files)",
+                f"PR draft: {pr.title} (+{pr.additions}/-{pr.deletions}, {pr.files_changed} files) "
+                f"| merge_ready={merge['merge_ready']}",
             )
+
+            # 7b. Autonomous GitHub delivery (P0 final): push the branch and open a
+            # real Pull Request with an assigned reviewer — NO manual developer
+            # action. Gated on the GitHub App being configured, so the offline test
+            # suite and unconfigured deployments are unchanged.
+            #
+            # Delivered whenever there are committed changes AND tests pass — a PR
+            # is not an irreversible action (Blueprint Vol 05), so opening one keeps
+            # the work visible to the Founder with the review board's verdict and the
+            # merge-readiness summary attached. The IRREVERSIBLE step — the merge —
+            # remains Founder-gated and additionally enforces the quality gate.
+            self._delivery = {"delivered": False, "reason": "not attempted"}
+            if changes and tests_passed:
+                try:
+                    from app.services.github_delivery import GitHubDeliveryService
+
+                    verdict = (
+                        f"\n\n---\n**AI review board:** "
+                        f"{'approved' if board.get('approved') else 'changes requested by ' + ', '.join(board.get('blocking') or [])}"
+                        f"\n**Merge-ready:** {merge['merge_ready']}"
+                        + (f" — blockers: {'; '.join(merge['blockers'])}" if merge.get("blockers") else "")
+                        + "\n\n_Merge requires Founder approval (Blueprint Vol 05)._"
+                    )
+                    if pr is not None:
+                        pr.body = (pr.body or "") + verdict
+                        self.db.flush()
+                    self._delivery = GitHubDeliveryService(self.db).deliver(task, git)
+                    if self._delivery.get("delivered"):
+                        gs = self._session(task, DevStage.PULL_REQUEST, seq)
+                        gs.stage = "github_pull_request"
+                        seq += 1
+                        self._done(
+                            gs,
+                            f"GitHub PR #{self._delivery['pr_number']} opened on "
+                            f"{self._delivery['repo']} ({self._delivery['pr_url']}); "
+                            f"reviewers: {', '.join(self._delivery.get('reviewers') or []) or 'none'}. "
+                            f"merge_ready={merge['merge_ready']}. Awaiting Founder approval to merge.",
+                        )
+                except Exception as exc:  # delivery must not fail the engineering run
+                    self._delivery = {"delivered": False, "reason": str(exc)[:200]}
 
             # 8. Metrics + await approval.
             task.status = DevTaskStatus.PR_READY
@@ -854,6 +993,9 @@ class DevelopmentService:
             data["pull_request"] = self._pr(task.id)
             data["timeline"] = self.timeline(task.id)
             data["metrics"] = self._metrics(task.id)
+            # Phase 5: autonomous-engineering report (self-debug, review board,
+            # merge readiness) when produced by the last run_workflow on this instance.
+            data["engineering"] = getattr(self, "_phase5", None)
         return data
 
     def _plan_dict(self, task_id) -> dict | None:
@@ -952,6 +1094,12 @@ class DevelopmentService:
             "files_changed": pr.files_changed,
             "additions": pr.additions,
             "deletions": pr.deletions,
+            # Real GitHub PR (present once autonomously delivered).
+            "github_repo": pr.github_repo,
+            "github_number": pr.github_number,
+            "github_url": pr.github_url,
+            "merged_sha": pr.merged_sha,
+            "merged_at": pr.merged_at.isoformat() if pr.merged_at else None,
         }
 
     def _metrics(self, task_id) -> dict | None:

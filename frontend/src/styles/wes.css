@@ -1,0 +1,721 @@
+/* ============================================================================
+   WES DESIGN SYSTEM — Project AURORA · Sprint 01
+   The visual language of the WES AI Company Operating System.
+   Dark-first · premium · minimal · confident. Original — not an imitation.
+   Every token here is inherited by every future screen.
+   ========================================================================== */
+
+:root {
+  /* ---- Colour: a deep, calm command-center palette ---------------------- */
+  --wes-bg-0: #07080c;          /* deepest background */
+  --wes-bg-1: #0b0d14;          /* app background */
+  --wes-bg-2: #10131d;          /* raised surface */
+  --wes-bg-3: #161a26;          /* card surface */
+  --wes-bg-4: #1d2230;          /* hover surface */
+  --wes-line: #232838;          /* hairline border */
+  --wes-line-soft: #1a1e2b;
+
+  --wes-text: #eef1f8;          /* primary text */
+  --wes-text-2: #a8b0c4;        /* secondary text */
+  --wes-text-3: #6c7590;        /* tertiary / captions */
+  --wes-text-4: #454d64;        /* disabled */
+
+  /* Brand: an aurora — indigo → violet → cyan */
+  --wes-brand: #6d8bff;
+  --wes-brand-2: #8b6dff;
+  --wes-brand-3: #43d9c7;
+  --wes-brand-ink: #b9c6ff;
+
+  --wes-accent-grad: linear-gradient(135deg, #6d8bff 0%, #8b6dff 55%, #43d9c7 130%);
+  --wes-accent-grad-soft: linear-gradient(135deg, rgba(109,139,255,.16), rgba(139,109,255,.10) 60%, rgba(67,217,199,.10));
+  --wes-hero-glow: radial-gradient(120% 120% at 15% 0%, rgba(109,139,255,.22), transparent 55%),
+                   radial-gradient(90% 90% at 100% 0%, rgba(67,217,199,.12), transparent 50%);
+
+  /* Semantic status */
+  --wes-ok: #37d39b;      --wes-ok-bg: rgba(55,211,155,.12);
+  --wes-warn: #f5b544;    --wes-warn-bg: rgba(245,181,68,.12);
+  --wes-risk: #ff6b7d;    --wes-risk-bg: rgba(255,107,125,.12);
+  --wes-info: #6d8bff;    --wes-info-bg: rgba(109,139,255,.12);
+  --wes-neutral: #7f8aa6; --wes-neutral-bg: rgba(127,138,166,.12);
+
+  /* ---- Typography ------------------------------------------------------- */
+  --wes-font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --wes-mono: "SF Mono", ui-monospace, "JetBrains Mono", "Menlo", monospace;
+  /* Fluid, generous scale */
+  --wes-fs-display: clamp(2rem, 1.4rem + 2.4vw, 3.15rem);
+  --wes-fs-h1: clamp(1.55rem, 1.2rem + 1.4vw, 2.1rem);
+  --wes-fs-h2: clamp(1.25rem, 1.05rem + .7vw, 1.5rem);
+  --wes-fs-h3: 1.125rem;
+  --wes-fs-lg: 1rem;
+  --wes-fs-md: .9375rem;
+  --wes-fs-sm: .8125rem;
+  --wes-fs-xs: .6875rem;
+  --wes-lh-tight: 1.12;
+  --wes-lh: 1.55;
+  --wes-tracking-tight: -0.02em;
+  --wes-tracking-caps: 0.14em;
+
+  /* ---- Spacing (4px base) ---------------------------------------------- */
+  --wes-1: 4px;  --wes-2: 8px;  --wes-3: 12px; --wes-4: 16px; --wes-5: 20px;
+  --wes-6: 24px; --wes-8: 32px; --wes-10: 40px; --wes-12: 48px; --wes-16: 64px;
+  --wes-20: 80px;
+
+  /* ---- Radius ----------------------------------------------------------- */
+  --wes-r-xs: 8px; --wes-r-sm: 12px; --wes-r-md: 16px; --wes-r-lg: 22px;
+  --wes-r-xl: 28px; --wes-r-pill: 999px;
+
+  /* ---- Elevation / shadow ---------------------------------------------- */
+  --wes-sh-1: 0 1px 2px rgba(0,0,0,.4);
+  --wes-sh-2: 0 6px 20px -6px rgba(0,0,0,.55);
+  --wes-sh-3: 0 18px 50px -12px rgba(0,0,0,.65);
+  --wes-sh-glow: 0 0 0 1px rgba(109,139,255,.35), 0 12px 40px -10px rgba(109,139,255,.35);
+  --wes-ring: 0 0 0 3px rgba(109,139,255,.32);
+
+  /* ---- Glass ------------------------------------------------------------ */
+  --wes-glass: rgba(20,24,36,.66);
+  --wes-glass-brd: rgba(255,255,255,.07);
+  --wes-glass-hi: rgba(255,255,255,.04);
+  --wes-blur: saturate(160%) blur(18px);
+
+  /* ---- Motion ----------------------------------------------------------- */
+  --wes-ease: cubic-bezier(.22,.61,.36,1);
+  --wes-ease-out: cubic-bezier(.16,1,.3,1);
+  --wes-t-fast: .14s;
+  --wes-t: .24s;
+  --wes-t-slow: .5s;
+
+  /* ---- Layout ----------------------------------------------------------- */
+  --wes-nav-w: 232px;
+  --wes-maxw: 1180px;
+}
+
+/* ============================ Base ====================================== */
+body.wes {
+  background:
+    radial-gradient(140% 120% at 100% -10%, rgba(139,109,255,.10), transparent 55%),
+    radial-gradient(120% 120% at -10% 0%, rgba(67,217,199,.07), transparent 50%),
+    var(--wes-bg-1);
+  color: var(--wes-text);
+  font-family: var(--wes-font);
+  font-size: var(--wes-fs-md);
+  line-height: var(--wes-lh);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.006em;
+}
+.wes * { box-sizing: border-box; }
+.wes ::selection { background: rgba(109,139,255,.32); }
+
+/* thin, premium scrollbars */
+.wes ::-webkit-scrollbar { width: 10px; height: 10px; }
+.wes ::-webkit-scrollbar-thumb { background: #222738; border-radius: 999px; border: 3px solid transparent; background-clip: content-box; }
+.wes ::-webkit-scrollbar-thumb:hover { background: #2c3346; background-clip: content-box; }
+
+/* ============================ App shell ================================= */
+.wes-app { display: grid; grid-template-columns: var(--wes-nav-w) 1fr; min-height: 100vh; }
+.wes-main { min-width: 0; }
+.wes-scroll { height: 100vh; overflow-y: auto; }
+.wes-page { max-width: var(--wes-maxw); margin: 0 auto; padding: var(--wes-10) var(--wes-8) var(--wes-16); }
+
+/* ---- Sidebar (Linear-style, quiet) ----------------------------------- */
+.wes-side {
+  position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column;
+  gap: var(--wes-2); padding: var(--wes-5) var(--wes-3);
+  background: linear-gradient(180deg, var(--wes-bg-2), var(--wes-bg-1));
+  border-right: 1px solid var(--wes-line-soft);
+}
+.wes-brand { display: flex; align-items: center; gap: var(--wes-3); padding: var(--wes-2) var(--wes-3) var(--wes-5); }
+.wes-brand-mark {
+  width: 30px; height: 30px; border-radius: 9px; background: var(--wes-accent-grad);
+  box-shadow: var(--wes-sh-glow); flex: none; position: relative;
+}
+.wes-brand-mark::after { content: ""; position: absolute; inset: 6px; border-radius: 5px; background: rgba(7,8,12,.55); }
+.wes-brand-name { font-weight: 680; letter-spacing: -0.01em; font-size: .98rem; }
+.wes-brand-sub { display: block; font-size: var(--wes-fs-xs); color: var(--wes-text-3); letter-spacing: var(--wes-tracking-caps); text-transform: uppercase; }
+
+.wes-nav { display: flex; flex-direction: column; gap: 2px; }
+.wes-nav-item {
+  display: flex; align-items: center; gap: var(--wes-3); padding: 9px 11px;
+  border-radius: var(--wes-r-xs); color: var(--wes-text-2); text-decoration: none;
+  font-size: var(--wes-fs-md); font-weight: 500; letter-spacing: -0.01em;
+  transition: background var(--wes-t-fast) var(--wes-ease), color var(--wes-t-fast);
+}
+.wes-nav-item:hover { background: var(--wes-bg-3); color: var(--wes-text); }
+.wes-nav-item.active { background: var(--wes-bg-4); color: var(--wes-text); box-shadow: inset 0 0 0 1px var(--wes-line); }
+.wes-nav-item.active .wes-nav-ic { color: var(--wes-brand-ink); }
+.wes-nav-ic { width: 18px; height: 18px; flex: none; color: var(--wes-text-3); transition: color var(--wes-t-fast); }
+.wes-nav-sec { margin: var(--wes-4) 11px var(--wes-2); font-size: var(--wes-fs-xs); letter-spacing: var(--wes-tracking-caps); text-transform: uppercase; color: var(--wes-text-4); }
+
+.wes-user { margin-top: auto; padding: var(--wes-3); border-radius: var(--wes-r-sm); background: var(--wes-bg-3); border: 1px solid var(--wes-line-soft); }
+.wes-user-row { display: flex; align-items: center; gap: var(--wes-3); }
+.wes-avatar { width: 32px; height: 32px; border-radius: 999px; background: var(--wes-accent-grad); display: grid; place-items: center; font-weight: 640; font-size: .8rem; color: #0b0d14; flex: none; }
+.wes-user-name { font-weight: 600; font-size: var(--wes-fs-sm); }
+.wes-user-role { font-size: var(--wes-fs-xs); color: var(--wes-text-3); }
+
+/* ============================ Typography helpers ======================= */
+.wes-eyebrow { font-size: var(--wes-fs-xs); letter-spacing: var(--wes-tracking-caps); text-transform: uppercase; color: var(--wes-text-3); font-weight: 600; }
+.wes-display { font-size: var(--wes-fs-display); font-weight: 700; line-height: var(--wes-lh-tight); letter-spacing: var(--wes-tracking-tight); }
+.wes-h1 { font-size: var(--wes-fs-h1); font-weight: 680; line-height: 1.18; letter-spacing: var(--wes-tracking-tight); }
+.wes-h2 { font-size: var(--wes-fs-h2); font-weight: 660; letter-spacing: -0.015em; }
+.wes-h3 { font-size: var(--wes-fs-h3); font-weight: 640; letter-spacing: -0.01em; }
+.wes-muted { color: var(--wes-text-2); }
+.wes-dim { color: var(--wes-text-3); }
+.wes-grad-text { background: var(--wes-accent-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* ============================ Cards / glass ============================ */
+.wes-card {
+  background: var(--wes-bg-3); border: 1px solid var(--wes-line);
+  border-radius: var(--wes-r-lg); box-shadow: var(--wes-sh-2);
+  transition: transform var(--wes-t) var(--wes-ease-out), border-color var(--wes-t), box-shadow var(--wes-t);
+}
+.wes-card.pad { padding: var(--wes-6); }
+.wes-card.hover:hover { transform: translateY(-2px); border-color: #2c3247; box-shadow: var(--wes-sh-3); }
+.wes-glass {
+  background: var(--wes-glass); backdrop-filter: var(--wes-blur); -webkit-backdrop-filter: var(--wes-blur);
+  border: 1px solid var(--wes-glass-brd); border-radius: var(--wes-r-lg);
+  box-shadow: var(--wes-sh-3), inset 0 1px 0 var(--wes-glass-hi);
+}
+.wes-hero {
+  position: relative; overflow: hidden; border-radius: var(--wes-r-xl);
+  border: 1px solid var(--wes-glass-brd); padding: var(--wes-10) var(--wes-8);
+  background: var(--wes-hero-glow), linear-gradient(180deg, var(--wes-bg-3), var(--wes-bg-2));
+  box-shadow: var(--wes-sh-3);
+}
+.wes-hero::before { /* soft top light */
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+}
+
+/* ============================ Buttons ================================== */
+.wes-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--wes-2);
+  padding: 10px 16px; border-radius: var(--wes-r-sm); font-weight: 600; font-size: var(--wes-fs-md);
+  border: 1px solid transparent; cursor: pointer; letter-spacing: -0.01em; white-space: nowrap;
+  transition: transform var(--wes-t-fast) var(--wes-ease), background var(--wes-t-fast), border-color var(--wes-t-fast), box-shadow var(--wes-t-fast), opacity var(--wes-t-fast);
+}
+.wes-btn:active { transform: translateY(1px) scale(.99); }
+.wes-btn:focus-visible { outline: none; box-shadow: var(--wes-ring); }
+.wes-btn-primary { background: var(--wes-accent-grad); color: #0a0c12; box-shadow: 0 8px 24px -8px rgba(109,139,255,.6); }
+.wes-btn-primary:hover { box-shadow: 0 12px 34px -8px rgba(109,139,255,.75); transform: translateY(-1px); }
+.wes-btn-ghost { background: var(--wes-bg-3); color: var(--wes-text); border-color: var(--wes-line); }
+.wes-btn-ghost:hover { background: var(--wes-bg-4); border-color: #2c3247; }
+.wes-btn-quiet { background: transparent; color: var(--wes-text-2); }
+.wes-btn-quiet:hover { background: var(--wes-bg-3); color: var(--wes-text); }
+.wes-btn-ok { background: var(--wes-ok-bg); color: var(--wes-ok); border-color: rgba(55,211,155,.24); }
+.wes-btn-ok:hover { background: rgba(55,211,155,.2); }
+.wes-btn-risk { background: var(--wes-risk-bg); color: var(--wes-risk); border-color: rgba(255,107,125,.24); }
+.wes-btn-risk:hover { background: rgba(255,107,125,.2); }
+.wes-btn-lg { padding: 14px 22px; font-size: var(--wes-fs-lg); border-radius: var(--wes-r-md); }
+.wes-btn-sm { padding: 6px 11px; font-size: var(--wes-fs-sm); }
+.wes-btn[disabled] { opacity: .5; cursor: not-allowed; }
+
+/* ============================ Inputs =================================== */
+.wes-input, .wes-textarea {
+  width: 100%; background: var(--wes-bg-2); color: var(--wes-text); border: 1px solid var(--wes-line);
+  border-radius: var(--wes-r-md); padding: 14px 16px; font: inherit; letter-spacing: -0.01em;
+  transition: border-color var(--wes-t-fast), box-shadow var(--wes-t-fast), background var(--wes-t-fast);
+}
+.wes-input::placeholder, .wes-textarea::placeholder { color: var(--wes-text-4); }
+.wes-input:focus, .wes-textarea:focus { outline: none; border-color: var(--wes-brand); box-shadow: var(--wes-ring); background: var(--wes-bg-3); }
+.wes-textarea { resize: vertical; min-height: 88px; line-height: 1.5; }
+
+/* ============================ Badges / status ========================= */
+.wes-badge {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: var(--wes-r-pill);
+  font-size: var(--wes-fs-xs); font-weight: 640; letter-spacing: .02em;
+  background: var(--wes-neutral-bg); color: var(--wes-text-2); border: 1px solid transparent;
+}
+.wes-badge.ok { background: var(--wes-ok-bg); color: var(--wes-ok); }
+.wes-badge.warn { background: var(--wes-warn-bg); color: var(--wes-warn); }
+.wes-badge.risk { background: var(--wes-risk-bg); color: var(--wes-risk); }
+.wes-badge.info { background: var(--wes-info-bg); color: var(--wes-brand-ink); }
+.wes-dot { width: 7px; height: 7px; border-radius: 999px; background: currentColor; }
+.wes-dot.pulse { position: relative; }
+.wes-dot.pulse::after { content: ""; position: absolute; inset: -3px; border-radius: 999px; background: currentColor; opacity: .35; animation: wes-pulse 1.8s var(--wes-ease) infinite; }
+@keyframes wes-pulse { 0% { transform: scale(.7); opacity: .5; } 70% { transform: scale(1.9); opacity: 0; } 100% { opacity: 0; } }
+
+/* thinking indicator (three drifting dots) */
+.wes-think { display: inline-flex; gap: 4px; align-items: center; }
+.wes-think i { width: 5px; height: 5px; border-radius: 999px; background: var(--wes-brand-ink); opacity: .5; animation: wes-think 1.4s var(--wes-ease) infinite; }
+.wes-think i:nth-child(2) { animation-delay: .18s; }
+.wes-think i:nth-child(3) { animation-delay: .36s; }
+@keyframes wes-think { 0%,100% { opacity: .25; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-3px); } }
+
+/* ============================ Progress ================================= */
+.wes-bar { height: 8px; border-radius: 999px; background: var(--wes-bg-4); overflow: hidden; }
+.wes-bar > span { display: block; height: 100%; border-radius: 999px; background: var(--wes-accent-grad); transition: width var(--wes-t-slow) var(--wes-ease-out); }
+.wes-ring { --p: 0; width: 64px; height: 64px; border-radius: 999px; display: grid; place-items: center;
+  background: conic-gradient(var(--wes-brand) calc(var(--p) * 1%), var(--wes-bg-4) 0); position: relative; }
+.wes-ring::before { content: ""; position: absolute; inset: 6px; border-radius: 999px; background: var(--wes-bg-3); }
+.wes-ring > b { position: relative; font-weight: 700; font-size: .95rem; }
+
+/* ============================ Grid / rhythm =========================== */
+.wes-stack > * + * { margin-top: var(--wes-6); }
+.wes-grid { display: grid; gap: var(--wes-4); }
+.wes-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.wes-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.wes-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.wes-row { display: flex; align-items: center; gap: var(--wes-3); }
+.wes-between { display: flex; align-items: center; justify-content: space-between; gap: var(--wes-4); }
+.wes-scroll-x { display: flex; gap: var(--wes-4); overflow-x: auto; padding-bottom: var(--wes-2); scroll-snap-type: x proximity; }
+.wes-scroll-x > * { scroll-snap-align: start; }
+
+/* ============================ Timeline ================================= */
+.wes-timeline { position: relative; padding-left: var(--wes-6); }
+.wes-timeline::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: linear-gradient(var(--wes-line), transparent); }
+.wes-tl-item { position: relative; padding: 0 0 var(--wes-5) var(--wes-2); }
+.wes-tl-item::before { content: ""; position: absolute; left: -22px; top: 4px; width: 12px; height: 12px; border-radius: 999px; background: var(--wes-bg-4); border: 2px solid var(--wes-brand); }
+.wes-tl-item.done::before { background: var(--wes-brand); }
+
+/* ============================ States =================================== */
+.wes-skel { background: linear-gradient(100deg, var(--wes-bg-3) 30%, var(--wes-bg-4) 50%, var(--wes-bg-3) 70%); background-size: 200% 100%; animation: wes-shimmer 1.4s linear infinite; border-radius: var(--wes-r-sm); }
+@keyframes wes-shimmer { to { background-position: -200% 0; } }
+.wes-empty { text-align: center; padding: var(--wes-12) var(--wes-6); color: var(--wes-text-3); }
+.wes-empty-ic { font-size: 2rem; margin-bottom: var(--wes-3); opacity: .7; }
+
+/* ============================ Motion: entrances ======================= */
+.wes-in { animation: wes-rise var(--wes-t-slow) var(--wes-ease-out) both; }
+.wes-in-1 { animation-delay: .04s; } .wes-in-2 { animation-delay: .10s; }
+.wes-in-3 { animation-delay: .16s; } .wes-in-4 { animation-delay: .22s; }
+.wes-in-5 { animation-delay: .28s; } .wes-in-6 { animation-delay: .34s; }
+@keyframes wes-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* ============================ Responsive ============================== */
+@media (max-width: 1080px) {
+  .wes-grid.cols-4 { grid-template-columns: repeat(2, 1fr); }
+  .wes-grid.cols-3 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 860px) {
+  :root { --wes-nav-w: 0px; }
+  .wes-app { grid-template-columns: 1fr; }
+  .wes-side {
+    position: fixed; z-index: 60; left: 0; top: 0; width: 264px;
+    transform: translateX(-102%); transition: transform var(--wes-t) var(--wes-ease-out);
+  }
+  .wes-app.nav-open .wes-side { transform: none; }
+  .wes-topbar { display: flex !important; }
+  .wes-page { padding: var(--wes-6) var(--wes-4) var(--wes-16); }
+}
+@media (max-width: 600px) {
+  .wes-grid.cols-2, .wes-grid.cols-3, .wes-grid.cols-4 { grid-template-columns: 1fr; }
+  .wes-hero { padding: var(--wes-6); }
+}
+
+/* mobile top bar (hidden on desktop) */
+.wes-topbar { display: none; position: sticky; top: 0; z-index: 40; align-items: center; gap: var(--wes-3);
+  padding: var(--wes-3) var(--wes-4); background: var(--wes-glass); backdrop-filter: var(--wes-blur);
+  border-bottom: 1px solid var(--wes-line-soft); }
+.wes-burger { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--wes-line); background: var(--wes-bg-3); color: var(--wes-text); cursor: pointer; }
+.wes-scrim { position: fixed; inset: 0; z-index: 55; background: rgba(4,5,9,.6); backdrop-filter: blur(2px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .wes *, .wes *::before, .wes *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
+
+/* focus-visible everywhere for a11y */
+.wes a:focus-visible, .wes button:focus-visible { outline: none; box-shadow: var(--wes-ring); border-radius: var(--wes-r-xs); }
+
+/* ============================================================================
+   EXECUTIVE OFFICE (Sprint 02) — the Founder's conversation with the CEO
+   ========================================================================== */
+.wes-office { display: grid; grid-template-columns: 1fr 300px; gap: var(--wes-6);
+  max-width: 1240px; margin: 0 auto; padding: var(--wes-6) var(--wes-8) var(--wes-8);
+  height: 100vh; }
+.wes-conv { display: flex; flex-direction: column; min-width: 0; height: calc(100vh - 96px); }
+.wes-conv-head { display: flex; align-items: center; gap: var(--wes-3); padding-bottom: var(--wes-4); }
+.wes-conv-title { font-weight: 680; letter-spacing: -0.02em; font-size: 1.05rem; }
+.wes-conv-sub { font-size: var(--wes-fs-xs); color: var(--wes-text-3); }
+
+.wes-thread { flex: 1; overflow-y: auto; padding: var(--wes-4) var(--wes-2) var(--wes-6); display: flex; flex-direction: column; gap: var(--wes-5); }
+.wes-daysep { text-align: center; font-size: var(--wes-fs-xs); color: var(--wes-text-4); letter-spacing: var(--wes-tracking-caps); text-transform: uppercase; margin: var(--wes-2) 0; }
+
+.wes-msg { display: flex; gap: var(--wes-3); max-width: 760px; animation: wes-rise .4s var(--wes-ease-out) both; }
+.wes-msg.me { align-self: flex-end; flex-direction: row-reverse; }
+.wes-msg-av { width: 34px; height: 34px; border-radius: 11px; flex: none; display: grid; place-items: center;
+  font-weight: 680; font-size: .72rem; color: #0b0d14; background: var(--wes-accent-grad); box-shadow: var(--wes-sh-1); }
+.wes-msg.me .wes-msg-av { background: var(--wes-bg-4); color: var(--wes-text-2); }
+.wes-msg-body { min-width: 0; }
+.wes-msg-who { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.wes-msg-name { font-weight: 640; font-size: var(--wes-fs-sm); }
+.wes-msg-title { font-size: var(--wes-fs-xs); color: var(--wes-text-3); }
+.wes-bubble { background: var(--wes-bg-3); border: 1px solid var(--wes-line); border-radius: 6px 18px 18px 18px;
+  padding: 13px 16px; line-height: 1.6; color: var(--wes-text); }
+.wes-msg.me .wes-bubble { background: linear-gradient(135deg, rgba(109,139,255,.16), rgba(139,109,255,.12)); border-color: rgba(109,139,255,.28); border-radius: 18px 6px 18px 18px; }
+.wes-bubble strong { color: var(--wes-brand-ink); font-weight: 650; }
+
+/* structured detail — calm, secondary, never overwhelming */
+.wes-detail { margin-top: 10px; display: flex; flex-direction: column; gap: 7px; }
+.wes-detail-row { display: flex; gap: 8px; font-size: var(--wes-fs-sm); color: var(--wes-text-2); }
+.wes-detail-row b { color: var(--wes-text-3); font-weight: 600; min-width: 92px; font-size: var(--wes-fs-xs); text-transform: uppercase; letter-spacing: .08em; padding-top: 2px; }
+.wes-reason { margin-top: 9px; font-size: var(--wes-fs-xs); color: var(--wes-text-4); display: inline-flex; align-items: center; gap: 6px; }
+.wes-reason::before { content: "✦"; color: var(--wes-brand); }
+
+.wes-join { align-self: center; font-size: var(--wes-fs-sm); color: var(--wes-text-3); background: var(--wes-bg-2);
+  border: 1px solid var(--wes-line-soft); padding: 8px 16px; border-radius: 999px; animation: wes-rise .4s var(--wes-ease-out) both; }
+.wes-join b { color: var(--wes-brand-ink); }
+
+/* composer */
+.wes-composer { margin-top: var(--wes-3); }
+.wes-composer-box { display: flex; align-items: flex-end; gap: var(--wes-3); background: var(--wes-glass);
+  backdrop-filter: var(--wes-blur); border: 1px solid var(--wes-glass-brd); border-radius: var(--wes-r-lg);
+  padding: 10px 10px 10px 18px; box-shadow: var(--wes-sh-2); transition: border-color var(--wes-t-fast), box-shadow var(--wes-t-fast); }
+.wes-composer-box:focus-within { border-color: rgba(109,139,255,.4); box-shadow: var(--wes-ring); }
+.wes-composer textarea { flex: 1; background: transparent; border: 0; resize: none; color: var(--wes-text); font: inherit;
+  line-height: 1.5; max-height: 160px; padding: 6px 0; }
+.wes-composer textarea:focus { outline: none; }
+.wes-send { width: 42px; height: 42px; border-radius: 13px; border: 0; cursor: pointer; flex: none;
+  background: var(--wes-accent-grad); color: #0b0d14; font-size: 1.1rem; box-shadow: 0 6px 18px -6px rgba(109,139,255,.6);
+  transition: transform var(--wes-t-fast), box-shadow var(--wes-t-fast); }
+.wes-send:hover { transform: translateY(-1px); }
+.wes-send:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+.wes-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.wes-chip { font-size: var(--wes-fs-sm); color: var(--wes-text-2); background: var(--wes-bg-3); border: 1px solid var(--wes-line);
+  padding: 7px 13px; border-radius: 999px; cursor: pointer; transition: background var(--wes-t-fast), border-color var(--wes-t-fast), color var(--wes-t-fast); }
+.wes-chip:hover { background: var(--wes-bg-4); color: var(--wes-text); border-color: #2c3247; }
+
+/* live status rail */
+.wes-rail { position: sticky; top: 0; align-self: start; display: flex; flex-direction: column; gap: var(--wes-4); }
+.wes-rail-card { background: var(--wes-bg-3); border: 1px solid var(--wes-line); border-radius: var(--wes-r-lg); padding: var(--wes-5); }
+.wes-rail-k { font-size: var(--wes-fs-xs); color: var(--wes-text-3); text-transform: uppercase; letter-spacing: .1em; }
+.wes-rail-v { font-weight: 600; margin-top: 3px; }
+.wes-rail-execs { display: flex; flex-direction: column; gap: 10px; }
+.wes-rail-exec { display: flex; align-items: center; gap: 10px; }
+.wes-rail-exec .wes-msg-av { width: 28px; height: 28px; border-radius: 9px; }
+
+@media (max-width: 980px) {
+  .wes-office { grid-template-columns: 1fr; height: auto; padding: var(--wes-4); }
+  .wes-rail { position: static; flex-direction: row; overflow-x: auto; }
+  .wes-rail-card { min-width: 190px; }
+  .wes-conv { height: calc(100vh - 220px); }
+}
+@media (max-width: 600px) {
+  .wes-msg { max-width: 100%; }
+  .wes-rail { display: none; }
+  .wes-conv { height: calc(100vh - 150px); }
+}
+
+/* ============================================================================
+   MISSION CENTER + LIVING COMPANY (Sprint 03)
+   ========================================================================== */
+.wes-live-dot { width: 8px; height: 8px; border-radius: 999px; background: var(--wes-ok); position: relative; flex: none; }
+.wes-live-dot::after { content: ""; position: absolute; inset: -4px; border-radius: 999px; background: var(--wes-ok); opacity: .4; animation: wes-pulse 2s var(--wes-ease) infinite; }
+.wes-live-dot.ready { background: var(--wes-text-4); }
+.wes-live-dot.ready::after { display: none; }
+
+/* mission grid */
+.wes-mgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: var(--wes-5); }
+.wes-mcard { display: flex; flex-direction: column; gap: var(--wes-4); cursor: pointer; }
+.wes-mcard .stage-rail { display: flex; gap: 4px; }
+.wes-seg { flex: 1; height: 4px; border-radius: 999px; background: var(--wes-bg-4); }
+.wes-seg.done { background: var(--wes-brand); }
+.wes-seg.current { background: var(--wes-accent-grad); animation: wes-breathe 2.4s var(--wes-ease) infinite; }
+@keyframes wes-breathe { 0%,100% { opacity: .6; } 50% { opacity: 1; } }
+.wes-mmeta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+.wes-mmeta .k { font-size: var(--wes-fs-xs); color: var(--wes-text-3); text-transform: uppercase; letter-spacing: .08em; }
+.wes-mmeta .v { font-size: var(--wes-fs-sm); font-weight: 560; margin-top: 2px; }
+
+/* living company strip */
+.wes-livegrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--wes-4); }
+.wes-livecard { background: var(--wes-bg-3); border: 1px solid var(--wes-line); border-radius: var(--wes-r-md); padding: var(--wes-4); display: flex; flex-direction: column; gap: 10px; transition: border-color var(--wes-t); }
+.wes-livecard.working { border-color: rgba(109,139,255,.28); }
+.wes-livecard:hover { border-color: #2c3247; }
+
+/* mission map (executive relay) */
+.wes-map { display: flex; align-items: center; gap: 6px; overflow-x: auto; padding: var(--wes-2) 0; }
+.wes-map-node { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 78px; }
+.wes-map-orb { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; font-weight: 680; font-size: .72rem;
+  background: var(--wes-bg-4); color: var(--wes-text-3); border: 1px solid var(--wes-line); transition: all var(--wes-t) var(--wes-ease); }
+.wes-map-node.done .wes-map-orb { background: rgba(109,139,255,.16); color: var(--wes-brand-ink); border-color: rgba(109,139,255,.3); }
+.wes-map-node.current .wes-map-orb { background: var(--wes-accent-grad); color: #0b0d14; box-shadow: var(--wes-sh-glow); transform: scale(1.12); }
+.wes-map-label { font-size: var(--wes-fs-xs); color: var(--wes-text-3); white-space: nowrap; }
+.wes-map-node.current .wes-map-label { color: var(--wes-text); font-weight: 600; }
+.wes-map-link { flex: 1; min-width: 14px; height: 2px; background: var(--wes-line); }
+.wes-map-link.done { background: var(--wes-brand); }
+
+/* vertical stage tracker */
+.wes-stages { display: flex; flex-direction: column; gap: 2px; }
+.wes-stage-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+.wes-stage-tick { width: 22px; height: 22px; border-radius: 999px; border: 2px solid var(--wes-line); display: grid; place-items: center; flex: none; font-size: .6rem; color: var(--wes-text-4); }
+.wes-stage-row.done .wes-stage-tick { background: var(--wes-brand); border-color: var(--wes-brand); color: #0b0d14; }
+.wes-stage-row.current .wes-stage-tick { border-color: var(--wes-brand); box-shadow: var(--wes-ring); }
+.wes-stage-row.current .wes-stage-name { color: var(--wes-text); font-weight: 640; }
+.wes-stage-name { color: var(--wes-text-3); font-size: var(--wes-fs-sm); }
+
+/* executive discussion (minutes) */
+.wes-disc { display: flex; flex-direction: column; gap: 14px; }
+.wes-disc-row { display: flex; gap: 12px; }
+.wes-disc-av { width: 30px; height: 30px; border-radius: 10px; flex: none; display: grid; place-items: center; font-size: .64rem; font-weight: 680;
+  background: var(--wes-bg-4); color: var(--wes-brand-ink); }
+.wes-disc-who { font-size: var(--wes-fs-sm); font-weight: 620; }
+.wes-disc-kind { font-size: var(--wes-fs-xs); color: var(--wes-text-4); text-transform: uppercase; letter-spacing: .08em; margin-left: 8px; }
+.wes-disc-msg { color: var(--wes-text-2); font-size: var(--wes-fs-sm); line-height: 1.55; margin-top: 3px; }
+
+/* risk rows */
+.wes-risk-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--wes-line-soft); }
+.wes-risk-row:last-child { border-bottom: 0; }
+.wes-risk-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 7px; }
+.wes-chip-sm { font-size: var(--wes-fs-xs); padding: 3px 9px; border-radius: 999px; background: var(--wes-bg-4); color: var(--wes-text-2); }
+
+/* two-column detail layout */
+.wes-detail-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: var(--wes-6); align-items: start; }
+@media (max-width: 980px) { .wes-detail-grid { grid-template-columns: 1fr; } .wes-mmeta { grid-template-columns: 1fr 1fr; } }
+
+/* mini bar chart (analytics) */
+.wes-bars { display: flex; align-items: flex-end; gap: 8px; height: 120px; }
+.wes-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.wes-bar-fill { width: 100%; border-radius: 8px 8px 3px 3px; background: var(--wes-accent-grad); min-height: 4px; transition: height var(--wes-t-slow) var(--wes-ease-out); }
+.wes-bar-cap { font-size: var(--wes-fs-xs); color: var(--wes-text-3); text-align: center; }
+
+/* ============================================================================
+   COMPANY BRAIN (Sprint 04) — the live intelligence center
+   ========================================================================== */
+.wes-brain-hero { position: relative; overflow: hidden; border-radius: var(--wes-r-xl); border: 1px solid var(--wes-glass-brd);
+  padding: var(--wes-8); background: var(--wes-hero-glow), linear-gradient(180deg, var(--wes-bg-3), var(--wes-bg-2)); }
+.wes-brain-orb { width: 54px; height: 54px; border-radius: 18px; background: var(--wes-accent-grad); box-shadow: var(--wes-sh-glow); position: relative; flex: none; }
+.wes-brain-orb::after { content: ""; position: absolute; inset: 0; border-radius: 18px; background: var(--wes-accent-grad); opacity: .5; animation: wes-pulse 2.6s var(--wes-ease) infinite; }
+
+/* reference tiles */
+.wes-refs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+.wes-ref { background: var(--wes-bg-3); border: 1px solid var(--wes-line); border-radius: var(--wes-r-md); padding: 16px; text-align: center; }
+.wes-ref-n { font-size: 1.5rem; font-weight: 720; letter-spacing: -0.02em; }
+.wes-ref-k { font-size: var(--wes-fs-xs); color: var(--wes-text-3); text-transform: uppercase; letter-spacing: .09em; margin-top: 3px; }
+@media (max-width: 900px) { .wes-refs { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 520px) { .wes-refs { grid-template-columns: repeat(2, 1fr); } }
+
+/* thinking stream */
+.wes-stream { display: flex; flex-direction: column; gap: 10px; }
+.wes-stream-row { display: flex; align-items: center; gap: 10px; font-size: var(--wes-fs-sm); color: var(--wes-text-2);
+  padding: 9px 12px; border-radius: var(--wes-r-sm); background: var(--wes-bg-2); border: 1px solid var(--wes-line-soft); animation: wes-rise .4s var(--wes-ease-out) both; }
+.wes-stream-row .wes-live-dot { --sz: 7px; }
+
+/* topic cards */
+.wes-topic { display: flex; flex-direction: column; gap: 10px; cursor: pointer; }
+.wes-topic:hover { border-color: #2c3247; }
+
+/* reasoning explorer */
+.wes-reason-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 720px) { .wes-reason-grid { grid-template-columns: 1fr; } }
+.wes-rblock { background: var(--wes-bg-2); border: 1px solid var(--wes-line-soft); border-radius: var(--wes-r-md); padding: 16px; }
+.wes-rblock h4 { margin: 0 0 10px; font-size: var(--wes-fs-xs); text-transform: uppercase; letter-spacing: .1em; color: var(--wes-text-3); font-weight: 640; }
+.wes-rblock ul { margin: 0; padding-left: 16px; color: var(--wes-text-2); font-size: var(--wes-fs-sm); line-height: 1.6; }
+.wes-rblock li { margin-bottom: 5px; }
+.wes-alt { border: 1px solid var(--wes-line); border-radius: var(--wes-r-sm); padding: 12px 14px; margin-bottom: 8px; }
+.wes-alt.chosen { border-color: rgba(55,211,155,.4); background: rgba(55,211,155,.06); }
+
+/* knowledge graph */
+.wes-graph { width: 100%; height: 420px; }
+.wes-graph .lnk { stroke: var(--wes-line); stroke-width: 1.2; }
+.wes-graph .node circle { transition: r var(--wes-t) var(--wes-ease); }
+.wes-graph text { font-size: 10px; fill: var(--wes-text-3); }
+.wes-graph .node:hover text { fill: var(--wes-text); }
+
+/* search */
+.wes-search-box { display: flex; align-items: center; gap: 12px; background: var(--wes-glass); backdrop-filter: var(--wes-blur);
+  border: 1px solid var(--wes-glass-brd); border-radius: var(--wes-r-lg); padding: 4px 6px 4px 18px; box-shadow: var(--wes-sh-2); }
+.wes-search-box input { flex: 1; background: transparent; border: 0; color: var(--wes-text); font: inherit; padding: 14px 0; }
+.wes-search-box input:focus { outline: none; }
+.wes-search-group { margin-top: var(--wes-4); }
+.wes-search-item { padding: 11px 14px; border-radius: var(--wes-r-sm); background: var(--wes-bg-3); border: 1px solid var(--wes-line); margin-bottom: 8px; font-size: var(--wes-fs-sm); }
+
+/* brain sub-nav (segmented) */
+.wes-seg-nav { display: inline-flex; gap: 3px; background: var(--wes-bg-2); border: 1px solid var(--wes-line-soft); border-radius: var(--wes-r-md); padding: 3px; }
+.wes-seg-btn { padding: 8px 15px; border-radius: 10px; border: 0; background: transparent; color: var(--wes-text-2); font: inherit; font-weight: 560; cursor: pointer; font-size: var(--wes-fs-sm); transition: background var(--wes-t-fast), color var(--wes-t-fast); }
+.wes-seg-btn.active { background: var(--wes-bg-4); color: var(--wes-text); box-shadow: var(--wes-sh-1); }
+
+/* ============================================================================
+   DESIGN REVIEW 01 — experience polish (no new components)
+   ========================================================================== */
+/* interactive cards: pointer + keyboard focus ring (a11y parity with buttons) */
+.wes-card[role="button"] { cursor: pointer; }
+.wes-card[role="button"]:focus-visible { outline: none; box-shadow: var(--wes-ring), var(--wes-sh-2); border-color: rgba(109,139,255,.4); }
+/* calmer live pulse: slower and lower-contrast so a grid of cards feels serene */
+.wes-seg.current { animation: wes-breathe 3.4s var(--wes-ease) infinite; }
+@keyframes wes-breathe { 0%,100% { opacity: .72; } 50% { opacity: 1; } }
+/* health tiles: quieter dots (colour communicates, doesn't shout) */
+.wes-empty-ic { opacity: .5; }
+
+/* ============================================================================
+   AI WORKFORCE (Sprint 05)
+   ========================================================================== */
+.wes-wf-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+@media (max-width: 640px) { .wes-wf-summary { grid-template-columns: repeat(2, 1fr); } }
+.wes-team { margin-top: var(--wes-8); }
+.wes-team-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px; }
+.wes-team-name { font-weight: 660; letter-spacing: -0.01em; }
+.wes-team-count { font-size: var(--wes-fs-xs); color: var(--wes-text-3); }
+.wes-people { display: grid; grid-template-columns: repeat(auto-fill, minmax(248px, 1fr)); gap: 14px; }
+.wes-person { background: var(--wes-bg-3); border: 1px solid var(--wes-line); border-radius: var(--wes-r-md); padding: 16px; cursor: pointer;
+  display: flex; flex-direction: column; gap: 12px; transition: transform var(--wes-t) var(--wes-ease-out), border-color var(--wes-t); }
+.wes-person:hover { transform: translateY(-2px); border-color: #2c3247; }
+.wes-person.working { border-color: rgba(109,139,255,.22); }
+.wes-person-top { display: flex; align-items: center; gap: 11px; }
+.wes-person-av { width: 42px; height: 42px; border-radius: 13px; flex: none; display: grid; place-items: center; font-weight: 700; font-size: .82rem;
+  background: var(--wes-bg-4); color: var(--wes-text-2); }
+.wes-person.working .wes-person-av { background: var(--wes-accent-grad); color: #0b0d14; }
+.wes-person-name { font-weight: 620; }
+.wes-person-role { font-size: var(--wes-fs-xs); color: var(--wes-text-3); }
+.wes-person-work { font-size: var(--wes-fs-sm); color: var(--wes-text-2); line-height: 1.45; min-height: 20px; }
+.wes-person-foot { display: flex; align-items: center; justify-content: space-between; font-size: var(--wes-fs-xs); color: var(--wes-text-3); }
+
+/* profile */
+.wes-profile-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: var(--wes-6); align-items: start; }
+@media (max-width: 960px) { .wes-profile-grid { grid-template-columns: 1fr; } }
+.wes-perf { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.wes-perf .n { font-size: 1.4rem; font-weight: 720; }
+.wes-perf .k { font-size: var(--wes-fs-xs); color: var(--wes-text-3); text-transform: uppercase; letter-spacing: .08em; }
+
+/* org chart columns */
+.wes-orgcols { display: flex; gap: var(--wes-6); overflow-x: auto; padding: var(--wes-2) 0; align-items: flex-start; }
+.wes-orgcol { min-width: 190px; display: flex; flex-direction: column; gap: 10px; }
+.wes-orgcol-k { font-size: var(--wes-fs-xs); text-transform: uppercase; letter-spacing: .1em; color: var(--wes-text-4); }
+.wes-orgnode { background: var(--wes-bg-3); border: 1px solid var(--wes-line); border-radius: var(--wes-r-sm); padding: 11px 13px; cursor: pointer; transition: border-color var(--wes-t); }
+.wes-orgnode:hover { border-color: rgba(109,139,255,.35); }
+.wes-orgnode.ceo { background: rgba(109,139,255,.1); border-color: rgba(109,139,255,.3); }
+.wes-orgnode.founder { background: var(--wes-accent-grad); color: #0b0d14; }
+.wes-orgnode .nm { font-weight: 600; font-size: var(--wes-fs-sm); }
+.wes-orgnode .sb { font-size: var(--wes-fs-xs); opacity: .8; }
+
+/* skill chips */
+.wes-skill { display: inline-flex; align-items: center; gap: 6px; font-size: var(--wes-fs-sm); padding: 6px 12px; border-radius: 999px; background: var(--wes-bg-3); border: 1px solid var(--wes-line); }
+
+/* ============================================================================
+   KNOWLEDGE NETWORK (Sprint 06)
+   ========================================================================== */
+.wes-kmetrics { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+@media (max-width: 900px) { .wes-kmetrics { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 520px) { .wes-kmetrics { grid-template-columns: repeat(2, 1fr); } }
+.wes-kmetric { background: var(--wes-bg-3); border: 1px solid var(--wes-line); border-radius: var(--wes-r-md); padding: 15px; }
+.wes-kmetric .n { font-size: 1.55rem; font-weight: 720; letter-spacing: -0.02em; }
+.wes-kmetric .k { font-size: var(--wes-fs-xs); color: var(--wes-text-3); text-transform: uppercase; letter-spacing: .08em; margin-top: 3px; }
+.wes-kmetric .s { font-size: var(--wes-fs-xs); color: var(--wes-text-4); margin-top: 4px; }
+.wes-know-item { padding: 13px 0; border-bottom: 1px solid var(--wes-line-soft); }
+.wes-know-item:last-child { border-bottom: 0; }
+.wes-reuse-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--wes-line-soft); }
+.wes-reuse-row:last-child { border-bottom: 0; }
+.wes-reuse-bar { height: 6px; border-radius: 999px; background: var(--wes-accent-grad); }
+
+/* ============================================================================
+   FOUNDER COMMAND CENTER (Sprint 07)
+   ========================================================================== */
+.wes-cmd-kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+@media (max-width: 1000px) { .wes-cmd-kpis { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 560px) { .wes-cmd-kpis { grid-template-columns: repeat(2, 1fr); } }
+.wes-kpi { background: var(--wes-bg-3); border: 1px solid var(--wes-line); border-radius: var(--wes-r-md); padding: 15px; }
+.wes-kpi .n { font-size: 1.5rem; font-weight: 720; letter-spacing: -0.02em; display: flex; align-items: baseline; gap: 6px; }
+.wes-kpi .k { font-size: var(--wes-fs-xs); color: var(--wes-text-3); text-transform: uppercase; letter-spacing: .08em; margin-top: 4px; }
+.wes-kpi .s { font-size: var(--wes-fs-xs); color: var(--wes-text-4); margin-top: 2px; }
+.wes-trend { font-size: .7rem; font-weight: 700; }
+.wes-trend.up { color: var(--wes-ok); } .wes-trend.watch, .wes-trend.up.risk { color: var(--wes-warn); }
+
+/* attention strip */
+.wes-attention { display: flex; flex-direction: column; gap: 8px; }
+.wes-att-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--wes-r-sm); background: var(--wes-bg-2); border: 1px solid var(--wes-line-soft); }
+.wes-att-dot { width: 8px; height: 8px; border-radius: 999px; flex: none; }
+.wes-att-dot.high { background: var(--wes-risk); } .wes-att-dot.medium { background: var(--wes-warn); } .wes-att-dot.normal { background: var(--wes-brand); }
+
+/* brief */
+.wes-brief-cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--wes-8); margin-top: 20px; }
+@media (max-width: 720px) { .wes-brief-cols { grid-template-columns: 1fr; gap: var(--wes-5); } }
+
+/* scoreboard */
+.wes-score { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.wes-score-card { background: var(--wes-bg-3); border: 1px solid var(--wes-line); border-radius: var(--wes-r-md); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.wes-score-head { display: flex; align-items: center; justify-content: space-between; }
+.wes-score-load { display: flex; gap: 3px; }
+.wes-score-load i { width: 7px; height: 16px; border-radius: 2px; background: var(--wes-bg-4); }
+.wes-score-load i.on { background: var(--wes-accent-grad); }
+
+/* health areas */
+.wes-areas { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+@media (max-width: 640px) { .wes-areas { grid-template-columns: 1fr; } }
+.wes-area-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--wes-r-sm); background: var(--wes-bg-3); border: 1px solid var(--wes-line); }
+.wes-area-bar { flex: 1; height: 5px; border-radius: 999px; background: var(--wes-bg-4); overflow: hidden; }
+.wes-area-bar > span { display: block; height: 100%; border-radius: 999px; }
+
+/* prediction card */
+.wes-pred { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--wes-line-soft); }
+.wes-pred:last-child { border-bottom: 0; }
+.wes-pred-conf { flex: none; font-size: var(--wes-fs-xs); font-weight: 700; color: var(--wes-brand-ink); width: 40px; text-align: right; }
+
+/* decision command row */
+.wes-dc { border: 1px solid var(--wes-line); border-radius: var(--wes-r-md); padding: 16px; margin-bottom: 12px; }
+.wes-dc-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+
+/* ============================================================================
+   AUTONOMOUS COMPANY OPERATIONS (Sprint 08)
+   ========================================================================== */
+.wes-ops-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+@media (max-width: 720px) { .wes-ops-summary { grid-template-columns: repeat(2, 1fr); } }
+.wes-op-stat { background: var(--wes-bg-3); border: 1px solid var(--wes-line); border-radius: var(--wes-r-md); padding: 16px; }
+.wes-op-stat .n { font-size: 1.8rem; font-weight: 740; letter-spacing: -0.02em; }
+.wes-op-stat .k { font-size: var(--wes-fs-xs); color: var(--wes-text-3); text-transform: uppercase; letter-spacing: .08em; margin-top: 3px; }
+
+.wes-op-cols { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.wes-op-col-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.wes-op-col-dot { width: 8px; height: 8px; border-radius: 999px; }
+.wes-op-col-dot.running { background: var(--wes-ok); } .wes-op-col-dot.waiting { background: var(--wes-warn); }
+.wes-op-col-dot.blocked { background: var(--wes-risk); } .wes-op-col-dot.done { background: var(--wes-brand); }
+.wes-op-item { background: var(--wes-bg-3); border: 1px solid var(--wes-line); border-radius: var(--wes-r-sm); padding: 12px 14px; margin-bottom: 8px; }
+.wes-op-item .op { font-weight: 560; font-size: var(--wes-fs-sm); }
+.wes-op-item .ow { font-size: var(--wes-fs-xs); color: var(--wes-text-3); margin-top: 2px; }
+
+/* activity stream */
+.wes-actstream { display: flex; flex-direction: column; gap: 0; }
+.wes-act { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--wes-line-soft); }
+.wes-act:last-child { border-bottom: 0; }
+.wes-act-dot { width: 8px; height: 8px; border-radius: 999px; margin-top: 5px; flex: none; background: var(--wes-brand); }
+.wes-act-dot.action { background: var(--wes-warn); } .wes-act-dot.info { background: var(--wes-brand); }
+
+/* policy levels */
+.wes-policy-lvl { border: 1px solid var(--wes-line); border-radius: var(--wes-r-md); padding: 16px; margin-bottom: 12px; }
+.wes-policy-lvl.l3 { border-color: rgba(245,181,68,.35); background: rgba(245,181,68,.04); }
+.wes-policy-lvl.l1 { border-color: rgba(55,211,155,.3); }
+.wes-lvl-badge { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; font-weight: 720; font-size: .8rem; background: var(--wes-bg-4); color: var(--wes-brand-ink); }
+
+/* founder controls */
+.wes-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* trust ring row */
+.wes-trust { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media (max-width: 640px) { .wes-trust { grid-template-columns: 1fr; } .wes-ops-summary { grid-template-columns: 1fr 1fr; } }
+
+/* ============================================================================
+   DELIVERY INTELLIGENCE & SOFTWARE FACTORY (Sprint 09)
+   ========================================================================== */
+.wes-factory-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+@media (max-width: 720px) { .wes-factory-kpis { grid-template-columns: repeat(2, 1fr); } }
+
+/* delivery pipeline rail — the 9 business stages */
+.wes-pipeline-rail { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(150px, 1fr); gap: 10px; overflow-x: auto; padding-bottom: 6px; }
+.wes-pl-stage { background: var(--wes-bg-3); border: 1px solid var(--wes-line); border-radius: var(--wes-r-md); padding: 12px; min-height: 96px; position: relative; }
+.wes-pl-stage.has { border-color: rgba(93,169,255,.4); background: rgba(93,169,255,.05); }
+.wes-pl-stage .st { font-size: var(--wes-fs-xs); font-weight: 600; }
+.wes-pl-stage .ct { font-size: 1.5rem; font-weight: 740; letter-spacing: -0.02em; margin-top: 4px; }
+.wes-pl-stage .bl { font-size: 10px; color: var(--wes-text-3); margin-top: 4px; line-height: 1.3; }
+.wes-pl-idx { position: absolute; top: 8px; right: 10px; font-size: 10px; color: var(--wes-text-3); }
+
+/* product cards */
+.wes-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.wes-product { background: var(--wes-bg-2); border: 1px solid var(--wes-line); border-radius: var(--wes-r-md); padding: 16px; transition: border-color var(--wes-t-fast), transform var(--wes-t-fast); }
+.wes-product:hover { border-color: var(--wes-line-strong); transform: translateY(-1px); }
+.wes-product .pn { font-weight: 620; font-size: var(--wes-fs-sm); line-height: 1.3; }
+.wes-product .po { font-size: var(--wes-fs-xs); color: var(--wes-text-3); margin-top: 3px; line-height: 1.4; }
+.wes-product-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; margin-top: 12px; }
+.wes-pm { font-size: var(--wes-fs-xs); }
+.wes-pm .l { color: var(--wes-text-3); text-transform: uppercase; letter-spacing: .06em; font-size: 10px; }
+.wes-pm .v { font-weight: 560; margin-top: 1px; }
+.wes-caps { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+
+/* factory floor */
+.wes-floor { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.wes-station { background: var(--wes-bg-3); border: 1px solid var(--wes-line); border-radius: var(--wes-r-md); padding: 14px; display: flex; gap: 12px; align-items: center; }
+.wes-station-ic { width: 36px; height: 36px; border-radius: 10px; background: var(--wes-bg-4); display: grid; place-items: center; flex: none; }
+.wes-station.active { border-color: rgba(55,211,155,.4); }
+.wes-station.active .wes-station-ic { background: rgba(55,211,155,.12); }
+.wes-station .wh { font-weight: 600; font-size: var(--wes-fs-sm); }
+.wes-station .ac { font-size: var(--wes-fs-xs); color: var(--wes-text-3); }
+
+/* dependency capabilities */
+.wes-dep-cap { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--wes-line-soft); }
+.wes-dep-cap:last-child { border-bottom: 0; }
+.wes-dep-bubble { padding: 2px 9px; border-radius: 999px; background: rgba(93,169,255,.1); color: var(--wes-brand-ink); font-size: var(--wes-fs-xs); font-weight: 560; }

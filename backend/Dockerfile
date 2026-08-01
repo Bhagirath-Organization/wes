@@ -6,6 +6,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
+# git is required by the Autonomous Development Engine (real git sandbox +
+# branch + commit). Sprint 24 activation fix. [P0-2]
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends git openssh-client \
+    && rm -rf /var/lib/apt/lists/*
+
 # System deps for psycopg2 runtime are included in slim; build tools not needed
 # because psycopg2-binary ships wheels.
 COPY requirements.txt ./

@@ -1,0 +1,67 @@
+# WES OS — GREEN production deployment (blue-green).
+# Deployment-specific config (not part of repo source). Based on the repo's
+# root docker-compose.yml, isolated from the running BLUE stack:
+#   - own project name + network (no collision with BLUE)
+#   - DB not published to host; backend on 127.0.0.1:8001, frontend on 127.0.0.1:8081
+#   - reaches the host's existing Ollama via host.docker.internal
+name: wes-green
+
+services:
+  db:
+    image: postgres:16
+    container_name: wes-green-db
+    restart: unless-stopped
+    env_file: .env.green
+    volumes:
+      - wes_green_pgdata:/var/lib/postgresql/data
+      - ./deploy-init:/docker-entrypoint-initdb.d:ro
+    networks: [green-net]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build: ./backend
+    image: wes-green-backend:latest
+    container_name: wes-green-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env.green
+    volumes:
+      # SSH deploy key for GitHub (Blueprint Vol 06 — GitHub is the source of
+      # truth). Read-only; the key lives outside the repo and is never committed.
+      - /opt/wes-ops/secrets/wes_deploy_key:/run/secrets/wes_deploy_key:ro
+      # GitHub App private key (P0-B). Read-only; outside the repo, never in DB.
+      - /opt/wes-ops/secrets/gh_app_key.pem:/run/secrets/gh_app_key.pem:ro
+      # Blueprint (the Constitution) mounted read-only so the Company Brain can
+      # cite it as the source of truth. Single source — never duplicated in code.
+      - /opt/wes-green/Blueprint:/app/Blueprint:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "127.0.0.1:8001:8000"
+    networks: [green-net]
+
+  frontend:
+    build: ./frontend
+    image: wes-green-frontend:latest
+    container_name: wes-green-frontend
+    restart: unless-stopped
+    depends_on: [backend]
+    ports:
+      - "127.0.0.1:8081:80"
+    networks: [green-net]
+
+volumes:
+  wes_green_pgdata:
+
+networks:
+  green-net:
+    name: wes-green-net
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16   # pinned so container->host Ollama (UFW) stays valid

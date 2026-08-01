@@ -11,7 +11,7 @@ beforeEach(() => {
   vi.mocked(workApi.createProject).mockResolvedValue({
     data: { id: "p1", code: "PROJ-2", name: "Inventory", plan_status: null },
   } as never);
-  vi.mocked(workApi.decompose).mockResolvedValue({ data: {} } as never);
+  vi.mocked(workApi.decomposeAsync).mockResolvedValue({ data: {} } as never);
 });
 
 describe("ProjectIntake", () => {
@@ -52,6 +52,6 @@ describe("ProjectIntake", () => {
         deliverables: ["Inventory API", "Inventory Dashboard"],
       }),
     );
-    expect(workApi.decompose).toHaveBeenCalledWith("p1");
+    expect(workApi.decomposeAsync).toHaveBeenCalledWith("p1");
   });
 });

@@ -15,7 +15,7 @@ def _project(client):
             "code": "CHAIN-1",
             "name": "Chain Module",
             "business_objective": "Prove the autonomous chain",
-            "deliverables": ["Widget API"],  # 1 epic → 5 tasks
+            "deliverables": ["Widget API"],
         },
     ).json()["data"]
 
@@ -35,10 +35,15 @@ def test_project_execution_creates_and_runs_tasks(client, quality_seeded, Sessio
 
     # Run the project-execution job → dev tasks + dev-workflow jobs are created.
     assert run_once(SessionFactory) is True
+    # The plan is designed by the AI executives, so the task count is not fixed;
+    # the invariant is ONE development task (and workflow job) per work item.
+    planned = client.get(f"/api/v1/projects/{pid}/plan").json()["data"]["tasks"]
+    expected = len(planned)
+    assert expected > 0
     dev = client.get("/api/v1/development/tasks").json()["data"]
-    assert len(dev) == 5  # one per work item
+    assert len(dev) == expected  # one per work item
     jobs = client.get("/api/v1/jobs").json()["data"]
-    assert sum(1 for j in jobs if j["job_type"] == "development_workflow") == 5
+    assert sum(1 for j in jobs if j["job_type"] == "development_workflow") == expected
 
     # A Founder notification announced autonomous execution.
     notes = client.get("/api/v1/notifications").json()["data"]

@@ -377,11 +377,25 @@ class ApprovalService:
             notes=notes,
         )
         self.db.add(record)
-        # Update statuses — NEVER merges or pushes; a human performs the merge.
+        # Update statuses. Founder approval is the human authority for the
+        # irreversible merge (Blueprint Vol 05): on approval WES merges the real
+        # GitHub PR (when one exists) and then starts the deployment pipeline.
         if dec == ApprovalDecision.APPROVED.value:
             task.status = DevTaskStatus.APPROVED
             if pr:
                 pr.status = PRStatus.APPROVED
+            # P0 final: merge the real GitHub Pull Request now that the Founder has
+            # approved. No-op when there is no GitHub PR (offline/local task), so
+            # existing behaviour is preserved.
+            self._merge_result = None
+            try:
+                from app.services.github_delivery import GitHubDeliveryService
+
+                self._merge_result = GitHubDeliveryService(self.db).merge_on_approval(
+                    task_id, approved_by=self.actor or "Founder"
+                )
+            except Exception as exc:  # merge failure must not lose the approval record
+                self._merge_result = {"merged": False, "reason": str(exc)[:200]}
             # Phase 4: Founder approval auto-starts the CI/CD pipeline as a durable
             # job (build → test → scan → staging deploy → monitor). Production
             # remains separately Founder-gated.

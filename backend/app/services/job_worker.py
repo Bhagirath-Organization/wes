@@ -199,6 +199,64 @@ def _devops_pipeline(db, payload: dict, job: Job, queue: JobQueue) -> dict:
     return {"pipeline": pipe.code, "status": status}
 
 
+def _project_decompose(db, payload: dict, job: Job, queue: JobQueue) -> dict:
+    """Autonomous planning run in the background so the Founder's page never blocks.
+
+    Sets ``plan_status`` to reflect progress: 'planning' while running (set by the
+    endpoint at enqueue), 'decomposed' on success, 'failed' on error — the UI polls
+    this to show live progress instead of a frozen request.
+    """
+    from app.models.work import Project
+    from app.services.notifications import NotificationService
+    from app.services.project_decomposition import DecompositionService
+
+    project_id = uuid.UUID(payload["project_id"])
+    queue.heartbeat(job, progress_pct=5, message="AI CEO analysing the objective")
+    db.commit()
+    try:
+        DecompositionService(db).decompose(project_id)
+    except Exception as exc:
+        project = db.get(Project, project_id)
+        if project is not None:
+            project.plan_status = "failed"
+            project.plan_error = str(exc)[:500]
+            db.commit()
+        raise
+    project = db.get(Project, project_id)
+    NotificationService(db).create(
+        kind="planning_complete",
+        title=f"Plan ready for {project.code if project else 'project'}",
+        message="The AI CEO finished planning; review and approve to start development.",
+        severity="action",
+        entity_type="project",
+        entity_id=str(project_id),
+    )
+    return {"project_id": str(project_id), "plan_status": project.plan_status if project else None}
+
+
+def _company_evolution(db, payload: dict, job: Job, queue: JobQueue) -> dict:
+    """Continuous Company Evolution (Phase E): observe -> propose -> debate top-N.
+
+    Meant to run on a schedule; re-enqueues itself so self-improvement never stops.
+    """
+    from app.services.company_evolution import CompanyEvolutionService
+
+    debate_top = int(payload.get("debate_top", 0))
+    result = CompanyEvolutionService(db).run_cycle(debate_top=debate_top)
+    db.commit()
+    # Keep the loop alive: schedule the next observation cycle (idempotency key varies
+    # by day so we don't stack duplicates within a run).
+    if payload.get("recurring"):
+        try:
+            queue.enqueue("company_evolution", payload,
+                          idempotency_key=f"evolution:{job.id}")
+        except Exception:
+            pass
+    return result
+
+
 register_handler("development_workflow", _development_workflow)
 register_handler("project_execution", _project_execution)
 register_handler("devops_pipeline", _devops_pipeline)
+register_handler("project_decompose", _project_decompose)
+register_handler("company_evolution", _company_evolution)

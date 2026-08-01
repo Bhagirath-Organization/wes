@@ -40,6 +40,10 @@ const plan = {
 
 beforeEach(() => {
   vi.mocked(workApi.plan).mockResolvedValue({ data: plan } as never);
+  // The plan page polls project status first; report planning as complete.
+  vi.mocked(workApi.project).mockResolvedValue({
+    data: { plan_status: "decomposed", plan_error: null },
+  } as never);
   vi.mocked(workApi.approvePlan).mockResolvedValue({
     data: { ...plan, project: { ...plan.project, plan_status: "approved" } },
   } as never);

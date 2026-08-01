@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { workApi, type ProjectPlan as Plan } from "../../api/work";
 import { ErrorNotice, Loading } from "../../components/States";
@@ -11,8 +11,80 @@ import { useAsync } from "../../hooks/useAsync";
  * for a Founder intake, with the Founder's plan-approval action. */
 export function ProjectPlan() {
   const { id = "" } = useParams();
+  const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+
+  // Planning runs in the background (local CPU inference, minutes). Poll the
+  // project's plan_status and show live progress instead of a frozen page.
+  const [planStatus, setPlanStatus] = useState<string | null>(null);
+  const [planError, setPlanError] = useState<string | null>(null);
+  const [elapsed, setElapsed] = useState(0);
+  const startedRef = useRef(Date.now());
+
+  useEffect(() => {
+    let alive = true;
+    const tick = setInterval(() => setElapsed(Math.floor((Date.now() - startedRef.current) / 1000)), 1000);
+    async function poll() {
+      try {
+        const p = (await workApi.project(id)).data;
+        if (!alive) return;
+        setPlanStatus(p.plan_status ?? null);
+        setPlanError(p.plan_error ?? null);
+      } catch {
+        /* transient — keep polling */
+      }
+    }
+    poll();
+    const iv = setInterval(poll, 5000);
+    return () => {
+      alive = false;
+      clearInterval(iv);
+      clearInterval(tick);
+    };
+  }, [id]);
+
+  const ready = planStatus === "decomposed" || planStatus === "approved";
+
+  // While the AI CEO is still planning (or status not yet known), show progress.
+  if (planStatus === "planning" || planStatus === null) {
+    const mins = Math.floor(elapsed / 60);
+    const secs = elapsed % 60;
+    return (
+      <div className="page-header" style={{ flexDirection: "column", alignItems: "flex-start", gap: 16 }}>
+        <h1>AI CEO is analysing your objective…</h1>
+        <p>
+          The AI company is reasoning about your business objective, deciding the
+          architecture, and building the plan (milestones, sprints, tasks, risks).
+          This runs on local AI and typically takes <strong>a few minutes</strong>.
+        </p>
+        <p>⏱️ Elapsed: <strong>{mins}m {secs}s</strong> — you can safely leave this page and come back; planning continues in the background.</p>
+        <Loading label="Planning in progress…" />
+        <button className="btn" onClick={() => navigate("/projects")}>Back to Projects</button>
+      </div>
+    );
+  }
+  if (planStatus === "failed") {
+    return (
+      <div>
+        <ErrorNotice message={`Planning failed: ${planError || "unknown error"}`} />
+        <button className="btn" disabled={busy}
+          onClick={() => { setPlanStatus("planning"); startedRef.current = Date.now();
+            workApi.decomposeAsync(id).catch(() => setPlanStatus("failed")); }}>
+          Retry planning
+        </button>
+      </div>
+    );
+  }
+  return <PlanView id={id} busy={busy} setBusy={setBusy} msg={msg} setMsg={setMsg} ready={ready} />;
+}
+
+/** Renders the completed plan (business analysis + approval action). */
+function PlanView(props: {
+  id: string; busy: boolean; setBusy: (b: boolean) => void;
+  msg: string | null; setMsg: (m: string | null) => void; ready: boolean;
+}) {
+  const { id, busy, setBusy, msg, setMsg } = props;
   const { data, loading, error, reload } = useAsync<Plan>(
     () => workApi.plan(id).then((r) => r.data),
     [id],

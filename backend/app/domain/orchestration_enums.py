@@ -29,3 +29,24 @@ class ReviewOutcome(str, Enum):
     REJECTED = "rejected"
     RETURNED = "returned"
     ESCALATED = "escalated"
+
+
+class CollaborationType(str, Enum):
+    """Kinds of structured collaboration turns (Phase 3).
+
+    A persistent company record: every question, challenge, review, approval,
+    rejection, escalation and decision is stored as a message of one of these
+    types.
+    """
+
+    QUESTION = "question"
+    ANSWER = "answer"
+    PROPOSAL = "proposal"
+    REVIEW = "review"
+    APPROVAL = "approval"
+    REJECTION = "rejection"
+    CLARIFICATION = "clarification"
+    ESCALATION = "escalation"
+    DECISION = "decision"
+    RESOLUTION = "resolution"
+    CONCERN = "concern"

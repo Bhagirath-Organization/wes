@@ -14,6 +14,16 @@ import { ExecutiveTimeline } from "./pages/company/ExecutiveTimeline";
 import { LiveCompany } from "./pages/company/LiveCompany";
 import { CompanyOverview } from "./pages/CompanyOverview";
 import { Dashboard } from "./pages/Dashboard";
+import { FounderHome } from "./pages/FounderHome";
+import { ExecutiveOffice } from "./pages/ExecutiveOffice";
+import { MissionCenter } from "./pages/MissionCenter";
+import { MissionDetail } from "./pages/MissionDetail";
+import { CompanyBrain } from "./pages/CompanyBrain";
+import { AIWorkforce } from "./pages/AIWorkforce";
+import { KnowledgeNetwork } from "./pages/KnowledgeNetwork";
+import { CommandCenter } from "./pages/CommandCenter";
+import { CompanyOperations } from "./pages/CompanyOperations";
+import { SoftwareFactory } from "./pages/SoftwareFactory";
 import { DepartmentsPage } from "./pages/DepartmentsPage";
 import { EmployeesPage } from "./pages/EmployeesPage";
 import { Forbidden } from "./pages/Forbidden";
@@ -106,7 +116,17 @@ export default function App() {
       <Route path="/unauthorized" element={<Unauthorized />} />
 
       <Route element={<ProtectedLayout />}>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<FounderHome />} />
+        <Route path="/executive" element={<ExecutiveOffice />} />
+        <Route path="/missions" element={<MissionCenter />} />
+        <Route path="/missions/:id" element={<MissionDetail />} />
+        <Route path="/brain" element={<CompanyBrain />} />
+        <Route path="/workforce" element={<AIWorkforce />} />
+        <Route path="/knowledge-network" element={<KnowledgeNetwork />} />
+        <Route path="/command" element={<CommandCenter />} />
+        <Route path="/operations" element={<CompanyOperations />} />
+        <Route path="/factory" element={<SoftwareFactory />} />
+        <Route path="/analytics" element={<Dashboard />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/audit" element={<AuditLogs />} />
         <Route path="/learning" element={<SelfLearning />} />

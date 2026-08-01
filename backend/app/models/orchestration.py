@@ -58,7 +58,8 @@ class ConversationThread(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     )
     title: Mapped[str] = mapped_column(String(300), nullable=False)
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="active")
-
+    project_id: Mapped[uuid.UUID | None] = mapped_column(GUID(), nullable=True, index=True)
+    kind: Mapped[str | None] = mapped_column(String(40), nullable=True)
 
 class ExecutionRun(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     __tablename__ = "execution_runs"
@@ -111,7 +112,10 @@ class ExecutionMessage(UUIDPrimaryKeyMixin, Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
-
+    speaker_employee_id: Mapped[uuid.UUID | None] = mapped_column(GUID(), nullable=True)
+    to_employee_id: Mapped[uuid.UUID | None] = mapped_column(GUID(), nullable=True)
+    message_type: Mapped[str | None] = mapped_column(String(30), nullable=True)
+    speaker_role: Mapped[str | None] = mapped_column(String(60), nullable=True)
 
 class ExecutionMetric(UUIDPrimaryKeyMixin, Base):
     __tablename__ = "execution_metrics"

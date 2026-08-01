@@ -3,8 +3,13 @@
 Every autonomous implementation runs in a REAL, isolated git repository created
 under the configured workspace directory — never the WES, WORLD, or Blueprint
 repositories. Git operations are real (subprocess ``git``): init, branch, atomic
-commits (Conventional Commits), and diffs. The engine NEVER pushes and NEVER
-merges — the Founder is the final authority.
+commits (Conventional Commits), and diffs.
+
+Blueprint Vol 04 (Git Workflow) and Vol 06 (GitHub is the source of truth) require
+delivered work to reach GitHub, so the engine CAN push a feature branch over an SSH
+deploy key. It still NEVER merges and NEVER pushes the default branch — merge to
+``main`` happens only through a reviewed Pull Request, and the Founder is the final
+authority.
 """
 
 from __future__ import annotations
@@ -32,9 +37,12 @@ class SandboxError(RuntimeError):
     pass
 
 
-def _run(args: list[str], cwd: str, check: bool = True) -> subprocess.CompletedProcess:
-    env = {**os.environ, **_GIT_ENV}
-    proc = subprocess.run(args, cwd=cwd, env=env, capture_output=True, text=True, timeout=120)
+def _run(
+    args: list[str], cwd: str, check: bool = True, extra_env: dict | None = None,
+    timeout: int = 120,
+) -> subprocess.CompletedProcess:
+    env = {**os.environ, **_GIT_ENV, **(extra_env or {})}
+    proc = subprocess.run(args, cwd=cwd, env=env, capture_output=True, text=True, timeout=timeout)
     if check and proc.returncode != 0:
         raise SandboxError(f"git {' '.join(args[1:])} failed: {proc.stderr.strip()[:300]}")
     return proc
@@ -64,6 +72,33 @@ class DevWorkspace:
         os.makedirs(path)
         git = GitService(path)
         git.init()
+        return path
+
+    def clone(self, task_code: str, repo: str, token: str, base: str = "main") -> str:
+        """Clone a real GitHub repo (via App token) so delivery shares its history.
+
+        Used for autonomous delivery into an existing repository: the sandbox is a
+        genuine clone of ``base``, so a pushed branch produces a clean, minimal PR
+        diff. The token appears only in the transient clone URL, never persisted.
+        """
+        os.makedirs(self.base, exist_ok=True)
+        path = os.path.join(self.base, f"{task_code}-{uuid.uuid4().hex[:8]}")
+        self._assert_safe(path)
+        if os.path.exists(path):  # pragma: no cover - uuid collision
+            shutil.rmtree(path)
+        url = f"https://x-access-token:{token}@github.com/{repo}.git"
+        proc = _run(
+            ["git", "clone", "--depth", "1", "-b", base, url, path],
+            self.base, check=False, timeout=300,
+        )
+        if proc.returncode != 0:
+            err = (proc.stderr or proc.stdout).replace(token, "***").strip()[:300]
+            raise SandboxError(f"clone failed: {err}")
+        # Anchor a local 'main' ref at the cloned base commit so the workflow's
+        # diff base (git.diff("main"), review board, metrics) works unchanged even
+        # when the delivery base branch is not literally named "main".
+        if base not in ("main", "master"):
+            _run(["git", "branch", "-f", "main", "HEAD"], path, check=False)
         return path
 
     def cleanup(self, path: str) -> None:
@@ -103,6 +138,114 @@ class GitService:
     def create_branch(self, branch: str) -> str:
         _run(["git", "checkout", "-q", "-b", branch], self.path)
         return branch
+
+    # -- remote transport (Blueprint Vol 04 / Vol 06) ------------------------
+
+    @staticmethod
+    def remote_configured() -> bool:
+        """True when a push target and a usable deploy key are both configured."""
+        s = get_settings()
+        return bool(
+            s.github_ssh_url
+            and s.github_deploy_key_path
+            and os.path.isfile(s.github_deploy_key_path)
+        )
+
+    @staticmethod
+    def _ssh_env() -> dict:
+        """Force git to use the deploy key only — never an ambient agent or key."""
+        key = get_settings().github_deploy_key_path
+        return {
+            "GIT_SSH_COMMAND": (
+                f"ssh -i {key} -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new "
+                "-o BatchMode=yes -o ConnectTimeout=20"
+            )
+        }
+
+    def set_remote(self, url: str | None = None, name: str = "origin") -> str:
+        """Point ``name`` at the configured GitHub repository (idempotent)."""
+        url = url or get_settings().github_ssh_url
+        if not url:
+            raise SandboxError("No GitHub remote configured (WES_GITHUB_SSH_URL)")
+        existing = _run(["git", "remote"], self.path, check=False).stdout.split()
+        verb = "set-url" if name in existing else "add"
+        _run(["git", "remote", verb, name, url], self.path)
+        return url
+
+    def remote_reachable(self) -> bool:
+        """Verify the deploy key can actually talk to GitHub (real network call).
+
+        Queries the configured URL directly rather than a remote name, so it works
+        on a fresh sandbox that has no ``origin`` yet and never mutates the repo.
+        """
+        if not self.remote_configured():
+            return False
+        proc = _run(
+            ["git", "ls-remote", "--heads", get_settings().github_ssh_url], self.path,
+            check=False, extra_env=self._ssh_env(), timeout=60,
+        )
+        return proc.returncode == 0
+
+    def push_via_app(self, token: str, repo: str, branch: str | None = None) -> dict:
+        """Push a feature branch over HTTPS using a GitHub App installation token.
+
+        Lets delivery authenticate as the App (P0-B) instead of the SSH deploy
+        key. The token is passed in memory, used only in the remote URL for this
+        one command, and never written to git config or logged.
+        """
+        branch = branch or self.current_branch()
+        default = get_settings().github_default_branch
+        if branch in (default, "main", "master"):
+            raise SandboxError(
+                f"Refusing to push '{branch}' directly — Blueprint Vol 04 requires "
+                "a reviewed Pull Request to reach the default branch"
+            )
+        if not token or not repo:
+            raise SandboxError("push_via_app requires an installation token and repo")
+        url = f"https://x-access-token:{token}@github.com/{repo}.git"
+        # Pass the URL as a positional arg (not a stored remote) so the token is
+        # never persisted in .git/config.
+        proc = _run(
+            ["git", "push", url, f"HEAD:refs/heads/{branch}"], self.path,
+            check=False, timeout=300,
+        )
+        if proc.returncode != 0:
+            # Scrub any accidental echo of the URL (and thus the token) from output.
+            err = (proc.stderr or proc.stdout).replace(token, "***").strip()[:300]
+            raise SandboxError(f"git push (app) failed: {err}")
+        return {"pushed": True, "branch": branch, "repo": repo, "head_sha": self.head_sha()}
+
+    def push(self, branch: str | None = None, name: str = "origin") -> dict:
+        """Push a feature branch to GitHub.
+
+        Refuses the default branch: Blueprint Vol 04 requires ``main`` to be reached
+        only through a reviewed Pull Request, never a direct push.
+        """
+        branch = branch or self.current_branch()
+        default = get_settings().github_default_branch
+        if branch in (default, "main", "master"):
+            raise SandboxError(
+                f"Refusing to push '{branch}' directly — Blueprint Vol 04 requires "
+                "a reviewed Pull Request to reach the default branch"
+            )
+        if not self.remote_configured():
+            raise SandboxError(
+                "GitHub remote not configured (WES_GITHUB_SSH_URL + deploy key required)"
+            )
+        self.set_remote(name=name)
+        proc = _run(
+            ["git", "push", "--set-upstream", name, branch], self.path,
+            check=False, extra_env=self._ssh_env(), timeout=300,
+        )
+        if proc.returncode != 0:
+            raise SandboxError(f"git push failed: {(proc.stderr or proc.stdout).strip()[:300]}")
+        return {
+            "pushed": True,
+            "branch": branch,
+            "remote": get_settings().github_ssh_url,
+            "head_sha": self.head_sha(),
+            "output": (proc.stderr or proc.stdout).strip()[:500],
+        }
 
     # -- file ops (guarded) ------------------------------------------------
 

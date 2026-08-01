@@ -52,8 +52,9 @@ class Project(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     founder_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     # Decomposition plan lifecycle: None -> "analyzing" -> "decomposed" -> "approved".
     plan_status: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    plan_error: Mapped[str | None] = mapped_column(Text, nullable=True)  # last async-plan failure
     business_analysis: Mapped[str | None] = mapped_column(Text, nullable=True)  # JSON
-
+    plan_artifact: Mapped[str | None] = mapped_column(Text, nullable=True)
 
 class Milestone(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     __tablename__ = "milestones"
@@ -67,7 +68,11 @@ class Milestone(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     status: Mapped[MilestoneStatus] = mapped_column(
         String(20), nullable=False, default=MilestoneStatus.PENDING
     )
-
+    business_objective: Mapped[str | None] = mapped_column(Text, nullable=True)
+    deliverables: Mapped[str | None] = mapped_column(Text, nullable=True)
+    acceptance_criteria: Mapped[str | None] = mapped_column(Text, nullable=True)
+    definition_of_done: Mapped[str | None] = mapped_column(Text, nullable=True)
+    review_trigger: Mapped[str | None] = mapped_column(Text, nullable=True)
 
 class ProjectSprint(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     __tablename__ = "project_sprints"
@@ -83,7 +88,10 @@ class ProjectSprint(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         String(20), nullable=False, default=SprintStatus.PLANNED
     )
     velocity: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-
+    objective: Mapped[str | None] = mapped_column(Text, nullable=True)
+    capacity_hours: Mapped[float | None] = mapped_column(Float, nullable=True)
+    exit_criteria: Mapped[str | None] = mapped_column(Text, nullable=True)
+    risk_level: Mapped[str | None] = mapped_column(String(20), nullable=True)
 
 class WorkItem(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     __tablename__ = "work_items"
@@ -114,7 +122,7 @@ class WorkItem(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     reviewer_ai_employee_id: Mapped[uuid.UUID | None] = mapped_column(
         GUID(), ForeignKey("ai_employees.id", ondelete="SET NULL"), nullable=True
     )
-
+    definition_of_done: Mapped[str | None] = mapped_column(Text, nullable=True)
 
 class Assignment(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     __tablename__ = "assignments"

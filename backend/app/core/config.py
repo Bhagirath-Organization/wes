@@ -70,6 +70,32 @@ class Settings(BaseSettings):
     # WORLD, or Blueprint repositories. Defaults to a temp location.
     dev_workspace_dir: str = "/tmp/wes-dev-workspaces"
 
+    # --- GitHub remote (Blueprint Vol 04 Git Workflow / Vol 06 source of truth) ---
+    # GitHub is the Blueprint's declared source of truth, so delivered work must
+    # leave the sandbox. Transport is an SSH deploy key: the private key never
+    # enters the repository or the database, only this path. All three are empty
+    # by default, which disables remote operations entirely (offline test suite
+    # and existing behaviour are unchanged).
+    github_ssh_url: str = ""
+    github_deploy_key_path: str = ""
+    github_default_branch: str = "main"
+
+    # --- GitHub App (P0-B — REST API auth: PRs, merge, repo bootstrap) ---
+    # Authentication is a GitHub App: a short-lived RS256 JWT is exchanged for an
+    # installation access token (auto-refreshed before expiry). The private key
+    # lives only at this path — never in the repository, never in the database,
+    # never logged. Empty by default → the REST layer is disabled and behaviour
+    # is unchanged. ``github_repo`` is "owner/name".
+    github_app_id: str = ""
+    github_app_installation_id: str = ""
+    github_app_private_key_path: str = ""
+    github_app_client_id: str = ""
+    github_repo: str = ""
+    # Optional: deliver PRs into this base branch instead of the default branch.
+    # Lets a demonstration target a throwaway base so the real default branch is
+    # never touched. Empty → delivery uses ``github_default_branch``.
+    github_delivery_base: str = ""
+
     # Durable background job worker (WP3). Off by default so the synchronous test
     # suite and existing behavior are unchanged; enable in a real deployment.
     job_worker_enabled: bool = False

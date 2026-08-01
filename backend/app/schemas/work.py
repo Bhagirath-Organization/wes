@@ -80,6 +80,7 @@ class ProjectRead(BaseModel):
     task_count: int = 0
     business_objective: str | None = None
     plan_status: str | None = None
+    plan_error: str | None = None
     created_at: datetime
     updated_at: datetime
 
