@@ -28,7 +28,9 @@ on the production database. No live database has been touched.
 |---|--------|-------|---------|--------|---------------|
 | 01 | `PROMPT-SYS` | Master System Prompt (Constitution) | 1.1 | **Ratified** (`WES-DEC-001`, 2026-08-04) | `Company/Operating-Instructions/PROMPT-SYS.md` |
 | 02 | `PROMPT-SYS-CORE` | Distilled Injection Version | 1.0 | **Ratified** (`WES-DEC-001`, 2026-08-04) | `Company/Operating-Instructions/PROMPT-SYS-CORE.md` |
-| 03–27 | — | (pending) | — | Not started | — |
+| 03 | `FOUNDER-INTENT` | Founder Intent (governed, §12) | 1.0 | **Draft — PR open** | `Company/Operating-Instructions/FOUNDER-INTENT.md` |
+| 04 | `COMPANY-PHILOSOPHY` | Company Philosophy (governed, §12) | 1.0 | **Draft — PR open** | `Company/Operating-Instructions/COMPANY-PHILOSOPHY.md` |
+| 05–27 | — | (pending) | — | Not started | — |
 
 ## Decision Records
 
@@ -69,4 +71,5 @@ on the production database. No live database has been touched.
 | Date | Entry |
 |------|-------|
 | 2026-08-04 | Doc 01 `PROMPT-SYS` v1.1 authored (constitutional freeze review). Doc 02 `PROMPT-SYS-CORE` v1.0 authored, seeded as `PROMPT-SYS` v2, verified, **PR #1 merged to `main`** (`9945792`). Deploy **held** for combined final deploy. |
-| 2026-08-04 | **Batch-0 close:** Founder **ratified** PROMPT-SYS v1.1 + CORE v1.0 (`WES-DEC-001`); agent PR/merge authority recorded (`WES-DEC-002`); ratified `PROMPT-SYS.md` committed; docs 01–02 marked **Ratified**. Branch `docs/batch-0-close` (PR open). |
+| 2026-08-04 | **Batch-0 close:** Founder **ratified** PROMPT-SYS v1.1 + CORE v1.0 (`WES-DEC-001`); agent PR/merge authority recorded (`WES-DEC-002`); ratified `PROMPT-SYS.md` committed; docs 01–02 marked **Ratified**. **PR #2 merged to `main`** (`99de3f9`). |
+| 2026-08-04 | **Batch-1 (strategy):** committed governed docs 03 `FOUNDER-INTENT` v1.0 and 04 `COMPANY-PHILOSOPHY` v1.0 (Founder-authored, committed verbatim). Branch `docs/batch-1-strategy` — **PR open**; docs 03–04 = Draft, awaiting Founder ratification. Deploy held. |
