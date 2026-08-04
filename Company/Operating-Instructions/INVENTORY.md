@@ -28,8 +28,8 @@ on the production database. No live database has been touched.
 |---|--------|-------|---------|--------|---------------|
 | 01 | `PROMPT-SYS` | Master System Prompt (Constitution) | 1.1 | **Ratified** (`WES-DEC-001`, 2026-08-04) | `Company/Operating-Instructions/PROMPT-SYS.md` |
 | 02 | `PROMPT-SYS-CORE` | Distilled Injection Version | 1.0 | **Ratified** (`WES-DEC-001`, 2026-08-04) | `Company/Operating-Instructions/PROMPT-SYS-CORE.md` |
-| 03 | `FOUNDER-INTENT` | Founder Intent (governed, §12) | 1.0 | **Draft — PR open** | `Company/Operating-Instructions/FOUNDER-INTENT.md` |
-| 04 | `COMPANY-PHILOSOPHY` | Company Philosophy (governed, §12) | 1.0 | **Draft — PR open** | `Company/Operating-Instructions/COMPANY-PHILOSOPHY.md` |
+| 03 | `FOUNDER-INTENT` | Founder Intent (governed, §12) | 1.0 | **Ratified** (`WES-DEC-003`, 2026-08-04) | `Company/Operating-Instructions/FOUNDER-INTENT.md` |
+| 04 | `COMPANY-PHILOSOPHY` | Company Philosophy (governed, §12) | 1.0 | **Ratified** (`WES-DEC-003`, 2026-08-04) | `Company/Operating-Instructions/COMPANY-PHILOSOPHY.md` |
 | 05–27 | — | (pending) | — | Not started | — |
 
 ## Decision Records
@@ -38,13 +38,15 @@ on the production database. No live database has been touched.
 |----|---------|------|----------|
 | `WES-DEC-001` | Ratification of PROMPT-SYS v1.1 & PROMPT-SYS-CORE v1.0 by the Founder | 2026-08-04 | `Company/Decision-Records/WES-DEC-001.md` |
 | `WES-DEC-002` | Agent may create PRs and execute Founder-instructed merges via the GitHub App; merge decision stays Founder-only | 2026-08-04 | `Company/Decision-Records/WES-DEC-002.md` |
+| `WES-DEC-003` | Ratification of FOUNDER-INTENT v1.0 & COMPANY-PHILOSOPHY v1.0 by the Founder | 2026-08-04 | `Company/Decision-Records/WES-DEC-003.md` |
 
 ## Code / integration changes
 
 | Change | PR | Merge | Deployed? |
 |--------|----|-------|-----------|
 | Seed `PROMPT-SYS` v2 (PROMPT-SYS-CORE) + idempotent `sync_prompt_sys()` in-place upsert | **#1** | **Merged (squash)** `9945792` on 2026-08-04 | **NO — held for combined final deploy** |
-| Batch-0 close: commit ratified `PROMPT-SYS.md`, `WES-DEC-001/002`, this INVENTORY | **docs/batch-0-close** (PR open) | pending | **NO — docs only, no deploy** |
+| Batch-0 close: ratified `PROMPT-SYS.md`, `WES-DEC-001/002`, INVENTORY | **#2** | **Merged (squash)** `99de3f9` on 2026-08-04 | **NO — docs only, no deploy** |
+| Batch-1 (strategy): `FOUNDER-INTENT` + `COMPANY-PHILOSOPHY` (docs 03–04) | **#3** | **Merged (squash)** `43bb56b` on 2026-08-04 | **NO — docs only, no deploy** |
 
 ## Verification log
 
@@ -72,4 +74,5 @@ on the production database. No live database has been touched.
 |------|-------|
 | 2026-08-04 | Doc 01 `PROMPT-SYS` v1.1 authored (constitutional freeze review). Doc 02 `PROMPT-SYS-CORE` v1.0 authored, seeded as `PROMPT-SYS` v2, verified, **PR #1 merged to `main`** (`9945792`). Deploy **held** for combined final deploy. |
 | 2026-08-04 | **Batch-0 close:** Founder **ratified** PROMPT-SYS v1.1 + CORE v1.0 (`WES-DEC-001`); agent PR/merge authority recorded (`WES-DEC-002`); ratified `PROMPT-SYS.md` committed; docs 01–02 marked **Ratified**. **PR #2 merged to `main`** (`99de3f9`). |
-| 2026-08-04 | **Batch-1 (strategy):** committed governed docs 03 `FOUNDER-INTENT` v1.0 and 04 `COMPANY-PHILOSOPHY` v1.0 (Founder-authored, committed verbatim). Branch `docs/batch-1-strategy` — **PR open**; docs 03–04 = Draft, awaiting Founder ratification. Deploy held. |
+| 2026-08-04 | **Batch-1 (strategy):** committed governed docs 03 `FOUNDER-INTENT` v1.0 and 04 `COMPANY-PHILOSOPHY` v1.0 (Founder-authored, committed verbatim). **PR #3 merged to `main`** (`43bb56b`). |
+| 2026-08-04 | **Batch-2 (SOPs) — WES-DEC-003:** Founder **ratified** FOUNDER-INTENT v1.0 + COMPANY-PHILOSOPHY v1.0; docs 03–04 marked **Ratified**. Bundled as the first commit on branch `docs/batch-2-sops` (PR opens after all Batch-2 SOPs land). Deploy held. |
