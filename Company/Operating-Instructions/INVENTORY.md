@@ -34,7 +34,8 @@ on the production database. No live database has been touched.
 | 06 | `SOP-REVIEW` | Review SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-REVIEW.md` |
 | 07 | `SOP-TESTING` | Testing SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-TESTING.md` |
 | 08 | `SOP-DEPLOYMENT` | Deployment SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-DEPLOYMENT.md` |
-| 09–27 | — | (pending) | — | Not started | — |
+| 09 | `SOP-DOCUMENTATION` | Documentation SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-DOCUMENTATION.md` |
+| 10–27 | — | (pending) | — | Not started | — |
 
 ## Decision Records
 
@@ -92,3 +93,4 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-2 (SOPs):** doc 06 `SOP-REVIEW` v1.0 committed (Draft) on `docs/batch-2-sops`. Deploy held. |
 | 2026-08-04 | **Batch-2 (SOPs):** doc 07 `SOP-TESTING` v1.0 committed (Draft) on `docs/batch-2-sops`. Deploy held. |
 | 2026-08-04 | **Batch-2 (SOPs):** doc 08 `SOP-DEPLOYMENT` v1.0 committed (Draft) on `docs/batch-2-sops`. Deploy held. |
+| 2026-08-04 | **Batch-2 (SOPs):** doc 09 `SOP-DOCUMENTATION` v1.0 committed (Draft) on `docs/batch-2-sops`. Deploy held. |
