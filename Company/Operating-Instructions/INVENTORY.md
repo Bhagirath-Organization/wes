@@ -30,7 +30,8 @@ on the production database. No live database has been touched.
 | 02 | `PROMPT-SYS-CORE` | Distilled Injection Version | 1.0 | **Ratified** (`WES-DEC-001`, 2026-08-04) | `Company/Operating-Instructions/PROMPT-SYS-CORE.md` |
 | 03 | `FOUNDER-INTENT` | Founder Intent (governed, §12) | 1.0 | **Ratified** (`WES-DEC-003`, 2026-08-04) | `Company/Operating-Instructions/FOUNDER-INTENT.md` |
 | 04 | `COMPANY-PHILOSOPHY` | Company Philosophy (governed, §12) | 1.0 | **Ratified** (`WES-DEC-003`, 2026-08-04) | `Company/Operating-Instructions/COMPANY-PHILOSOPHY.md` |
-| 05–27 | — | (pending) | — | Not started | — |
+| 05 | `SOP-CODING` | Coding SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-CODING.md` |
+| 06–27 | — | (pending) | — | Not started | — |
 
 ## Decision Records
 
@@ -47,6 +48,7 @@ on the production database. No live database has been touched.
 | Seed `PROMPT-SYS` v2 (PROMPT-SYS-CORE) + idempotent `sync_prompt_sys()` in-place upsert | **#1** | **Merged (squash)** `9945792` on 2026-08-04 | **NO — held for combined final deploy** |
 | Batch-0 close: ratified `PROMPT-SYS.md`, `WES-DEC-001/002`, INVENTORY | **#2** | **Merged (squash)** `99de3f9` on 2026-08-04 | **NO — docs only, no deploy** |
 | Batch-1 (strategy): `FOUNDER-INTENT` + `COMPANY-PHILOSOPHY` (docs 03–04) | **#3** | **Merged (squash)** `43bb56b` on 2026-08-04 | **NO — docs only, no deploy** |
+| Batch-2 (SOPs): `WES-DEC-003` + `SOP-CODING` (doc 05); more SOPs to follow | **docs/batch-2-sops** (PR after all 6 SOPs) | pending | **NO — docs only, no deploy** |
 
 ## Verification log
 
@@ -76,3 +78,4 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-0 close:** Founder **ratified** PROMPT-SYS v1.1 + CORE v1.0 (`WES-DEC-001`); agent PR/merge authority recorded (`WES-DEC-002`); ratified `PROMPT-SYS.md` committed; docs 01–02 marked **Ratified**. **PR #2 merged to `main`** (`99de3f9`). |
 | 2026-08-04 | **Batch-1 (strategy):** committed governed docs 03 `FOUNDER-INTENT` v1.0 and 04 `COMPANY-PHILOSOPHY` v1.0 (Founder-authored, committed verbatim). **PR #3 merged to `main`** (`43bb56b`). |
 | 2026-08-04 | **Batch-2 (SOPs) — WES-DEC-003:** Founder **ratified** FOUNDER-INTENT v1.0 + COMPANY-PHILOSOPHY v1.0; docs 03–04 marked **Ratified**. Bundled as the first commit on branch `docs/batch-2-sops` (PR opens after all Batch-2 SOPs land). Deploy held. |
+| 2026-08-04 | **Batch-2 (SOPs):** doc 05 `SOP-CODING` v1.0 committed (Draft) on `docs/batch-2-sops`. PR opens after all 6 Batch-2 SOPs land. Deploy held. |
