@@ -33,7 +33,8 @@ on the production database. No live database has been touched.
 | 05 | `SOP-CODING` | Coding SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-CODING.md` |
 | 06 | `SOP-REVIEW` | Review SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-REVIEW.md` |
 | 07 | `SOP-TESTING` | Testing SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-TESTING.md` |
-| 08–27 | — | (pending) | — | Not started | — |
+| 08 | `SOP-DEPLOYMENT` | Deployment SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-DEPLOYMENT.md` |
+| 09–27 | — | (pending) | — | Not started | — |
 
 ## Decision Records
 
@@ -90,3 +91,4 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-2 — WES-DEC-004:** measured backend coverage baseline **73%**; set ratchet floor **71%**. Frontend threshold **deferred** (ratchet after the suite matures). CI enforcement **approved as a separate engineering PR after the Batch-2 merge — must follow SOP-CODING as its first real execution**. |
 | 2026-08-04 | **Batch-2 (SOPs):** doc 06 `SOP-REVIEW` v1.0 committed (Draft) on `docs/batch-2-sops`. Deploy held. |
 | 2026-08-04 | **Batch-2 (SOPs):** doc 07 `SOP-TESTING` v1.0 committed (Draft) on `docs/batch-2-sops`. Deploy held. |
+| 2026-08-04 | **Batch-2 (SOPs):** doc 08 `SOP-DEPLOYMENT` v1.0 committed (Draft) on `docs/batch-2-sops`. Deploy held. |
