@@ -57,7 +57,7 @@ Secrets via environment variables only. Validate all input. Enforce authenticati
 - Cover new behaviour with unit and integration tests (Blueprint Vol 08: unit, integration, end-to-end, manual/review).
 - Run before commit: `./scripts/test.sh` (backend `pytest -q` over `backend/tests`; frontend `vitest`). Regression: the full suite must pass with no reduction in passing tests.
 - Never claim an unobserved pass (PROMPT-SYS §20; COMPANY-PHILOSOPHY value 7). On failure: fix root cause → re-test.
-- **Coverage threshold: Not defined — Founder decision needed.** (`backend/pyproject.toml` `[tool.coverage.run] source=["app"]` sets scope but no `fail_under`.)
+- **Coverage floor: backend line coverage ≥ 71%** (ratchet, WES-DEC-004; baseline 73%); **frontend deferred** (WES-DEC-004).
 
 ## 11. Documentation Requirements (Blueprint Vol 09; PROMPT-SYS §14)
 Every code change updates the affected documentation as part of the change: API docs, architecture notes, module `README`, and a Decision Record (`WES-DEC-###` / ADR) for significant or hard-to-reverse decisions.
@@ -83,4 +83,7 @@ As defined in PROMPT-SYS §22 and Blueprint Vol 04 (DoD) + Vol 08 (Quality Gates
 `Company/Operating-Instructions/PROMPT-SYS.md`; `PROMPT-SYS-CORE.md`; `FOUNDER-INTENT.md`; `COMPANY-PHILOSOPHY.md`; Blueprint Vol 04 (Engineering System), Vol 08 (Security & Quality), Vol 09 (Knowledge Management); `scripts/lint.sh`, `scripts/format.sh`, `scripts/test.sh`; `backend/pyproject.toml`; SOP-CODE (Prompt/SOP Library seed, `app/db/seed_execution.py`).
 
 ## Open Founder Decisions
-- **Test coverage threshold** (`fail_under` %, backend and frontend) — Not defined — Founder decision needed.
+None open — the coverage decisions are recorded in WES-DEC-004:
+- **Backend coverage** — floor **≥ 71%** (ratchet).
+- **Frontend coverage** — **Deferred per WES-DEC-004** (ratchet floor set after the frontend suite matures; revisit at the end of the Operating Instructions phase).
+- **CI enforcement** — approved as a separate engineering PR after the Batch-2 merge; that PR must itself follow this SOP.

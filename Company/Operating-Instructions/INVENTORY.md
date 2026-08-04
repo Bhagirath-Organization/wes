@@ -40,6 +40,7 @@ on the production database. No live database has been touched.
 | `WES-DEC-001` | Ratification of PROMPT-SYS v1.1 & PROMPT-SYS-CORE v1.0 by the Founder | 2026-08-04 | `Company/Decision-Records/WES-DEC-001.md` |
 | `WES-DEC-002` | Agent may create PRs and execute Founder-instructed merges via the GitHub App; merge decision stays Founder-only | 2026-08-04 | `Company/Decision-Records/WES-DEC-002.md` |
 | `WES-DEC-003` | Ratification of FOUNDER-INTENT v1.0 & COMPANY-PHILOSOPHY v1.0 by the Founder | 2026-08-04 | `Company/Decision-Records/WES-DEC-003.md` |
+| `WES-DEC-004` | Ratcheting backend test-coverage floor — baseline 73%, floor 71% | 2026-08-04 | `Company/Decision-Records/WES-DEC-004.md` |
 
 ## Code / integration changes
 
@@ -69,6 +70,11 @@ on the production database. No live database has been touched.
 
 - Pre-existing **ATLAS Sprint 02/03** work remains uncommitted in the `/opt/wes-green` working tree
   (separate from this program; intentionally not touched by these branches).
+- **CI coverage enforcement (approved, WES-DEC-004)** — a small engineering PR **after** the Batch-2
+  docs PR merges: add `pytest-cov` + wire `scripts/test.sh --cov=app --cov-fail-under=71`. It is the
+  docs phase's first code exception and **must follow `SOP-CODING` end-to-end (its first live execution).**
+- **Frontend coverage floor** — deferred (WES-DEC-004); set by ratchet after the frontend suite
+  matures (revisit at the end of the Operating Instructions phase).
 
 ## Change history
 
@@ -79,3 +85,4 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-1 (strategy):** committed governed docs 03 `FOUNDER-INTENT` v1.0 and 04 `COMPANY-PHILOSOPHY` v1.0 (Founder-authored, committed verbatim). **PR #3 merged to `main`** (`43bb56b`). |
 | 2026-08-04 | **Batch-2 (SOPs) — WES-DEC-003:** Founder **ratified** FOUNDER-INTENT v1.0 + COMPANY-PHILOSOPHY v1.0; docs 03–04 marked **Ratified**. Bundled as the first commit on branch `docs/batch-2-sops` (PR opens after all Batch-2 SOPs land). Deploy held. |
 | 2026-08-04 | **Batch-2 (SOPs):** doc 05 `SOP-CODING` v1.0 committed (Draft) on `docs/batch-2-sops`. PR opens after all 6 Batch-2 SOPs land. Deploy held. |
+| 2026-08-04 | **Batch-2 — WES-DEC-004:** measured backend coverage baseline **73%**; set ratchet floor **71%**. Frontend threshold **deferred** (ratchet after the suite matures). CI enforcement **approved as a separate engineering PR after the Batch-2 merge — must follow SOP-CODING as its first real execution**. |
