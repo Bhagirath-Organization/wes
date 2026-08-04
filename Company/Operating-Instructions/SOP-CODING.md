@@ -86,4 +86,4 @@ As defined in PROMPT-SYS §22 and Blueprint Vol 04 (DoD) + Vol 08 (Quality Gates
 None open — the coverage decisions are recorded in WES-DEC-004:
 - **Backend coverage** — floor **≥ 71%** (ratchet).
 - **Frontend coverage** — **Deferred per WES-DEC-004** (ratchet floor set after the frontend suite matures; revisit at the end of the Operating Instructions phase).
-- **CI enforcement** — approved as a separate engineering PR after the Batch-2 merge; that PR must itself follow this SOP.
+- **CI enforcement** — **live** via `scripts/test.sh --cov-fail-under=71` (WES-DEC-004).
