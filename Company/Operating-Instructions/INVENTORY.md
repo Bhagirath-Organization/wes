@@ -35,7 +35,8 @@ on the production database. No live database has been touched.
 | 07 | `SOP-TESTING` | Testing SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-TESTING.md` |
 | 08 | `SOP-DEPLOYMENT` | Deployment SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-DEPLOYMENT.md` |
 | 09 | `SOP-DOCUMENTATION` | Documentation SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-DOCUMENTATION.md` |
-| 10–27 | — | (pending) | — | Not started | — |
+| 10 | `SOP-SECURITY` | Security SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-SECURITY.md` |
+| 11–27 | — | (pending) | — | Not started | — |
 
 ## Decision Records
 
@@ -94,3 +95,4 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-2 (SOPs):** doc 07 `SOP-TESTING` v1.0 committed (Draft) on `docs/batch-2-sops`. Deploy held. |
 | 2026-08-04 | **Batch-2 (SOPs):** doc 08 `SOP-DEPLOYMENT` v1.0 committed (Draft) on `docs/batch-2-sops`. Deploy held. |
 | 2026-08-04 | **Batch-2 (SOPs):** doc 09 `SOP-DOCUMENTATION` v1.0 committed (Draft) on `docs/batch-2-sops`. Deploy held. |
+| 2026-08-04 | **Batch-2 (SOPs):** doc 10 `SOP-SECURITY` v1.0 committed (Draft) — Phase-1 SOP Library complete (docs 05–10). Single Batch-2 PR opened (base `main` ← `docs/batch-2-sops`). Deploy held. |
