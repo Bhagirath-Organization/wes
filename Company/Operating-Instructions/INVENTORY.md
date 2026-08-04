@@ -54,7 +54,8 @@ on the production database. No live database has been touched.
 | Seed `PROMPT-SYS` v2 (PROMPT-SYS-CORE) + idempotent `sync_prompt_sys()` in-place upsert | **#1** | **Merged (squash)** `9945792` on 2026-08-04 | **NO — held for combined final deploy** |
 | Batch-0 close: ratified `PROMPT-SYS.md`, `WES-DEC-001/002`, INVENTORY | **#2** | **Merged (squash)** `99de3f9` on 2026-08-04 | **NO — docs only, no deploy** |
 | Batch-1 (strategy): `FOUNDER-INTENT` + `COMPANY-PHILOSOPHY` (docs 03–04) | **#3** | **Merged (squash)** `43bb56b` on 2026-08-04 | **NO — docs only, no deploy** |
-| Batch-2 (SOPs): `WES-DEC-003` + `SOP-CODING` (doc 05); more SOPs to follow | **docs/batch-2-sops** (PR after all 6 SOPs) | pending | **NO — docs only, no deploy** |
+| Batch-2 (SOPs): `WES-DEC-003` + SOPs 05–10 | **#4** | **Merged (squash)** `714fdf5` on 2026-08-04 | **NO — docs only, no deploy** |
+| CI coverage enforcement (WES-DEC-004): `pytest-cov` + `scripts/test.sh --cov-fail-under=71` | **feature/coverage-ci-enforcement** (PR pending) | pending | **NO — CI tooling; no deploy** |
 
 ## Verification log
 
@@ -75,9 +76,10 @@ on the production database. No live database has been touched.
 
 - Pre-existing **ATLAS Sprint 02/03** work remains uncommitted in the `/opt/wes-green` working tree
   (separate from this program; intentionally not touched by these branches).
-- **CI coverage enforcement (approved, WES-DEC-004)** — a small engineering PR **after** the Batch-2
-  docs PR merges: add `pytest-cov` + wire `scripts/test.sh --cov=app --cov-fail-under=71`. It is the
-  docs phase's first code exception and **must follow `SOP-CODING` end-to-end (its first live execution).**
+- **CI coverage enforcement (WES-DEC-004)** — **done**: `pytest-cov` added to `backend/requirements.txt`
+  and `scripts/test.sh` wired with `--cov=app --cov-fail-under=71`. Delivered as the docs phase's
+  **first code change, following `SOP-CODING` end-to-end** (branch `feature/coverage-ci-enforcement`;
+  PR pending Founder merge).
 - **Frontend coverage floor** — deferred (WES-DEC-004); set by ratchet after the frontend suite
   matures (revisit at the end of the Operating Instructions phase).
 
@@ -96,3 +98,5 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-2 (SOPs):** doc 08 `SOP-DEPLOYMENT` v1.0 committed (Draft) on `docs/batch-2-sops`. Deploy held. |
 | 2026-08-04 | **Batch-2 (SOPs):** doc 09 `SOP-DOCUMENTATION` v1.0 committed (Draft) on `docs/batch-2-sops`. Deploy held. |
 | 2026-08-04 | **Batch-2 (SOPs):** doc 10 `SOP-SECURITY` v1.0 committed (Draft) — Phase-1 SOP Library complete (docs 05–10). Single Batch-2 PR opened (base `main` ← `docs/batch-2-sops`). Deploy held. |
+| 2026-08-04 | **Batch-2 merged:** **PR #4 merged** to `main` (`714fdf5`) — Founder declared "merge = Batch-2 ratification"; WES-DEC-005 (flip docs 05–10 → Ratified) to bundle into Batch-3. Deploy held. |
+| 2026-08-04 | **Coverage CI enforcement (WES-DEC-004):** first code change of the phase — `pytest-cov` + `scripts/test.sh --cov=app --cov-fail-under=71`; followed `SOP-CODING` end-to-end. Branch `feature/coverage-ci-enforcement`; PR pending Founder merge. Deploy held. |

@@ -7,7 +7,7 @@ printf "${C_BOLD}WES OS — Tests${C_RESET}\n\n"
 rc=0
 
 log_step "Backend tests (pytest)"
-( cd "$BACKEND_DIR" && "$VENV_PY" -m pytest -q )
+( cd "$BACKEND_DIR" && "$VENV_PY" -m pytest -q --cov=app --cov-fail-under=71 )
 if [ $? -eq 0 ]; then log_ok "backend tests passed"; else log_err "backend tests failed"; rc=1; fi
 
 log_step "Frontend tests (vitest)"

@@ -43,7 +43,7 @@ Run commands: backend `pytest -q` (`pyproject.toml` `testpaths=["tests"]`, `addo
 ## 7. Coverage
 - **Backend line coverage floor ≥ 71%** (ratchet, WES-DEC-004; baseline 73%). Frontend floor **deferred** (WES-DEC-004).
 - **Measure with:** `coverage run --source=app -m pytest` then `coverage report` (`pyproject.toml` `[tool.coverage.run] source=["app"]`).
-- CI enforcement is pending (WES-DEC-004); until it lands, coverage is measured and reported, not gate-enforced.
+- CI enforcement is **live**: `./scripts/test.sh` runs the backend suite with `--cov=app --cov-fail-under=71` (WES-DEC-004).
 
 ## 8. Test Failure Handling
 - **Root-cause loop:** fail → diagnose root cause → fix → re-test until it genuinely passes (PROMPT-SYS §20). Never claim a pass that was not observed.
@@ -64,4 +64,4 @@ Every execution's Verification section states: the **exact command run**, the **
 
 ### Open Founder Decisions
 - **Frontend coverage floor** — Deferred per WES-DEC-004 (ratchet after the frontend suite matures; revisit at the end of the Operating Instructions phase).
-- **CI enforcement of the coverage floor** — approved as a separate engineering PR after the Batch-2 merge (WES-DEC-004); that PR must follow SOP-CODING.
+- **CI enforcement of the coverage floor** — **live** via `scripts/test.sh --cov-fail-under=71` (WES-DEC-004).
