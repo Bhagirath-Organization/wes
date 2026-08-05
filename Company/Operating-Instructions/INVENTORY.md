@@ -30,12 +30,12 @@ on the production database. No live database has been touched.
 | 02 | `PROMPT-SYS-CORE` | Distilled Injection Version | 1.0 | **Ratified** (`WES-DEC-001`, 2026-08-04) | `Company/Operating-Instructions/PROMPT-SYS-CORE.md` |
 | 03 | `FOUNDER-INTENT` | Founder Intent (governed, §12) | 1.0 | **Ratified** (`WES-DEC-003`, 2026-08-04) | `Company/Operating-Instructions/FOUNDER-INTENT.md` |
 | 04 | `COMPANY-PHILOSOPHY` | Company Philosophy (governed, §12) | 1.0 | **Ratified** (`WES-DEC-003`, 2026-08-04) | `Company/Operating-Instructions/COMPANY-PHILOSOPHY.md` |
-| 05 | `SOP-CODING` | Coding SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-CODING.md` |
-| 06 | `SOP-REVIEW` | Review SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-REVIEW.md` |
-| 07 | `SOP-TESTING` | Testing SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-TESTING.md` |
-| 08 | `SOP-DEPLOYMENT` | Deployment SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-DEPLOYMENT.md` |
-| 09 | `SOP-DOCUMENTATION` | Documentation SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-DOCUMENTATION.md` |
-| 10 | `SOP-SECURITY` | Security SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-SECURITY.md` |
+| 05 | `SOP-CODING` | Coding SOP (Phase 1 — SOP Library) | 1.0 | **Ratified** (`WES-DEC-005`, 2026-08-04) | `Company/Operating-Instructions/SOP-CODING.md` |
+| 06 | `SOP-REVIEW` | Review SOP (Phase 1 — SOP Library) | 1.0 | **Ratified** (`WES-DEC-005`, 2026-08-04) | `Company/Operating-Instructions/SOP-REVIEW.md` |
+| 07 | `SOP-TESTING` | Testing SOP (Phase 1 — SOP Library) | 1.0 | **Ratified** (`WES-DEC-005`, 2026-08-04) | `Company/Operating-Instructions/SOP-TESTING.md` |
+| 08 | `SOP-DEPLOYMENT` | Deployment SOP (Phase 1 — SOP Library) | 1.0 | **Ratified** (`WES-DEC-005`, 2026-08-04) | `Company/Operating-Instructions/SOP-DEPLOYMENT.md` |
+| 09 | `SOP-DOCUMENTATION` | Documentation SOP (Phase 1 — SOP Library) | 1.0 | **Ratified** (`WES-DEC-005`, 2026-08-04) | `Company/Operating-Instructions/SOP-DOCUMENTATION.md` |
+| 10 | `SOP-SECURITY` | Security SOP (Phase 1 — SOP Library) | 1.0 | **Ratified** (`WES-DEC-005`, 2026-08-04) | `Company/Operating-Instructions/SOP-SECURITY.md` |
 | 11–27 | — | (pending) | — | Not started | — |
 
 ## Decision Records
@@ -46,6 +46,7 @@ on the production database. No live database has been touched.
 | `WES-DEC-002` | Agent may create PRs and execute Founder-instructed merges via the GitHub App; merge decision stays Founder-only | 2026-08-04 | `Company/Decision-Records/WES-DEC-002.md` |
 | `WES-DEC-003` | Ratification of FOUNDER-INTENT v1.0 & COMPANY-PHILOSOPHY v1.0 by the Founder | 2026-08-04 | `Company/Decision-Records/WES-DEC-003.md` |
 | `WES-DEC-004` | Ratcheting backend test-coverage floor — baseline 73%, floor 71% | 2026-08-04 | `Company/Decision-Records/WES-DEC-004.md` |
+| `WES-DEC-005` | Ratification of the Phase-1 SOP Library (SOPs 05–10) by the Founder | 2026-08-04 | `Company/Decision-Records/WES-DEC-005.md` |
 
 ## Code / integration changes
 
@@ -55,7 +56,7 @@ on the production database. No live database has been touched.
 | Batch-0 close: ratified `PROMPT-SYS.md`, `WES-DEC-001/002`, INVENTORY | **#2** | **Merged (squash)** `99de3f9` on 2026-08-04 | **NO — docs only, no deploy** |
 | Batch-1 (strategy): `FOUNDER-INTENT` + `COMPANY-PHILOSOPHY` (docs 03–04) | **#3** | **Merged (squash)** `43bb56b` on 2026-08-04 | **NO — docs only, no deploy** |
 | Batch-2 (SOPs): `WES-DEC-003` + SOPs 05–10 | **#4** | **Merged (squash)** `714fdf5` on 2026-08-04 | **NO — docs only, no deploy** |
-| CI coverage enforcement (WES-DEC-004): `pytest-cov` + `scripts/test.sh --cov-fail-under=71` | **feature/coverage-ci-enforcement** (PR pending) | pending | **NO — CI tooling; no deploy** |
+| CI coverage enforcement (WES-DEC-004): `pytest-cov` + `scripts/test.sh --cov-fail-under=71` | **#5** | **Merged (squash)** `0f661a8` on 2026-08-04 | **NO — CI tooling; no deploy** |
 
 ## Verification log
 
@@ -99,4 +100,5 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-2 (SOPs):** doc 09 `SOP-DOCUMENTATION` v1.0 committed (Draft) on `docs/batch-2-sops`. Deploy held. |
 | 2026-08-04 | **Batch-2 (SOPs):** doc 10 `SOP-SECURITY` v1.0 committed (Draft) — Phase-1 SOP Library complete (docs 05–10). Single Batch-2 PR opened (base `main` ← `docs/batch-2-sops`). Deploy held. |
 | 2026-08-04 | **Batch-2 merged:** **PR #4 merged** to `main` (`714fdf5`) — Founder declared "merge = Batch-2 ratification"; WES-DEC-005 (flip docs 05–10 → Ratified) to bundle into Batch-3. Deploy held. |
-| 2026-08-04 | **Coverage CI enforcement (WES-DEC-004):** first code change of the phase — `pytest-cov` + `scripts/test.sh --cov=app --cov-fail-under=71`; followed `SOP-CODING` end-to-end. Branch `feature/coverage-ci-enforcement`; PR pending Founder merge. Deploy held. |
+| 2026-08-04 | **Coverage CI enforcement (WES-DEC-004):** first code change of the phase — `pytest-cov` + `scripts/test.sh --cov=app --cov-fail-under=71`; followed `SOP-CODING` end-to-end (its first live execution). **PR #5 merged to `main`** (`0f661a8`). Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts) — WES-DEC-005:** Founder **ratified** the Phase-1 SOP Library (SOPs 05–10); docs 05–10 marked **Ratified**. First commit of branch `docs/batch-3-role-prompts`. Deploy held. |
