@@ -36,7 +36,8 @@ on the production database. No live database has been touched.
 | 08 | `SOP-DEPLOYMENT` | Deployment SOP (Phase 1 — SOP Library) | 1.0 | **Ratified** (`WES-DEC-005`, 2026-08-04) | `Company/Operating-Instructions/SOP-DEPLOYMENT.md` |
 | 09 | `SOP-DOCUMENTATION` | Documentation SOP (Phase 1 — SOP Library) | 1.0 | **Ratified** (`WES-DEC-005`, 2026-08-04) | `Company/Operating-Instructions/SOP-DOCUMENTATION.md` |
 | 10 | `SOP-SECURITY` | Security SOP (Phase 1 — SOP Library) | 1.0 | **Ratified** (`WES-DEC-005`, 2026-08-04) | `Company/Operating-Instructions/SOP-SECURITY.md` |
-| 11–27 | — | (pending) | — | Not started | — |
+| 11 | `ROLE-STUDIO-DIRECTOR` | Role Prompt — Studio Director (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-STUDIO-DIRECTOR.md` |
+| 12–27 | — | (pending) | — | Not started | — |
 
 ## Decision Records
 
@@ -80,9 +81,18 @@ on the production database. No live database has been touched.
 - **CI coverage enforcement (WES-DEC-004)** — **done**: `pytest-cov` added to `backend/requirements.txt`
   and `scripts/test.sh` wired with `--cov=app --cov-fail-under=71`. Delivered as the docs phase's
   **first code change, following `SOP-CODING` end-to-end** (branch `feature/coverage-ci-enforcement`;
-  PR pending Founder merge).
+  **PR #5 merged** `0f661a8`).
 - **Frontend coverage floor** — deferred (WES-DEC-004); set by ratchet after the frontend suite
   matures (revisit at the end of the Operating Instructions phase).
+- **Code vs canonical role naming — phase-end reconciliation (Founder decision).**
+  `backend/app/db/seed_ai.py` seeds a divergent AI-org model (roles `CEO` / `CTO` / `Chief
+  Architect`, 12 employees, no Prompt Engineer / Project Manager) that does **not** match the
+  canonical 13-role org (Studio Director, …) in `Employees/`, Blueprint Vol 03, and `Company/`.
+  The Batch-3 role prompts anchor on the **canonical org + the platform RBAC** (`app/domain/roles.py`),
+  never on `seed_ai.py`. Reconcile at phase end: realign the code seed to the canonical org, or
+  record a Founder decision to accept the divergence. Related: the AI-employee → platform-RBAC-role
+  mapping (Executive→`DIRECTOR`, Lead→`DEPARTMENT_HEAD`, Operational→`EMPLOYEE`) is **inferred, not
+  codified** — confirm or codify at phase end.
 
 ## Change history
 
@@ -102,3 +112,4 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-2 merged:** **PR #4 merged** to `main` (`714fdf5`) — Founder declared "merge = Batch-2 ratification"; WES-DEC-005 (flip docs 05–10 → Ratified) to bundle into Batch-3. Deploy held. |
 | 2026-08-04 | **Coverage CI enforcement (WES-DEC-004):** first code change of the phase — `pytest-cov` + `scripts/test.sh --cov=app --cov-fail-under=71`; followed `SOP-CODING` end-to-end (its first live execution). **PR #5 merged to `main`** (`0f661a8`). Deploy held. |
 | 2026-08-04 | **Batch-3 (role prompts) — WES-DEC-005:** Founder **ratified** the Phase-1 SOP Library (SOPs 05–10); docs 05–10 marked **Ratified**. First commit of branch `docs/batch-3-role-prompts`. Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 11 `ROLE-STUDIO-DIRECTOR` v1.0 committed (Draft) on `docs/batch-3-role-prompts`. Deploy held. |
