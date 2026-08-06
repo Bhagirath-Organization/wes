@@ -41,7 +41,8 @@ on the production database. No live database has been touched.
 | 13 | `ROLE-UX-UI-DESIGNER` | Role Prompt — UX/UI Designer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-UX-UI-DESIGNER.md` |
 | 14 | `ROLE-SOFTWARE-ARCHITECT` | Role Prompt — Software Architect (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-SOFTWARE-ARCHITECT.md` |
 | 15 | `ROLE-FRONTEND-ENGINEER` | Role Prompt — Frontend Engineer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-FRONTEND-ENGINEER.md` |
-| 16–27 | — | (pending) | — | Not started | — |
+| 16 | `ROLE-BACKEND-ENGINEER` | Role Prompt — Backend Engineer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-BACKEND-ENGINEER.md` |
+| 17–27 | — | (pending) | — | Not started | — |
 
 ## Decision Records
 
@@ -128,3 +129,4 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-3 (role prompts):** doc 13 `ROLE-UX-UI-DESIGNER` v1.0 committed (Draft) on `docs/batch-3-role-prompts`. Deploy held. |
 | 2026-08-04 | **Batch-3 (role prompts):** doc 14 `ROLE-SOFTWARE-ARCHITECT` v1.0 committed (Draft) — "final approval" reconciled to the architecture-gate verdict (SOP-REVIEW); PR merge stays Founder-only. Added phase-end watch item: Operational=read-only runtime friction, observe in the doc 27 live test. Deploy held. |
 | 2026-08-04 | **Batch-3 (role prompts):** doc 15 `ROLE-FRONTEND-ENGINEER` v1.0 committed (Draft) on `docs/batch-3-role-prompts`. Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 16 `ROLE-BACKEND-ENGINEER` v1.0 committed (Draft) on `docs/batch-3-role-prompts`. Deploy held. |
