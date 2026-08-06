@@ -48,7 +48,8 @@ on the production database. No live database has been touched.
 | 20 | `ROLE-SECURITY-ENGINEER` | Role Prompt — Security Engineer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-SECURITY-ENGINEER.md` |
 | 21 | `ROLE-PROJECT-MANAGER` | Role Prompt — Project Manager (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-PROJECT-MANAGER.md` |
 | 22 | `ROLE-DEVOPS-AUTOMATION-ENGINEER` | Role Prompt — DevOps / Automation Engineer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-DEVOPS-AUTOMATION-ENGINEER.md` |
-| 23–27 | — | (pending) | — | Not started | — |
+| 23 | `ROLE-TECHNICAL-WRITER` | Role Prompt — Technical Writer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-TECHNICAL-WRITER.md` |
+| 24–27 | — | (pending) | — | Not started | — |
 
 ## Decision Records
 
@@ -100,10 +101,11 @@ on the production database. No live database has been touched.
   Observe in the doc 27 live end-to-end test (`TEST-MISSION-CHARTER`) whether this creates runtime
   friction — i.e. whether Operational employees' work flows cleanly through the gated workflow, or
   whether the read-only constraint needs a codified exception. Record the observation as a Founder
-  decision at phase end. **Paired concrete instances:** the **QA Engineer** (`quality:review`) and
-  the **DevOps / Automation Engineer** (`devops:execute`) each have a core duty that maps to a
-  **Director-level** permission they do not hold as Operational (`EMPLOYEE`); both role prompts frame
-  this as prepare/verify (verdict), not an invented grant — these two are the primary cases to watch.
+  decision at phase end. **Concrete instances (three):** the **QA Engineer** (`quality:review`), the
+  **DevOps / Automation Engineer** (`devops:execute`), and the **Technical Writer** (`knowledge:write`)
+  each have a core duty that maps to a **Lead/Director-level** permission they do not hold as Operational
+  (`EMPLOYEE`); all three role prompts frame this as draft/prepare/verify (verdict), not an invented
+  grant — these are the primary cases to watch and reconcile.
 - **Code vs canonical role naming — phase-end reconciliation (Founder decision).**
   `backend/app/db/seed_ai.py` seeds a divergent AI-org model (roles `CEO` / `CTO` / `Chief
   Architect`, 12 employees, no Prompt Engineer / Project Manager) that does **not** match the
@@ -145,3 +147,4 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-3 (role prompts):** doc 20 `ROLE-SECURITY-ENGINEER` v1.0 committed (Draft) — clearance/waiver in verdict-pattern (decision Security Engineer's, execution gated); first-person incident path (stop→contain→escalate→record); reviewer-vs-fixer separation explicit. Deploy held. |
 | 2026-08-04 | **Batch-3 (role prompts):** doc 21 `ROLE-PROJECT-MANAGER` v1.0 committed (Draft) — Product-Manager (what/why) vs Project-Manager (how/when) boundary sharp; scope authority explicitly zero (escalate, never cut); Technical-Writer direction as org line; one-line Studio-Director distinction. Deploy held. |
 | 2026-08-04 | **Batch-3 (role prompts):** doc 22 `ROLE-DEVOPS-AUTOMATION-ENGINEER` v1.0 committed (Draft) — `devops:execute` Director-level gap framed honestly (prepare/verify, no invented grant); paired with the QA Engineer in the phase-end watch item; production deploy + rollback Founder-only; monitoring/health concrete. Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 23 `ROLE-TECHNICAL-WRITER` v1.0 committed (Draft) — `knowledge:write` Lead/Director-level gap (third watch instance, with QA + DevOps); Blueprint changes Founder-only (drafts only); first-person verbatim rule for Founder docs (SOP-DOCUMENTATION §2). **All 13 role prompts complete (docs 11–23)** — single Batch-3 PR next, on Founder approval. Deploy held. |
