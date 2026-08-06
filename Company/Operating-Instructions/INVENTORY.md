@@ -30,13 +30,26 @@ on the production database. No live database has been touched.
 | 02 | `PROMPT-SYS-CORE` | Distilled Injection Version | 1.0 | **Ratified** (`WES-DEC-001`, 2026-08-04) | `Company/Operating-Instructions/PROMPT-SYS-CORE.md` |
 | 03 | `FOUNDER-INTENT` | Founder Intent (governed, §12) | 1.0 | **Ratified** (`WES-DEC-003`, 2026-08-04) | `Company/Operating-Instructions/FOUNDER-INTENT.md` |
 | 04 | `COMPANY-PHILOSOPHY` | Company Philosophy (governed, §12) | 1.0 | **Ratified** (`WES-DEC-003`, 2026-08-04) | `Company/Operating-Instructions/COMPANY-PHILOSOPHY.md` |
-| 05 | `SOP-CODING` | Coding SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-CODING.md` |
-| 06 | `SOP-REVIEW` | Review SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-REVIEW.md` |
-| 07 | `SOP-TESTING` | Testing SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-TESTING.md` |
-| 08 | `SOP-DEPLOYMENT` | Deployment SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-DEPLOYMENT.md` |
-| 09 | `SOP-DOCUMENTATION` | Documentation SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-DOCUMENTATION.md` |
-| 10 | `SOP-SECURITY` | Security SOP (Phase 1 — SOP Library) | 1.0 | **Draft** (batch-2) | `Company/Operating-Instructions/SOP-SECURITY.md` |
-| 11–27 | — | (pending) | — | Not started | — |
+| 05 | `SOP-CODING` | Coding SOP (Phase 1 — SOP Library) | 1.0 | **Ratified** (`WES-DEC-005`, 2026-08-04) | `Company/Operating-Instructions/SOP-CODING.md` |
+| 06 | `SOP-REVIEW` | Review SOP (Phase 1 — SOP Library) | 1.0 | **Ratified** (`WES-DEC-005`, 2026-08-04) | `Company/Operating-Instructions/SOP-REVIEW.md` |
+| 07 | `SOP-TESTING` | Testing SOP (Phase 1 — SOP Library) | 1.0 | **Ratified** (`WES-DEC-005`, 2026-08-04) | `Company/Operating-Instructions/SOP-TESTING.md` |
+| 08 | `SOP-DEPLOYMENT` | Deployment SOP (Phase 1 — SOP Library) | 1.0 | **Ratified** (`WES-DEC-005`, 2026-08-04) | `Company/Operating-Instructions/SOP-DEPLOYMENT.md` |
+| 09 | `SOP-DOCUMENTATION` | Documentation SOP (Phase 1 — SOP Library) | 1.0 | **Ratified** (`WES-DEC-005`, 2026-08-04) | `Company/Operating-Instructions/SOP-DOCUMENTATION.md` |
+| 10 | `SOP-SECURITY` | Security SOP (Phase 1 — SOP Library) | 1.0 | **Ratified** (`WES-DEC-005`, 2026-08-04) | `Company/Operating-Instructions/SOP-SECURITY.md` |
+| 11 | `ROLE-STUDIO-DIRECTOR` | Role Prompt — Studio Director (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-STUDIO-DIRECTOR.md` |
+| 12 | `ROLE-PRODUCT-MANAGER` | Role Prompt — Product Manager (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-PRODUCT-MANAGER.md` |
+| 13 | `ROLE-UX-UI-DESIGNER` | Role Prompt — UX/UI Designer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-UX-UI-DESIGNER.md` |
+| 14 | `ROLE-SOFTWARE-ARCHITECT` | Role Prompt — Software Architect (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-SOFTWARE-ARCHITECT.md` |
+| 15 | `ROLE-FRONTEND-ENGINEER` | Role Prompt — Frontend Engineer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-FRONTEND-ENGINEER.md` |
+| 16 | `ROLE-BACKEND-ENGINEER` | Role Prompt — Backend Engineer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-BACKEND-ENGINEER.md` |
+| 17 | `ROLE-AI-ENGINEER` | Role Prompt — AI Engineer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-AI-ENGINEER.md` |
+| 18 | `ROLE-PROMPT-ENGINEER` | Role Prompt — Prompt Engineer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-PROMPT-ENGINEER.md` |
+| 19 | `ROLE-QA-ENGINEER` | Role Prompt — QA Engineer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-QA-ENGINEER.md` |
+| 20 | `ROLE-SECURITY-ENGINEER` | Role Prompt — Security Engineer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-SECURITY-ENGINEER.md` |
+| 21 | `ROLE-PROJECT-MANAGER` | Role Prompt — Project Manager (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-PROJECT-MANAGER.md` |
+| 22 | `ROLE-DEVOPS-AUTOMATION-ENGINEER` | Role Prompt — DevOps / Automation Engineer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-DEVOPS-AUTOMATION-ENGINEER.md` |
+| 23 | `ROLE-TECHNICAL-WRITER` | Role Prompt — Technical Writer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-TECHNICAL-WRITER.md` |
+| 24–27 | — | (pending) | — | Not started | — |
 
 ## Decision Records
 
@@ -46,6 +59,8 @@ on the production database. No live database has been touched.
 | `WES-DEC-002` | Agent may create PRs and execute Founder-instructed merges via the GitHub App; merge decision stays Founder-only | 2026-08-04 | `Company/Decision-Records/WES-DEC-002.md` |
 | `WES-DEC-003` | Ratification of FOUNDER-INTENT v1.0 & COMPANY-PHILOSOPHY v1.0 by the Founder | 2026-08-04 | `Company/Decision-Records/WES-DEC-003.md` |
 | `WES-DEC-004` | Ratcheting backend test-coverage floor — baseline 73%, floor 71% | 2026-08-04 | `Company/Decision-Records/WES-DEC-004.md` |
+| `WES-DEC-005` | Ratification of the Phase-1 SOP Library (SOPs 05–10) by the Founder | 2026-08-04 | `Company/Decision-Records/WES-DEC-005.md` |
+| `WES-DEC-006` | AI-employee authority → RBAC role mapping (Executive→DIRECTOR, Lead→DEPARTMENT_HEAD, Operational→EMPLOYEE) | 2026-08-04 | `Company/Decision-Records/WES-DEC-006.md` |
 
 ## Code / integration changes
 
@@ -55,7 +70,7 @@ on the production database. No live database has been touched.
 | Batch-0 close: ratified `PROMPT-SYS.md`, `WES-DEC-001/002`, INVENTORY | **#2** | **Merged (squash)** `99de3f9` on 2026-08-04 | **NO — docs only, no deploy** |
 | Batch-1 (strategy): `FOUNDER-INTENT` + `COMPANY-PHILOSOPHY` (docs 03–04) | **#3** | **Merged (squash)** `43bb56b` on 2026-08-04 | **NO — docs only, no deploy** |
 | Batch-2 (SOPs): `WES-DEC-003` + SOPs 05–10 | **#4** | **Merged (squash)** `714fdf5` on 2026-08-04 | **NO — docs only, no deploy** |
-| CI coverage enforcement (WES-DEC-004): `pytest-cov` + `scripts/test.sh --cov-fail-under=71` | **feature/coverage-ci-enforcement** (PR pending) | pending | **NO — CI tooling; no deploy** |
+| CI coverage enforcement (WES-DEC-004): `pytest-cov` + `scripts/test.sh --cov-fail-under=71` | **#5** | **Merged (squash)** `0f661a8` on 2026-08-04 | **NO — CI tooling; no deploy** |
 
 ## Verification log
 
@@ -79,9 +94,27 @@ on the production database. No live database has been touched.
 - **CI coverage enforcement (WES-DEC-004)** — **done**: `pytest-cov` added to `backend/requirements.txt`
   and `scripts/test.sh` wired with `--cov=app --cov-fail-under=71`. Delivered as the docs phase's
   **first code change, following `SOP-CODING` end-to-end** (branch `feature/coverage-ci-enforcement`;
-  PR pending Founder merge).
+  **PR #5 merged** `0f661a8`).
 - **Frontend coverage floor** — deferred (WES-DEC-004); set by ratchet after the frontend suite
   matures (revisit at the end of the Operating Instructions phase).
+- **Watch (doc 27 live test):** Operational roles map to `EMPLOYEE` = **read-only** (WES-DEC-006).
+  Observe in the doc 27 live end-to-end test (`TEST-MISSION-CHARTER`) whether this creates runtime
+  friction — i.e. whether Operational employees' work flows cleanly through the gated workflow, or
+  whether the read-only constraint needs a codified exception. Record the observation as a Founder
+  decision at phase end. **Concrete instances (three):** the **QA Engineer** (`quality:review`), the
+  **DevOps / Automation Engineer** (`devops:execute`), and the **Technical Writer** (`knowledge:write`)
+  each have a core duty that maps to a **Lead/Director-level** permission they do not hold as Operational
+  (`EMPLOYEE`); all three role prompts frame this as draft/prepare/verify (verdict), not an invented
+  grant — these are the primary cases to watch and reconcile.
+- **Code vs canonical role naming — phase-end reconciliation (Founder decision).**
+  `backend/app/db/seed_ai.py` seeds a divergent AI-org model (roles `CEO` / `CTO` / `Chief
+  Architect`, 12 employees, no Prompt Engineer / Project Manager) that does **not** match the
+  canonical 13-role org (Studio Director, …) in `Employees/`, Blueprint Vol 03, and `Company/`.
+  The Batch-3 role prompts anchor on the **canonical org + the platform RBAC** (`app/domain/roles.py`),
+  never on `seed_ai.py`. Reconcile at phase end: realign the code seed to the canonical org, or
+  record a Founder decision to accept the divergence. (The AI-employee → platform-RBAC-role mapping
+  is now **confirmed by WES-DEC-006** — Executive→`DIRECTOR`, Lead→`DEPARTMENT_HEAD`,
+  Operational→`EMPLOYEE`; codifying it in code remains an optional future engineering task.)
 
 ## Change history
 
@@ -99,4 +132,19 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-2 (SOPs):** doc 09 `SOP-DOCUMENTATION` v1.0 committed (Draft) on `docs/batch-2-sops`. Deploy held. |
 | 2026-08-04 | **Batch-2 (SOPs):** doc 10 `SOP-SECURITY` v1.0 committed (Draft) — Phase-1 SOP Library complete (docs 05–10). Single Batch-2 PR opened (base `main` ← `docs/batch-2-sops`). Deploy held. |
 | 2026-08-04 | **Batch-2 merged:** **PR #4 merged** to `main` (`714fdf5`) — Founder declared "merge = Batch-2 ratification"; WES-DEC-005 (flip docs 05–10 → Ratified) to bundle into Batch-3. Deploy held. |
-| 2026-08-04 | **Coverage CI enforcement (WES-DEC-004):** first code change of the phase — `pytest-cov` + `scripts/test.sh --cov=app --cov-fail-under=71`; followed `SOP-CODING` end-to-end. Branch `feature/coverage-ci-enforcement`; PR pending Founder merge. Deploy held. |
+| 2026-08-04 | **Coverage CI enforcement (WES-DEC-004):** first code change of the phase — `pytest-cov` + `scripts/test.sh --cov=app --cov-fail-under=71`; followed `SOP-CODING` end-to-end (its first live execution). **PR #5 merged to `main`** (`0f661a8`). Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts) — WES-DEC-005:** Founder **ratified** the Phase-1 SOP Library (SOPs 05–10); docs 05–10 marked **Ratified**. First commit of branch `docs/batch-3-role-prompts`. Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 11 `ROLE-STUDIO-DIRECTOR` v1.0 committed (Draft) on `docs/batch-3-role-prompts`. Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 12 `ROLE-PRODUCT-MANAGER` v1.0 committed (Draft) on `docs/batch-3-role-prompts`. Deploy held. |
+| 2026-08-04 | **Batch-3 — WES-DEC-006:** Founder **confirmed** the AI-employee authority → RBAC mapping (Executive→DIRECTOR, Lead→DEPARTMENT_HEAD, Operational→EMPLOYEE). Doc 12 Open Founder Decision resolved; docs 13–23 cite "confirmed (WES-DEC-006)". Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 13 `ROLE-UX-UI-DESIGNER` v1.0 committed (Draft) on `docs/batch-3-role-prompts`. Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 14 `ROLE-SOFTWARE-ARCHITECT` v1.0 committed (Draft) — "final approval" reconciled to the architecture-gate verdict (SOP-REVIEW); PR merge stays Founder-only. Added phase-end watch item: Operational=read-only runtime friction, observe in the doc 27 live test. Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 15 `ROLE-FRONTEND-ENGINEER` v1.0 committed (Draft) on `docs/batch-3-role-prompts`. Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 16 `ROLE-BACKEND-ENGINEER` v1.0 committed (Draft) on `docs/batch-3-role-prompts`. Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 17 `ROLE-AI-ENGINEER` v1.0 committed (Draft) — AI Engineer→Prompt Engineer "directs" verified (Org-Chart/Reporting-Hierarchy) and framed honestly as an org reporting line with no RBAC backing (both `EMPLOYEE`/read-only). Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 18 `ROLE-PROMPT-ENGINEER` v1.0 committed (Draft) — reporting-line framing mirrored from doc 17; governed-prompt boundary explicit (PE drafts; Prompt Library write = exec:write Lead/Director; ratification/activation Founder-only; no silent edits). Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 19 `ROLE-QA-ENGINEER` v1.0 committed (Draft) — sign-off = quality-gate review verdict (not merge/release); Director-reporting independence explicit; `quality:review` Director-level RBAC framed honestly (not held by Operational QA). Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 20 `ROLE-SECURITY-ENGINEER` v1.0 committed (Draft) — clearance/waiver in verdict-pattern (decision Security Engineer's, execution gated); first-person incident path (stop→contain→escalate→record); reviewer-vs-fixer separation explicit. Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 21 `ROLE-PROJECT-MANAGER` v1.0 committed (Draft) — Product-Manager (what/why) vs Project-Manager (how/when) boundary sharp; scope authority explicitly zero (escalate, never cut); Technical-Writer direction as org line; one-line Studio-Director distinction. Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 22 `ROLE-DEVOPS-AUTOMATION-ENGINEER` v1.0 committed (Draft) — `devops:execute` Director-level gap framed honestly (prepare/verify, no invented grant); paired with the QA Engineer in the phase-end watch item; production deploy + rollback Founder-only; monitoring/health concrete. Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 23 `ROLE-TECHNICAL-WRITER` v1.0 committed (Draft) — `knowledge:write` Lead/Director-level gap (third watch instance, with QA + DevOps); Blueprint changes Founder-only (drafts only); first-person verbatim rule for Founder docs (SOP-DOCUMENTATION §2). **All 13 role prompts complete (docs 11–23)** — single Batch-3 PR next, on Founder approval. Deploy held. |
