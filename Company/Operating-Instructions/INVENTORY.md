@@ -49,9 +49,9 @@ on the production database. No live database has been touched.
 | 21 | `ROLE-PROJECT-MANAGER` | Role Prompt — Project Manager (Batch-3) | 1.0 | **Ratified** (`WES-DEC-007`, 2026-08-04) | `Company/Operating-Instructions/ROLE-PROJECT-MANAGER.md` |
 | 22 | `ROLE-DEVOPS-AUTOMATION-ENGINEER` | Role Prompt — DevOps / Automation Engineer (Batch-3) | 1.0 | **Ratified** (`WES-DEC-007`, 2026-08-04) | `Company/Operating-Instructions/ROLE-DEVOPS-AUTOMATION-ENGINEER.md` |
 | 23 | `ROLE-TECHNICAL-WRITER` | Role Prompt — Technical Writer (Batch-3) | 1.0 | **Ratified** (`WES-DEC-007`, 2026-08-04) | `Company/Operating-Instructions/ROLE-TECHNICAL-WRITER.md` |
-| 24 | `PROMPT-TASK` | Task Execution Prompt (Batch-4 shared) | 1.0 | **Draft** (batch-4) | `Company/Operating-Instructions/PROMPT-TASK.md` |
-| 25 | `PROMPT-REVIEW` | Review Prompt (Batch-4 shared) | 1.0 | **Draft** (batch-4) | `Company/Operating-Instructions/PROMPT-REVIEW.md` |
-| 26 | `PROMPT-ESC` | Escalation Prompt (Batch-4 shared) | 1.0 | **Draft** (batch-4) | `Company/Operating-Instructions/PROMPT-ESC.md` |
+| 24 | `PROMPT-TASK` | Task Execution Prompt (Batch-4 shared) | 1.0 | **Ratified** (`WES-DEC-008`, 2026-08-04) | `Company/Operating-Instructions/PROMPT-TASK.md` |
+| 25 | `PROMPT-REVIEW` | Review Prompt (Batch-4 shared) | 1.0 | **Ratified** (`WES-DEC-008`, 2026-08-04) | `Company/Operating-Instructions/PROMPT-REVIEW.md` |
+| 26 | `PROMPT-ESC` | Escalation Prompt (Batch-4 shared) | 1.0 | **Ratified** (`WES-DEC-008`, 2026-08-04) | `Company/Operating-Instructions/PROMPT-ESC.md` |
 | 27 | — | (pending) | — | Not started | — |
 
 ## Decision Records
@@ -65,6 +65,7 @@ on the production database. No live database has been touched.
 | `WES-DEC-005` | Ratification of the Phase-1 SOP Library (SOPs 05–10) by the Founder | 2026-08-04 | `Company/Decision-Records/WES-DEC-005.md` |
 | `WES-DEC-006` | AI-employee authority → RBAC role mapping (Executive→DIRECTOR, Lead→DEPARTMENT_HEAD, Operational→EMPLOYEE) | 2026-08-04 | `Company/Decision-Records/WES-DEC-006.md` |
 | `WES-DEC-007` | Ratification of the Role Prompt Library (role prompts 11–23) by the Founder | 2026-08-04 | `Company/Decision-Records/WES-DEC-007.md` |
+| `WES-DEC-008` | Ratification of the shared activity prompts (PROMPT-TASK/REVIEW/ESC, docs 24–26) by the Founder | 2026-08-04 | `Company/Decision-Records/WES-DEC-008.md` |
 
 ## Code / integration changes
 
@@ -157,3 +158,5 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-4 (shared prompts):** doc 24 `PROMPT-TASK` v1.0 committed (Draft) on `docs/batch-4-shared-prompts`. Deploy held. |
 | 2026-08-04 | **Batch-4 (shared prompts):** doc 25 `PROMPT-REVIEW` v1.0 committed (Draft) on `docs/batch-4-shared-prompts`. Deploy held. |
 | 2026-08-04 | **Batch-4 (shared prompts):** doc 26 `PROMPT-ESC` v1.0 committed (Draft) — **shared activity prompts complete (docs 24–26)**. Single Batch-4 PR next, on Founder approval. Deploy held. |
+| 2026-08-04 | **Batch-4 merged:** **PR #7 merged** to `main` (`2322fbe`) — Founder declared "merge = Batch-4 ratification". |
+| 2026-08-04 | **Batch-5 (test mission) — WES-DEC-008:** Founder **ratified** the shared activity prompts (docs 24–26); docs 24–26 marked **Ratified**. First commit of branch `docs/batch-5-test-mission`. Deploy held. |
