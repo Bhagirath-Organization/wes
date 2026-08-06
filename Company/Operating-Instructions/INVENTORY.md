@@ -38,7 +38,8 @@ on the production database. No live database has been touched.
 | 10 | `SOP-SECURITY` | Security SOP (Phase 1 — SOP Library) | 1.0 | **Ratified** (`WES-DEC-005`, 2026-08-04) | `Company/Operating-Instructions/SOP-SECURITY.md` |
 | 11 | `ROLE-STUDIO-DIRECTOR` | Role Prompt — Studio Director (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-STUDIO-DIRECTOR.md` |
 | 12 | `ROLE-PRODUCT-MANAGER` | Role Prompt — Product Manager (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-PRODUCT-MANAGER.md` |
-| 13–27 | — | (pending) | — | Not started | — |
+| 13 | `ROLE-UX-UI-DESIGNER` | Role Prompt — UX/UI Designer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-UX-UI-DESIGNER.md` |
+| 14–27 | — | (pending) | — | Not started | — |
 
 ## Decision Records
 
@@ -117,3 +118,4 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-3 (role prompts):** doc 11 `ROLE-STUDIO-DIRECTOR` v1.0 committed (Draft) on `docs/batch-3-role-prompts`. Deploy held. |
 | 2026-08-04 | **Batch-3 (role prompts):** doc 12 `ROLE-PRODUCT-MANAGER` v1.0 committed (Draft) on `docs/batch-3-role-prompts`. Deploy held. |
 | 2026-08-04 | **Batch-3 — WES-DEC-006:** Founder **confirmed** the AI-employee authority → RBAC mapping (Executive→DIRECTOR, Lead→DEPARTMENT_HEAD, Operational→EMPLOYEE). Doc 12 Open Founder Decision resolved; docs 13–23 cite "confirmed (WES-DEC-006)". Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 13 `ROLE-UX-UI-DESIGNER` v1.0 committed (Draft) on `docs/batch-3-role-prompts`. Deploy held. |
