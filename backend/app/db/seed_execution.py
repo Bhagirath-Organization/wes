@@ -11,6 +11,7 @@ from datetime import datetime, timedelta, timezone
 
 from sqlalchemy.orm import Session
 
+from app.db.prompt_library_content import GOVERNED_PROMPTS
 from app.domain.execution_enums import (
     DecisionRuleType,
     ExecutionStatus,
@@ -186,11 +187,61 @@ def sync_prompt_sys(db: Session) -> bool:
     return False
 
 
+def sync_prompt_library(db: Session, *, commit: bool = True) -> int:
+    """Idempotently upsert the ratified governed prompts into the Prompt Library.
+
+    Mirrors :func:`sync_prompt_sys` for the 13 Role Prompts and the 3 shared
+    activity prompts (``PROMPT-TASK`` / ``PROMPT-REVIEW`` / ``PROMPT-ESC``): each
+    row is inserted when missing and updated in place when its content, name,
+    type, or version drifts — so the ratified content reaches already-seeded
+    databases without a destructive re-seed, and the one-line activity
+    placeholders created on a fresh seed are upgraded to their verbatim bodies.
+    The prompt text is the verbatim operative body of each ratified document
+    (``app/db/prompt_library_content.py``).
+
+    Returns the number of rows written (0 when everything already matches). Set
+    ``commit=False`` to fold the writes into the caller's transaction (used on a
+    fresh seed, whose commit is deferred to the seed orchestrator).
+    """
+    changed = 0
+    for spec in GOVERNED_PROMPTS:
+        p = db.query(PromptTemplate).filter_by(code=spec.code).one_or_none()
+        if p is None:
+            db.add(
+                PromptTemplate(
+                    code=spec.code,
+                    name=spec.name,
+                    prompt_type=spec.prompt_type,
+                    content=spec.content,
+                    version=spec.version,
+                    author=spec.author,
+                )
+            )
+            changed += 1
+        elif (
+            p.content != spec.content
+            or p.name != spec.name
+            or p.prompt_type != spec.prompt_type
+            or p.version != spec.version
+        ):
+            p.content = spec.content
+            p.name = spec.name
+            p.prompt_type = spec.prompt_type
+            p.version = spec.version
+            p.author = spec.author
+            changed += 1
+    if changed and commit:
+        db.commit()
+    return changed
+
+
 def seed_execution(db: Session) -> bool:
     """Seed the execution engine. Returns True if seeded, False if already present."""
     if db.query(AIWorkspace).count() > 0:
-        # Already seeded: still keep the distilled Constitution (PROMPT-SYS) current.
+        # Already seeded: still keep the governed prompts (Constitution + Role and
+        # activity prompts) current in place.
         sync_prompt_sys(db)
+        sync_prompt_library(db)
         return False
 
     emps = {e.employee_code: e for e in db.query(AIEmployee).all()}
@@ -381,5 +432,9 @@ def seed_execution(db: Session) -> bool:
     db.add(
         ExecutionContext(ai_employee_id=be.id, key="stack", value="FastAPI, SQLAlchemy, PostgreSQL")
     )
+
+    # Upgrade the one-line activity placeholders to their verbatim ratified bodies
+    # and add the 13 Role Prompts. Commit is deferred to the seed orchestrator.
+    sync_prompt_library(db, commit=False)
 
     return True

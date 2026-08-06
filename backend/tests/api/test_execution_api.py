@@ -1,12 +1,17 @@
 """API + workflow tests for the AI Execution Engine."""
 
+from app.db.prompt_library_content import GOVERNED_PROMPTS
+
 
 def _emp(client, name):
     return client.get(f"/api/v1/ai-employees?search={name}").json()["data"][0]
 
 
 def test_libraries_seeded(client, exec_seeded):
-    assert client.get("/api/v1/prompts").json()["meta"]["total"] == 5
+    # 5 base templates (PROMPT-SYS/ROLE/TASK/REVIEW/ESC) + the 13 ratified Role
+    # Prompts; the 3 activity prompts are upgraded in place, not added.
+    role_prompts = sum(1 for s in GOVERNED_PROMPTS if s.code.startswith("ROLE-"))
+    assert client.get("/api/v1/prompts").json()["meta"]["total"] == 5 + role_prompts
     assert client.get("/api/v1/sops").json()["meta"]["total"] == 6
     assert client.get("/api/v1/decision-rules").json()["meta"]["total"] >= 12
 
