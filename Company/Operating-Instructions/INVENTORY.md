@@ -51,7 +51,8 @@ on the production database. No live database has been touched.
 | 23 | `ROLE-TECHNICAL-WRITER` | Role Prompt — Technical Writer (Batch-3) | 1.0 | **Ratified** (`WES-DEC-007`, 2026-08-04) | `Company/Operating-Instructions/ROLE-TECHNICAL-WRITER.md` |
 | 24 | `PROMPT-TASK` | Task Execution Prompt (Batch-4 shared) | 1.0 | **Draft** (batch-4) | `Company/Operating-Instructions/PROMPT-TASK.md` |
 | 25 | `PROMPT-REVIEW` | Review Prompt (Batch-4 shared) | 1.0 | **Draft** (batch-4) | `Company/Operating-Instructions/PROMPT-REVIEW.md` |
-| 26–27 | — | (pending) | — | Not started | — |
+| 26 | `PROMPT-ESC` | Escalation Prompt (Batch-4 shared) | 1.0 | **Draft** (batch-4) | `Company/Operating-Instructions/PROMPT-ESC.md` |
+| 27 | — | (pending) | — | Not started | — |
 
 ## Decision Records
 
@@ -155,3 +156,4 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-4 (shared prompts) — WES-DEC-007:** Founder **ratified** the Role Prompt Library (role prompts 11–23); docs 11–23 marked **Ratified**. First commit of branch `docs/batch-4-shared-prompts`. Deploy held. |
 | 2026-08-04 | **Batch-4 (shared prompts):** doc 24 `PROMPT-TASK` v1.0 committed (Draft) on `docs/batch-4-shared-prompts`. Deploy held. |
 | 2026-08-04 | **Batch-4 (shared prompts):** doc 25 `PROMPT-REVIEW` v1.0 committed (Draft) on `docs/batch-4-shared-prompts`. Deploy held. |
+| 2026-08-04 | **Batch-4 (shared prompts):** doc 26 `PROMPT-ESC` v1.0 committed (Draft) — **shared activity prompts complete (docs 24–26)**. Single Batch-4 PR next, on Founder approval. Deploy held. |
