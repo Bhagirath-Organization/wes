@@ -50,7 +50,8 @@ on the production database. No live database has been touched.
 | 22 | `ROLE-DEVOPS-AUTOMATION-ENGINEER` | Role Prompt — DevOps / Automation Engineer (Batch-3) | 1.0 | **Ratified** (`WES-DEC-007`, 2026-08-04) | `Company/Operating-Instructions/ROLE-DEVOPS-AUTOMATION-ENGINEER.md` |
 | 23 | `ROLE-TECHNICAL-WRITER` | Role Prompt — Technical Writer (Batch-3) | 1.0 | **Ratified** (`WES-DEC-007`, 2026-08-04) | `Company/Operating-Instructions/ROLE-TECHNICAL-WRITER.md` |
 | 24 | `PROMPT-TASK` | Task Execution Prompt (Batch-4 shared) | 1.0 | **Draft** (batch-4) | `Company/Operating-Instructions/PROMPT-TASK.md` |
-| 25–27 | — | (pending) | — | Not started | — |
+| 25 | `PROMPT-REVIEW` | Review Prompt (Batch-4 shared) | 1.0 | **Draft** (batch-4) | `Company/Operating-Instructions/PROMPT-REVIEW.md` |
+| 26–27 | — | (pending) | — | Not started | — |
 
 ## Decision Records
 
@@ -153,3 +154,4 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-3 merged:** **PR #6 merged** to `main` (`65681cf`) — Founder declared "merge = Batch-3 ratification". |
 | 2026-08-04 | **Batch-4 (shared prompts) — WES-DEC-007:** Founder **ratified** the Role Prompt Library (role prompts 11–23); docs 11–23 marked **Ratified**. First commit of branch `docs/batch-4-shared-prompts`. Deploy held. |
 | 2026-08-04 | **Batch-4 (shared prompts):** doc 24 `PROMPT-TASK` v1.0 committed (Draft) on `docs/batch-4-shared-prompts`. Deploy held. |
+| 2026-08-04 | **Batch-4 (shared prompts):** doc 25 `PROMPT-REVIEW` v1.0 committed (Draft) on `docs/batch-4-shared-prompts`. Deploy held. |
