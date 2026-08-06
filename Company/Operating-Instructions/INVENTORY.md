@@ -45,7 +45,8 @@ on the production database. No live database has been touched.
 | 17 | `ROLE-AI-ENGINEER` | Role Prompt — AI Engineer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-AI-ENGINEER.md` |
 | 18 | `ROLE-PROMPT-ENGINEER` | Role Prompt — Prompt Engineer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-PROMPT-ENGINEER.md` |
 | 19 | `ROLE-QA-ENGINEER` | Role Prompt — QA Engineer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-QA-ENGINEER.md` |
-| 20–27 | — | (pending) | — | Not started | — |
+| 20 | `ROLE-SECURITY-ENGINEER` | Role Prompt — Security Engineer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-SECURITY-ENGINEER.md` |
+| 21–27 | — | (pending) | — | Not started | — |
 
 ## Decision Records
 
@@ -136,3 +137,4 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-3 (role prompts):** doc 17 `ROLE-AI-ENGINEER` v1.0 committed (Draft) — AI Engineer→Prompt Engineer "directs" verified (Org-Chart/Reporting-Hierarchy) and framed honestly as an org reporting line with no RBAC backing (both `EMPLOYEE`/read-only). Deploy held. |
 | 2026-08-04 | **Batch-3 (role prompts):** doc 18 `ROLE-PROMPT-ENGINEER` v1.0 committed (Draft) — reporting-line framing mirrored from doc 17; governed-prompt boundary explicit (PE drafts; Prompt Library write = exec:write Lead/Director; ratification/activation Founder-only; no silent edits). Deploy held. |
 | 2026-08-04 | **Batch-3 (role prompts):** doc 19 `ROLE-QA-ENGINEER` v1.0 committed (Draft) — sign-off = quality-gate review verdict (not merge/release); Director-reporting independence explicit; `quality:review` Director-level RBAC framed honestly (not held by Operational QA). Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 20 `ROLE-SECURITY-ENGINEER` v1.0 committed (Draft) — clearance/waiver in verdict-pattern (decision Security Engineer's, execution gated); first-person incident path (stop→contain→escalate→record); reviewer-vs-fixer separation explicit. Deploy held. |
