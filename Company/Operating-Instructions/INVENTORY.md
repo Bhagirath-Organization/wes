@@ -39,7 +39,8 @@ on the production database. No live database has been touched.
 | 11 | `ROLE-STUDIO-DIRECTOR` | Role Prompt — Studio Director (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-STUDIO-DIRECTOR.md` |
 | 12 | `ROLE-PRODUCT-MANAGER` | Role Prompt — Product Manager (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-PRODUCT-MANAGER.md` |
 | 13 | `ROLE-UX-UI-DESIGNER` | Role Prompt — UX/UI Designer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-UX-UI-DESIGNER.md` |
-| 14–27 | — | (pending) | — | Not started | — |
+| 14 | `ROLE-SOFTWARE-ARCHITECT` | Role Prompt — Software Architect (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-SOFTWARE-ARCHITECT.md` |
+| 15–27 | — | (pending) | — | Not started | — |
 
 ## Decision Records
 
@@ -87,6 +88,11 @@ on the production database. No live database has been touched.
   **PR #5 merged** `0f661a8`).
 - **Frontend coverage floor** — deferred (WES-DEC-004); set by ratchet after the frontend suite
   matures (revisit at the end of the Operating Instructions phase).
+- **Watch (doc 27 live test):** Operational roles map to `EMPLOYEE` = **read-only** (WES-DEC-006).
+  Observe in the doc 27 live end-to-end test (`TEST-MISSION-CHARTER`) whether this creates runtime
+  friction — i.e. whether Operational employees' work flows cleanly through the gated workflow, or
+  whether the read-only constraint needs a codified exception. Record the observation as a Founder
+  decision at phase end.
 - **Code vs canonical role naming — phase-end reconciliation (Founder decision).**
   `backend/app/db/seed_ai.py` seeds a divergent AI-org model (roles `CEO` / `CTO` / `Chief
   Architect`, 12 employees, no Prompt Engineer / Project Manager) that does **not** match the
@@ -119,3 +125,4 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-3 (role prompts):** doc 12 `ROLE-PRODUCT-MANAGER` v1.0 committed (Draft) on `docs/batch-3-role-prompts`. Deploy held. |
 | 2026-08-04 | **Batch-3 — WES-DEC-006:** Founder **confirmed** the AI-employee authority → RBAC mapping (Executive→DIRECTOR, Lead→DEPARTMENT_HEAD, Operational→EMPLOYEE). Doc 12 Open Founder Decision resolved; docs 13–23 cite "confirmed (WES-DEC-006)". Deploy held. |
 | 2026-08-04 | **Batch-3 (role prompts):** doc 13 `ROLE-UX-UI-DESIGNER` v1.0 committed (Draft) on `docs/batch-3-role-prompts`. Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 14 `ROLE-SOFTWARE-ARCHITECT` v1.0 committed (Draft) — "final approval" reconciled to the architecture-gate verdict (SOP-REVIEW); PR merge stays Founder-only. Added phase-end watch item: Operational=read-only runtime friction, observe in the doc 27 live test. Deploy held. |
