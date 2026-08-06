@@ -49,6 +49,7 @@ on the production database. No live database has been touched.
 | `WES-DEC-003` | Ratification of FOUNDER-INTENT v1.0 & COMPANY-PHILOSOPHY v1.0 by the Founder | 2026-08-04 | `Company/Decision-Records/WES-DEC-003.md` |
 | `WES-DEC-004` | Ratcheting backend test-coverage floor — baseline 73%, floor 71% | 2026-08-04 | `Company/Decision-Records/WES-DEC-004.md` |
 | `WES-DEC-005` | Ratification of the Phase-1 SOP Library (SOPs 05–10) by the Founder | 2026-08-04 | `Company/Decision-Records/WES-DEC-005.md` |
+| `WES-DEC-006` | AI-employee authority → RBAC role mapping (Executive→DIRECTOR, Lead→DEPARTMENT_HEAD, Operational→EMPLOYEE) | 2026-08-04 | `Company/Decision-Records/WES-DEC-006.md` |
 
 ## Code / integration changes
 
@@ -91,9 +92,9 @@ on the production database. No live database has been touched.
   canonical 13-role org (Studio Director, …) in `Employees/`, Blueprint Vol 03, and `Company/`.
   The Batch-3 role prompts anchor on the **canonical org + the platform RBAC** (`app/domain/roles.py`),
   never on `seed_ai.py`. Reconcile at phase end: realign the code seed to the canonical org, or
-  record a Founder decision to accept the divergence. Related: the AI-employee → platform-RBAC-role
-  mapping (Executive→`DIRECTOR`, Lead→`DEPARTMENT_HEAD`, Operational→`EMPLOYEE`) is **inferred, not
-  codified** — confirm or codify at phase end.
+  record a Founder decision to accept the divergence. (The AI-employee → platform-RBAC-role mapping
+  is now **confirmed by WES-DEC-006** — Executive→`DIRECTOR`, Lead→`DEPARTMENT_HEAD`,
+  Operational→`EMPLOYEE`; codifying it in code remains an optional future engineering task.)
 
 ## Change history
 
@@ -115,3 +116,4 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-3 (role prompts) — WES-DEC-005:** Founder **ratified** the Phase-1 SOP Library (SOPs 05–10); docs 05–10 marked **Ratified**. First commit of branch `docs/batch-3-role-prompts`. Deploy held. |
 | 2026-08-04 | **Batch-3 (role prompts):** doc 11 `ROLE-STUDIO-DIRECTOR` v1.0 committed (Draft) on `docs/batch-3-role-prompts`. Deploy held. |
 | 2026-08-04 | **Batch-3 (role prompts):** doc 12 `ROLE-PRODUCT-MANAGER` v1.0 committed (Draft) on `docs/batch-3-role-prompts`. Deploy held. |
+| 2026-08-04 | **Batch-3 — WES-DEC-006:** Founder **confirmed** the AI-employee authority → RBAC mapping (Executive→DIRECTOR, Lead→DEPARTMENT_HEAD, Operational→EMPLOYEE). Doc 12 Open Founder Decision resolved; docs 13–23 cite "confirmed (WES-DEC-006)". Deploy held. |
