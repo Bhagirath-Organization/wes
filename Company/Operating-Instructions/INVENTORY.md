@@ -47,7 +47,8 @@ on the production database. No live database has been touched.
 | 19 | `ROLE-QA-ENGINEER` | Role Prompt — QA Engineer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-QA-ENGINEER.md` |
 | 20 | `ROLE-SECURITY-ENGINEER` | Role Prompt — Security Engineer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-SECURITY-ENGINEER.md` |
 | 21 | `ROLE-PROJECT-MANAGER` | Role Prompt — Project Manager (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-PROJECT-MANAGER.md` |
-| 22–27 | — | (pending) | — | Not started | — |
+| 22 | `ROLE-DEVOPS-AUTOMATION-ENGINEER` | Role Prompt — DevOps / Automation Engineer (Batch-3) | 1.0 | **Draft** (batch-3) | `Company/Operating-Instructions/ROLE-DEVOPS-AUTOMATION-ENGINEER.md` |
+| 23–27 | — | (pending) | — | Not started | — |
 
 ## Decision Records
 
@@ -99,7 +100,10 @@ on the production database. No live database has been touched.
   Observe in the doc 27 live end-to-end test (`TEST-MISSION-CHARTER`) whether this creates runtime
   friction — i.e. whether Operational employees' work flows cleanly through the gated workflow, or
   whether the read-only constraint needs a codified exception. Record the observation as a Founder
-  decision at phase end.
+  decision at phase end. **Paired concrete instances:** the **QA Engineer** (`quality:review`) and
+  the **DevOps / Automation Engineer** (`devops:execute`) each have a core duty that maps to a
+  **Director-level** permission they do not hold as Operational (`EMPLOYEE`); both role prompts frame
+  this as prepare/verify (verdict), not an invented grant — these two are the primary cases to watch.
 - **Code vs canonical role naming — phase-end reconciliation (Founder decision).**
   `backend/app/db/seed_ai.py` seeds a divergent AI-org model (roles `CEO` / `CTO` / `Chief
   Architect`, 12 employees, no Prompt Engineer / Project Manager) that does **not** match the
@@ -140,3 +144,4 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-3 (role prompts):** doc 19 `ROLE-QA-ENGINEER` v1.0 committed (Draft) — sign-off = quality-gate review verdict (not merge/release); Director-reporting independence explicit; `quality:review` Director-level RBAC framed honestly (not held by Operational QA). Deploy held. |
 | 2026-08-04 | **Batch-3 (role prompts):** doc 20 `ROLE-SECURITY-ENGINEER` v1.0 committed (Draft) — clearance/waiver in verdict-pattern (decision Security Engineer's, execution gated); first-person incident path (stop→contain→escalate→record); reviewer-vs-fixer separation explicit. Deploy held. |
 | 2026-08-04 | **Batch-3 (role prompts):** doc 21 `ROLE-PROJECT-MANAGER` v1.0 committed (Draft) — Product-Manager (what/why) vs Project-Manager (how/when) boundary sharp; scope authority explicitly zero (escalate, never cut); Technical-Writer direction as org line; one-line Studio-Director distinction. Deploy held. |
+| 2026-08-04 | **Batch-3 (role prompts):** doc 22 `ROLE-DEVOPS-AUTOMATION-ENGINEER` v1.0 committed (Draft) — `devops:execute` Director-level gap framed honestly (prepare/verify, no invented grant); paired with the QA Engineer in the phase-end watch item; production deploy + rollback Founder-only; monitoring/health concrete. Deploy held. |
