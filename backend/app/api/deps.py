@@ -159,6 +159,15 @@ def get_budget_service(db: Session = Depends(get_db)):
     return BudgetService(db)
 
 
+def get_provider_ping_service(
+    db: Session = Depends(get_db),
+    user: CurrentUser = Depends(get_current_user),
+):
+    from app.services.provider_ping import ProviderPingService
+
+    return ProviderPingService(db, actor=_actor(user))
+
+
 def get_platform_dashboard(db: Session = Depends(get_db)):
     from app.services.provider_platform import PlatformDashboard
 
