@@ -3,7 +3,7 @@ cost, metrics, and events). Reads: ORCH_READ; writes: ORCH_WRITE (Founder)."""
 
 import uuid
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
 from app.api.deps import (
@@ -12,10 +12,13 @@ from app.api.deps import (
     get_health_monitor,
     get_metrics_service,
     get_platform_dashboard,
+    get_provider_ping_service,
     get_provider_service,
     require_permission,
 )
 from app.domain.roles import Permission
+from app.services.budget_service import BudgetExceededError
+from app.services.provider_ping import ProviderPingService
 from app.services.providers_service import ProviderService
 
 router = APIRouter(prefix="/providers", tags=["providers"])
@@ -169,6 +172,22 @@ def test_connection(
     provider_id: uuid.UUID, service: ProviderService = Depends(get_provider_service)
 ) -> dict:
     return {"data": service.test_connection(provider_id)}
+
+
+@router.post("/{provider_id}/ping", dependencies=[_write])
+def ping_provider(
+    provider_id: uuid.UUID,
+    service: ProviderPingService = Depends(get_provider_ping_service),
+) -> dict:
+    """Budget-gated connectivity ping (Founder-only, ORCH_WRITE).
+
+    A hard-stop budget breach aborts before the provider is contacted, surfaced as
+    HTTP 402 (charter §8); a successful ping records its tiny usage.
+    """
+    try:
+        return {"data": service.ping(provider_id)}
+    except BudgetExceededError as exc:
+        raise HTTPException(status_code=402, detail=f"Budget hard-stop: {exc}") from exc
 
 
 @router.post("/{provider_id}/secret", dependencies=[_write])
