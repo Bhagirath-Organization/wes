@@ -17,6 +17,7 @@ from datetime import datetime, timezone
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.db.knowledge_library_content import KNOWLEDGE_DOCS
 from app.domain.knowledge_enums import (
     ADRStatus,
     DocumentType,
@@ -191,10 +192,101 @@ def _now() -> datetime:
     return datetime.now(timezone.utc)
 
 
+def sync_knowledge_library(db: Session, *, commit: bool = True) -> int:
+    """Idempotently load the ratified SOPs + governed docs into the Knowledge Engine.
+
+    Mirrors the ``sync_prompt_*`` pattern for the 6 SOPs and 3 governed strategy
+    docs (PROMPT-SYS / FOUNDER-INTENT / COMPANY-PHILOSOPHY): each document is
+    inserted when missing and updated in place when its verbatim content, title,
+    summary, keywords, type, or category drifts — so the ratified text reaches
+    already-seeded databases without a destructive re-seed. The whole document is
+    stored verbatim (``app/db/knowledge_library_content.py``); on insert, and on
+    any content change, a ``KnowledgeVersion`` snapshot is recorded, and each
+    document carries a ``KnowledgeEmbeddingPlaceholder`` marking it ready for future
+    vectorization. Loaded ``APPROVED`` — these are Founder-ratified, merged docs.
+
+    Returns the number of documents written (0 when everything already matches). Set
+    ``commit=False`` to fold the writes into the caller's transaction (fresh seed).
+    """
+    cats = {c.code: c for c in db.scalars(select(KnowledgeCategory)).all()}
+    changed = 0
+    for spec in KNOWLEDGE_DOCS:
+        cat_id = cats[spec.category_code].id if spec.category_code in cats else None
+        doc = db.scalar(select(KnowledgeDocument).where(KnowledgeDocument.code == spec.code))
+        if doc is None:
+            doc = KnowledgeDocument(
+                code=spec.code,
+                slug=spec.code.lower(),
+                title=spec.title,
+                doc_type=spec.doc_type.value,
+                category_id=cat_id,
+                summary=spec.summary,
+                keywords=spec.keywords,
+                content=spec.content,
+                status=KnowledgeStatus.APPROVED,
+                version=1,
+                approved_at=_now(),
+            )
+            db.add(doc)
+            db.flush()
+            db.add(
+                KnowledgeVersion(
+                    document_id=doc.id,
+                    version=1,
+                    title=spec.title,
+                    content=spec.content,
+                    change_summary="Initial load of the ratified document.",
+                    status=KnowledgeStatus.APPROVED.value,
+                )
+            )
+            db.add(
+                KnowledgeEmbeddingPlaceholder(
+                    document_id=doc.id, status="pending", note="Awaiting semantic-search backend"
+                )
+            )
+            changed += 1
+            continue
+
+        content_changed = doc.content != spec.content
+        current_type = getattr(doc.doc_type, "value", doc.doc_type)
+        if (
+            content_changed
+            or doc.title != spec.title
+            or doc.summary != spec.summary
+            or doc.keywords != spec.keywords
+            or current_type != spec.doc_type.value
+            or doc.category_id != cat_id
+        ):
+            doc.title = spec.title
+            doc.summary = spec.summary
+            doc.keywords = spec.keywords
+            doc.doc_type = spec.doc_type.value
+            doc.category_id = cat_id
+            if content_changed:
+                doc.content = spec.content
+                doc.version += 1
+                db.add(
+                    KnowledgeVersion(
+                        document_id=doc.id,
+                        version=doc.version,
+                        title=spec.title,
+                        content=spec.content,
+                        change_summary="Synced to the ratified document.",
+                        status=KnowledgeStatus.APPROVED.value,
+                    )
+                )
+            changed += 1
+    if changed and commit:
+        db.commit()
+    return changed
+
+
 def seed_knowledge(db: Session) -> None:
     """Seed categories, documents, graph, ADRs, and a collection. Idempotent."""
-    # Skip if already seeded.
+    # Skip if already seeded — but still load the ratified SOPs + governed docs in
+    # place so they reach existing databases without a destructive re-seed.
     if db.scalar(select(KnowledgeCategory).where(KnowledgeCategory.code == "KC-COMPANY")):
+        sync_knowledge_library(db)
         return
 
     author = db.scalar(select(Employee).order_by(Employee.employee_code))  # may be None in tests
@@ -333,4 +425,7 @@ def seed_knowledge(db: Session) -> None:
                 collection_id=collection.id, document_id=docs[code].id, position=pos
             )
         )
+
+    # Load the ratified SOPs + governed docs. Commit is deferred to the orchestrator.
+    sync_knowledge_library(db, commit=False)
     db.flush()
