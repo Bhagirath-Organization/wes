@@ -5,7 +5,7 @@
 | **Document ID** | PROMPT-ESC (doc 26 of 27) |
 | **Prompt Type** | `ESCALATION` (WES Prompt Library `PromptTemplate`; code `PROMPT-ESC`) |
 | **Author** | WES Constitutional Committee |
-| **Status** | Draft — Founder ratification pending |
+| **Status** | Ratified — `WES-DEC-008` (2026-08-04) |
 | **Governance** | Shared activity prompt. Injected at runtime **alongside** `PROMPT-SYS-CORE` (the Constitution) **and** your Role Prompt. It carries only the **structure** of an escalation — no Constitution content (triggers/authority live there), no role content (your reporting line is in your Role Prompt). |
 | **Version** | 1.0 — 2026-08-04 |
 

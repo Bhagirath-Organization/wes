@@ -4,7 +4,7 @@
 |-------|--------|
 | **Document ID** | FOUNDER-INTENT (doc 03 of 27) |
 | **Author** | Founder / Owner (Mahesh) — drafted from the Founder's own words; AI formatted only |
-| **Status** | Draft — Founder ratification pending |
+| **Status** | Ratified — `WES-DEC-003` (2026-08-04) |
 | **Governance** | External governed document per Constitution §12. Retrieved by every AI Employee before significant decisions. Changes only by Founder decision, recorded as WES-DEC-###. |
 | **Version** | 1.0 — 2026-08-04 |
 

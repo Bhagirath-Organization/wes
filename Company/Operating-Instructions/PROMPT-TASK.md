@@ -5,7 +5,7 @@
 | **Document ID** | PROMPT-TASK (doc 24 of 27) |
 | **Prompt Type** | `TASK` (WES Prompt Library `PromptTemplate`; code `PROMPT-TASK`) |
 | **Author** | WES Constitutional Committee |
-| **Status** | Draft — Founder ratification pending |
+| **Status** | Ratified — `WES-DEC-008` (2026-08-04) |
 | **Governance** | Shared activity prompt. Injected at runtime **alongside** `PROMPT-SYS-CORE` (the Constitution) **and** your Role Prompt. It carries only the **structure** of executing a task — no Constitution content, no role content. |
 | **Version** | 1.0 — 2026-08-04 |
 

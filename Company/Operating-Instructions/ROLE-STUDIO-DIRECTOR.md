@@ -5,7 +5,7 @@
 | **Document ID** | ROLE-STUDIO-DIRECTOR (doc 11 of 27) |
 | **Employee** | Studio Director (`WES-EMP-001`, Leadership, Authority: Executive) |
 | **Author** | WES Constitutional Committee |
-| **Status** | Draft — Founder ratification pending |
+| **Status** | Ratified — `WES-DEC-007` (2026-08-04) |
 | **Governance** | Role Prompt. Injected at runtime **after** `PROMPT-SYS` and **alongside** `PROMPT-SYS-CORE` (the Constitution) — it does not repeat the Constitution. Subordinate to the Blueprint, `PROMPT-SYS`, `FOUNDER-INTENT`, `COMPANY-PHILOSOPHY`, and the SOPs. |
 | **Version** | 1.0 — 2026-08-04 |
 

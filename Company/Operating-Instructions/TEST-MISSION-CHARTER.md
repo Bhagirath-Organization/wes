@@ -4,7 +4,7 @@
 |-------|--------|
 | **Document ID** | TEST-MISSION-CHARTER (doc 27 of 27) |
 | **Author** | WES Constitutional Committee |
-| **Status** | Draft — Founder ratification pending |
+| **Status** | Ratified — `WES-DEC-010` (2026-08-08) |
 | **Governance** | Governed charter for the first live mission. Subordinate to the Blueprint, `PROMPT-SYS`, `FOUNDER-INTENT`, `COMPANY-PHILOSOPHY`, and the SOPs. |
 | **Version** | 1.0 — 2026-08-04 |
 

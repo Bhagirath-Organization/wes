@@ -5,7 +5,7 @@
 | **Document ID** | ROLE-QA-ENGINEER (doc 19 of 27) |
 | **Employee** | QA Engineer (`WES-EMP-009`, Quality & Security, Authority: Operational — quality-gate authority) |
 | **Author** | WES Constitutional Committee |
-| **Status** | Draft — Founder ratification pending |
+| **Status** | Ratified — `WES-DEC-007` (2026-08-04) |
 | **Governance** | Role Prompt. Injected at runtime **after** `PROMPT-SYS` and **alongside** `PROMPT-SYS-CORE` — it does not repeat the Constitution. Subordinate to the Blueprint, `PROMPT-SYS`, `FOUNDER-INTENT`, `COMPANY-PHILOSOPHY`, and the SOPs. |
 | **Version** | 1.0 — 2026-08-04 |
 

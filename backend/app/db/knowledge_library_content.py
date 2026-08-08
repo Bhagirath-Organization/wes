@@ -35,7 +35,7 @@ SOP_CODING = """# SOP-CODING — Standard Operating Procedure for Software Devel
 |-------|--------|
 | **Document ID** | SOP-CODING (doc 05 of 27) |
 | **Author** | WES Engineering Standards Committee |
-| **Status** | Draft — Founder ratification pending |
+| **Status** | Ratified — `WES-DEC-005` (2026-08-04) |
 | **Governance** | Procedure only. Subordinate to the Blueprint, `PROMPT-SYS`/`PROMPT-SYS-CORE`, `FOUNDER-INTENT`, `COMPANY-PHILOSOPHY`. Where those state a rule, this SOP cites it and does not restate it. |
 | **Authority order** | Blueprint → PROMPT-SYS / PROMPT-SYS-CORE → FOUNDER-INTENT → COMPANY-PHILOSOPHY → this SOP |
 | **Version** | 1.0 — 2026-08-04 |
@@ -126,7 +126,7 @@ SOP_REVIEW = """# SOP-REVIEW — Standard Operating Procedure for Review
 |-------|--------|
 | **Document ID** | SOP-REVIEW (doc 06 of 27) |
 | **Author** | WES Engineering Standards Committee |
-| **Status** | Draft — Founder ratification pending |
+| **Status** | Ratified — `WES-DEC-005` (2026-08-04) |
 | **Governance** | Procedure only. Subordinate to the Blueprint, `PROMPT-SYS`/`PROMPT-SYS-CORE`, `FOUNDER-INTENT`, `COMPANY-PHILOSOPHY`, and `SOP-CODING`. Where those state a rule, this SOP cites it and does not restate it. |
 | **Authority order** | Blueprint → PROMPT-SYS / PROMPT-SYS-CORE → FOUNDER-INTENT → COMPANY-PHILOSOPHY → SOPs |
 | **Version** | 1.0 — 2026-08-04 |
@@ -206,7 +206,7 @@ SOP_TESTING = """# SOP-TESTING — Standard Operating Procedure for Testing
 |-------|--------|
 | **Document ID** | SOP-TESTING (doc 07 of 27) |
 | **Author** | WES Engineering Standards Committee |
-| **Status** | Draft — Founder ratification pending |
+| **Status** | Ratified — `WES-DEC-005` (2026-08-04) |
 | **Governance** | Procedure only. Subordinate to the Blueprint, `PROMPT-SYS`/`PROMPT-SYS-CORE`, `FOUNDER-INTENT`, `COMPANY-PHILOSOPHY`, `SOP-CODING`, `SOP-REVIEW`. Where those state a rule, this SOP cites it and does not restate it. |
 | **Authority order** | Blueprint → PROMPT-SYS / PROMPT-SYS-CORE → FOUNDER-INTENT → COMPANY-PHILOSOPHY → SOPs |
 | **Version** | 1.0 — 2026-08-04 |
@@ -275,7 +275,7 @@ SOP_DEPLOYMENT = """# SOP-DEPLOYMENT — Standard Operating Procedure for Deploy
 |-------|--------|
 | **Document ID** | SOP-DEPLOYMENT (doc 08 of 27) |
 | **Author** | WES Engineering Standards Committee |
-| **Status** | Draft — Founder ratification pending |
+| **Status** | Ratified — `WES-DEC-005` (2026-08-04) |
 | **Governance** | Procedure only. Subordinate to the Blueprint, `PROMPT-SYS`/`PROMPT-SYS-CORE`, `FOUNDER-INTENT`, `COMPANY-PHILOSOPHY`, `SOP-CODING`, `SOP-TESTING`. Where those state a rule, this SOP cites it and does not restate it. |
 | **Authority order** | Blueprint → PROMPT-SYS / PROMPT-SYS-CORE → FOUNDER-INTENT → COMPANY-PHILOSOPHY → SOPs |
 | **Version** | 1.0 — 2026-08-04 |
@@ -345,7 +345,7 @@ SOP_DOCUMENTATION = """# SOP-DOCUMENTATION — Standard Operating Procedure for 
 |-------|--------|
 | **Document ID** | SOP-DOCUMENTATION (doc 09 of 27) |
 | **Author** | WES Engineering Standards Committee |
-| **Status** | Draft — Founder ratification pending |
+| **Status** | Ratified — `WES-DEC-005` (2026-08-04) |
 | **Governance** | Procedure only. Subordinate to the Blueprint, `PROMPT-SYS`/`PROMPT-SYS-CORE`, `FOUNDER-INTENT`, `COMPANY-PHILOSOPHY`, and the other SOPs. Where those state a rule, this SOP cites it and does not restate it. |
 | **Authority order** | Blueprint → PROMPT-SYS / PROMPT-SYS-CORE → FOUNDER-INTENT → COMPANY-PHILOSOPHY → SOPs |
 | **Version** | 1.0 — 2026-08-04 |
@@ -414,7 +414,7 @@ SOP_SECURITY = """# SOP-SECURITY — Standard Operating Procedure for Security
 |-------|--------|
 | **Document ID** | SOP-SECURITY (doc 10 of 27) |
 | **Author** | WES Engineering Standards Committee |
-| **Status** | Draft — Founder ratification pending |
+| **Status** | Ratified — `WES-DEC-005` (2026-08-04) |
 | **Governance** | Procedure only. Subordinate to the Blueprint, `PROMPT-SYS`/`PROMPT-SYS-CORE`, `FOUNDER-INTENT`, `COMPANY-PHILOSOPHY`, and the other SOPs. Where those state a rule, this SOP cites it and does not restate it. |
 | **Authority order** | Blueprint → PROMPT-SYS / PROMPT-SYS-CORE → FOUNDER-INTENT → COMPANY-PHILOSOPHY → SOPs |
 | **Version** | 1.0 — 2026-08-04 |
@@ -1068,7 +1068,7 @@ FOUNDER_INTENT = """# FOUNDER-INTENT — v1.0
 |-------|--------|
 | **Document ID** | FOUNDER-INTENT (doc 03 of 27) |
 | **Author** | Founder / Owner (Mahesh) — drafted from the Founder's own words; AI formatted only |
-| **Status** | Draft — Founder ratification pending |
+| **Status** | Ratified — `WES-DEC-003` (2026-08-04) |
 | **Governance** | External governed document per Constitution §12. Retrieved by every AI Employee before significant decisions. Changes only by Founder decision, recorded as WES-DEC-###. |
 | **Version** | 1.0 — 2026-08-04 |
 
@@ -1142,7 +1142,7 @@ COMPANY_PHILOSOPHY = """# COMPANY-PHILOSOPHY — v1.0
 |-------|--------|
 | **Document ID** | COMPANY-PHILOSOPHY (doc 04 of 27) |
 | **Author** | Founder / Owner (Mahesh) — values confirmed by the Founder; AI formatted only |
-| **Status** | Draft — Founder ratification pending |
+| **Status** | Ratified — `WES-DEC-003` (2026-08-04) |
 | **Governance** | External governed document per Constitution §12. Retrieved by every AI Employee before significant decisions. Changes only by Founder decision, recorded as WES-DEC-###. |
 | **Sources** | Blueprint Vol 01 (Core Values), Vol 04 (Engineering Philosophy), Vol 08 (Quality Philosophy) + two Founder additions |
 | **Version** | 1.0 — 2026-08-04 |
