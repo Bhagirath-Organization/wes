@@ -4,7 +4,7 @@
 |-------|--------|
 | **Document ID** | COMPANY-PHILOSOPHY (doc 04 of 27) |
 | **Author** | Founder / Owner (Mahesh) — values confirmed by the Founder; AI formatted only |
-| **Status** | Draft — Founder ratification pending |
+| **Status** | Ratified — `WES-DEC-003` (2026-08-04) |
 | **Governance** | External governed document per Constitution §12. Retrieved by every AI Employee before significant decisions. Changes only by Founder decision, recorded as WES-DEC-###. |
 | **Sources** | Blueprint Vol 01 (Core Values), Vol 04 (Engineering Philosophy), Vol 08 (Quality Philosophy) + two Founder additions |
 | **Version** | 1.0 — 2026-08-04 |

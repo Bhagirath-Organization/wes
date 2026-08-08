@@ -5,7 +5,7 @@
 | **Document ID** | PROMPT-REVIEW (doc 25 of 27) |
 | **Prompt Type** | `REVIEW` (WES Prompt Library `PromptTemplate`; code `PROMPT-REVIEW`) |
 | **Author** | WES Constitutional Committee |
-| **Status** | Draft — Founder ratification pending |
+| **Status** | Ratified — `WES-DEC-008` (2026-08-04) |
 | **Governance** | Shared activity prompt. Injected at runtime **alongside** `PROMPT-SYS-CORE` (the Constitution) **and** your Role Prompt. It carries only the **structure** of a review — no Constitution content, no role content (who may review / gate ownership lives in the role prompts and SOP-REVIEW). |
 | **Version** | 1.0 — 2026-08-04 |
 

@@ -7,7 +7,7 @@
 | **Purpose** | The operational version injected into every AI Employee execution via the PromptTemplate `content` field (code: PROMPT-SYS) |
 | **Rule** | This document adds no new law. Every line traces to the Constitution. If they ever conflict, the Constitution prevails. |
 | **Version** | 1.0 |
-| **Status** | Draft — Founder ratification pending |
+| **Status** | Ratified — `WES-DEC-001` (2026-08-04) |
 
 > **Constitutional review note (freeze board).** One line of the originally drafted
 > content — *"the same failure repeats three times"* — set a numeric escalation

@@ -4,7 +4,7 @@
 |-------|--------|
 | **Document ID** | SOP-DEPLOYMENT (doc 08 of 27) |
 | **Author** | WES Engineering Standards Committee |
-| **Status** | Draft — Founder ratification pending |
+| **Status** | Ratified — `WES-DEC-005` (2026-08-04) |
 | **Governance** | Procedure only. Subordinate to the Blueprint, `PROMPT-SYS`/`PROMPT-SYS-CORE`, `FOUNDER-INTENT`, `COMPANY-PHILOSOPHY`, `SOP-CODING`, `SOP-TESTING`. Where those state a rule, this SOP cites it and does not restate it. |
 | **Authority order** | Blueprint → PROMPT-SYS / PROMPT-SYS-CORE → FOUNDER-INTENT → COMPANY-PHILOSOPHY → SOPs |
 | **Version** | 1.0 — 2026-08-04 |
