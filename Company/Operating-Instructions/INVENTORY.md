@@ -52,7 +52,7 @@ on the production database. No live database has been touched.
 | 24 | `PROMPT-TASK` | Task Execution Prompt (Batch-4 shared) | 1.0 | **Ratified** (`WES-DEC-008`, 2026-08-04) | `Company/Operating-Instructions/PROMPT-TASK.md` |
 | 25 | `PROMPT-REVIEW` | Review Prompt (Batch-4 shared) | 1.0 | **Ratified** (`WES-DEC-008`, 2026-08-04) | `Company/Operating-Instructions/PROMPT-REVIEW.md` |
 | 26 | `PROMPT-ESC` | Escalation Prompt (Batch-4 shared) | 1.0 | **Ratified** (`WES-DEC-008`, 2026-08-04) | `Company/Operating-Instructions/PROMPT-ESC.md` |
-| 27 | `TEST-MISSION-CHARTER` | First Live End-to-End Mission (Batch-5) | 1.0 | **Draft** (batch-5) | `Company/Operating-Instructions/TEST-MISSION-CHARTER.md` |
+| 27 | `TEST-MISSION-CHARTER` | First Live End-to-End Mission (Batch-5) | 1.0 | **Ratified** (`WES-DEC-010`, 2026-08-08) | `Company/Operating-Instructions/TEST-MISSION-CHARTER.md` |
 
 ## Decision Records
 
@@ -66,6 +66,8 @@ on the production database. No live database has been touched.
 | `WES-DEC-006` | AI-employee authority → RBAC role mapping (Executive→DIRECTOR, Lead→DEPARTMENT_HEAD, Operational→EMPLOYEE) | 2026-08-04 | `Company/Decision-Records/WES-DEC-006.md` |
 | `WES-DEC-007` | Ratification of the Role Prompt Library (role prompts 11–23) by the Founder | 2026-08-04 | `Company/Decision-Records/WES-DEC-007.md` |
 | `WES-DEC-008` | Ratification of the shared activity prompts (PROMPT-TASK/REVIEW/ESC, docs 24–26) by the Founder | 2026-08-04 | `Company/Decision-Records/WES-DEC-008.md` |
+| `WES-DEC-009` | Mission budget enforcement: per-run $5 + hard_stop supersedes charter "all limits $5" (pre-existing live usage) | 2026-08-07 | `Company/Decision-Records/WES-DEC-009.md` |
+| `WES-DEC-010` | TEST-MISSION-01 outcome accepted; doc 27 ratification recorded; reconciliation roadmap ratified | 2026-08-08 | `Company/Decision-Records/WES-DEC-010.md` |
 
 ## Code / integration changes
 
@@ -76,6 +78,12 @@ on the production database. No live database has been touched.
 | Batch-1 (strategy): `FOUNDER-INTENT` + `COMPANY-PHILOSOPHY` (docs 03–04) | **#3** | **Merged (squash)** `43bb56b` on 2026-08-04 | **NO — docs only, no deploy** |
 | Batch-2 (SOPs): `WES-DEC-003` + SOPs 05–10 | **#4** | **Merged (squash)** `714fdf5` on 2026-08-04 | **NO — docs only, no deploy** |
 | CI coverage enforcement (WES-DEC-004): `pytest-cov` + `scripts/test.sh --cov-fail-under=71` | **#5** | **Merged (squash)** `0f661a8` on 2026-08-04 | **NO — CI tooling; no deploy** |
+| Batch-3 docs (WES-DEC-005 + role prompts 11–23) | **#6** | **Merged (squash)** `65681cf` on 2026-08-04 | **NO — docs only** |
+| Batch-4 docs (WES-DEC-007 + shared prompts 24–26) | **#7** | **Merged (squash)** `2322fbe` on 2026-08-04 | **NO — docs only** |
+| Batch-5 docs (WES-DEC-008 + `TEST-MISSION-CHARTER`) | **#8** | **Merged (squash)** `9846f04` on 2026-08-06 | **NO — docs only** |
+| Pre-flight 1: seed ratified Prompt Library (13 roles + TASK/REVIEW/ESC) via `sync_prompt_library()` — verbatim operative bodies | **#9** | **Merged (squash)** `d03325d` on 2026-08-06 | **Green (dev) only** — mission rebuild 2026-08-07, Founder-approved; production held |
+| Pre-flight 2: load 6 SOPs + 3 governed docs into the Knowledge Engine via `sync_knowledge_library()` — verbatim full files | **#10** | **Merged (squash)** `bb97438` on 2026-08-07 | **Green (dev) only** — same rebuild; production held |
+| Pre-flight 3: budget-gated provider ping (`ProviderPingService` + `POST /providers/{id}/ping`, Founder-only) | **#11** | **Merged (squash)** `aebb0dd` on 2026-08-07 | **Green (dev) only** — same rebuild; production held |
 
 ## Verification log
 
@@ -86,11 +94,40 @@ on the production database. No live database has been touched.
   — is **environment-only** (`GitHubService.configured()` false without the App key) and **unrelated
   to this change**. Note: this checkout's backend suite is **461** tests (not the earlier "922" figure).
 
-## Pending actions — for the combined FINAL deploy (end of phase)
+## Live-mission findings — TEST-MISSION-01 (2026-08-07; accepted by WES-DEC-010)
 
-1. Deploy merged `main` to green (production) — **Founder-gated**, held until phase end.
-2. On deploy, confirm `PROMPT-SYS` **v2** appears in the live `/execution` Prompt Library
-   (`sync_prompt_sys()` updates it in place; no destructive re-seed).
+Recorded spend **$0.0855** (gated ping + 5 runs on `claude-opus-4-8`, ~$0.017 each) vs the $5/run cap
+(WES-DEC-009). Evidence lives in the green DB (project `TEST-MISSION-01`; runs
+`2e2cae92/5824c178/aa2d84d2/02fd8d61/274c9a1a`; thread messages retained per charter §7).
+
+| # | Finding | Status |
+|---|---------|--------|
+| F1 | Green env was 3 days stale (image predated all pre-flight merges; libraries unseeded) | Fixed 2026-08-07 — rebuilt from `main aebb0dd` (+2 inert ATLAS migration files, zero ATLAS app code), idempotent seed synced (18 templates / SYS v2 / 13 roles / 9 governed docs) |
+| F2 | Founder's earlier "ping" was reachability-only `/test` | Superseded — real budget-gated ping run ($0.000111, 21 tok, 1452 ms) |
+| F3 | `python -m app.db.seed` prints "Seed skipped" while the sync upserts DO run | Open (misleading CLI message) |
+| F4 | Budget was daily=$50/monthly=$1000/max=$5 vs charter "all limits $5" | Closed by **WES-DEC-009** (per-run $5 + hard_stop is the mission enforcement) |
+| F5 | Intake endpoint: sync >60s; client timeout orphans a request that later COMMITS; duplicate-code retry → 63 s lock wait → `UniqueViolation` → bodyless 500 | Open (engineering item; UI's async decompose path avoids it) |
+| **F6** | Executive-reasoning/planning LLM calls record **no** `provider_usage` — real spend invisible to budget counters (orchestration path records correctly) | Open — scoped PR, roadmap step 4 |
+| F7 | Unhandled 500s produce empty bodies and **zero server logs** | Open (observability item) |
+| F8 | Executive report mixes mission data with company-wide seed aggregates; similar-projects retrieval surfaces demo noise | Open (report scoping) |
+| **F9** | **CENTRAL (charter §6.1):** composed prompts contain **none** of the ratified stack — no `PROMPT-SYS-CORE`, no `ROLE-*`, no `PROMPT-TASK`; runtime SOP = one-line `sop_library` stub; `prompt_version v1` | Open — **roadmap step 3: fix + mission run #2 as one package; wiring "complete" only when run #2's composed prompt shows CORE + ROLE + TASK** |
+| F10 | Orchestration output is text only — charter §5's PR→merge gate unreachable by the engine (Development Engine exists, unverified end-to-end) | Open — scoped PR, roadmap step 4 |
+| F11 | No inter-task artifact handoff (T004 proved it; fresh thread per task, `prior=[]`) | Open — scoped PR, roadmap step 4 |
+| F12 | RBAC reality (§6.3/§6.4): AI employees are not API principals — permission walls face human operators (run/review = `exec:write` Director+); Operational read-only never engaged | Recorded — reframes the watch-trio items below |
+| §6.5 | `seed_ai` divergence **confirmed live**: plan assigned to Ada/Turing/… ("AI CEO/CTO"); injected prompt says "You are Turing, AI CTO"; founder login is `WES-EMP-001 "Studio Director"` | Open — Founder reconciliation decision pending |
+| §6.2 | Retrieval logged (13 rows/run) and surfaced ratified docs — but titles/summaries only; keyword LIKE; SOP slot `limit=5` of 6 | Open (retrieval wiring/depth) |
+| + | Positives: QA plan-review verdict genuinely gated (plan blocked until Founder decision); executive reasoning quality high (caught the limit-vs-suffix ambiguity, unicode grapheme risk); T004 honestly reported missing inputs; review verdicts recorded (T004 `returned`) | — |
+| + | Workflow gap: review outcomes do not advance `work_item.status` (tasks stuck `in_progress`) | Open (minor) |
+
+## Pending actions — the reconciliation roadmap (WES-DEC-010, ordered)
+
+1. **This docs PR** — findings ledger, WES-DEC-009/010, Status-line corrections. ✔ on merge
+2. **Governed `truncate()` PR** — mission artifacts (T001 spec, T002 impl, T003 tests) → real
+   SOP-CODING engineering PR, Founder-merged (the charter's PR gate, human-governed).
+3. **F9 fix + mission run #2 — one package**; wiring proven only by run #2's composed prompt.
+4. **F6 / F10 / F11** — one scoped engineering PR each.
+5. **Combined production deploy — LAST, Founder-decided on evidence.** On deploy, confirm
+   `PROMPT-SYS` v2 + the ratified libraries appear live (idempotent syncs; no destructive re-seed).
 
 ## Open items
 
@@ -102,7 +139,11 @@ on the production database. No live database has been touched.
   **PR #5 merged** `0f661a8`).
 - **Frontend coverage floor** — deferred (WES-DEC-004); set by ratchet after the frontend suite
   matures (revisit at the end of the Operating Instructions phase).
-- **Watch (doc 27 live test):** Operational roles map to `EMPLOYEE` = **read-only** (WES-DEC-006).
+- **Watch (doc 27 live test) — OBSERVED 2026-08-07, reframed by F12:** the live mission showed AI
+  employees are **not API principals** — every action executed under the human operator's token, so
+  the trio's permission walls face humans (`exec:write` Director+), and Operational read-only never
+  engaged at runtime. The original framing below is retained for the record; the reconciliation now
+  rides the WES-DEC-010 roadmap. Original: Operational roles map to `EMPLOYEE` = **read-only** (WES-DEC-006).
   Observe in the doc 27 live end-to-end test (`TEST-MISSION-CHARTER`) whether this creates runtime
   friction — i.e. whether Operational employees' work flows cleanly through the gated workflow, or
   whether the read-only constraint needs a codified exception. Record the observation as a Founder
@@ -111,7 +152,11 @@ on the production database. No live database has been touched.
   each have a core duty that maps to a **Lead/Director-level** permission they do not hold as Operational
   (`EMPLOYEE`); all three role prompts frame this as draft/prepare/verify (verdict), not an invented
   grant — these are the primary cases to watch and reconcile.
-- **Code vs canonical role naming — phase-end reconciliation (Founder decision).**
+- **Code vs canonical role naming — CONFIRMED LIVE 2026-08-07 (mission §6.5):** the plan assigned
+  tasks to the `seed_ai` cast (Ada/Turing/Hopper/… under "AI CEO / AI CTO") and the injected prompt
+  literally read "You are Turing, AI CTO"; the founder login is employee `WES-EMP-001 "Studio
+  Director"` with role=founder. Reconciliation remains a Founder decision (WES-DEC-010 roadmap).
+  Original item: **Code vs canonical role naming — phase-end reconciliation (Founder decision).**
   `backend/app/db/seed_ai.py` seeds a divergent AI-org model (roles `CEO` / `CTO` / `Chief
   Architect`, 12 employees, no Prompt Engineer / Project Manager) that does **not** match the
   canonical 13-role org (Studio Director, …) in `Employees/`, Blueprint Vol 03, and `Company/`.
@@ -161,3 +206,8 @@ on the production database. No live database has been touched.
 | 2026-08-04 | **Batch-4 merged:** **PR #7 merged** to `main` (`2322fbe`) — Founder declared "merge = Batch-4 ratification". |
 | 2026-08-04 | **Batch-5 (test mission) — WES-DEC-008:** Founder **ratified** the shared activity prompts (docs 24–26); docs 24–26 marked **Ratified**. First commit of branch `docs/batch-5-test-mission`. Deploy held. |
 | 2026-08-04 | **Batch-5 (test mission):** doc 27 `TEST-MISSION-CHARTER` v1.0 committed (Draft) — **all 27 Operating-Instructions documents now authored.** Observation-run charter for the first live end-to-end mission (Claude provider; $5 hard cap; `truncate()` utility + tests proposed). Pre-flight is separate post-ratification SOP-CODING PRs; production deploy still held. Single Batch-5 PR next, on Founder approval. |
+| 2026-08-06 | **Batch-5 merged:** **PR #8 merged** to `main` (`9846f04`) — Founder declared "merge = Batch-5 ratification" (formally recorded in `WES-DEC-010`). Authoring phase closed: 27/27 documents merged. |
+| 2026-08-06 | **Pre-flight 1 merged:** **PR #9** (`d03325d`) — ratified Prompt Library seeded via `sync_prompt_library()` (verbatim operative bodies; byte-equality fidelity tests). 496 passed, cov 73.04%. |
+| 2026-08-07 | **Pre-flight 2 + 3 merged:** **PR #10** (`bb97438`) — 6 SOPs + 3 governed docs into the Knowledge Engine, verbatim full-file (509 passed, cov 73.12%); **PR #11** (`aebb0dd`) — budget-gated provider ping, Founder-only, hard-stop → 402 (515 passed, cov 73.20%). |
+| 2026-08-07 | **Live mission TEST-MISSION-01 executed** (charter §5): green rebuilt from `main` + seeded (Founder-approved; F1); real gated ping; intake → AI planning (real Claude) → internal review (QA **rejected**) → Founder gate (QA spec pinned to T001; plan approved) → 5 real executions (`claude-opus-4-8`, $0.0855 total) → review verdicts (T004 `returned`). Findings **F1–F12** recorded (ledger above); central finding **F9** — ratified stack not injected. Budget enforcement per `WES-DEC-009`. |
+| 2026-08-08 | **Post-mission reconciliation (this PR):** findings ledger added; `WES-DEC-009` (budget supersede) + `WES-DEC-010` (mission outcome, doc-27 ratification record, roadmap) created; doc 27 → **Ratified**; internal `Status: Draft` metadata corrected to **Ratified** across 26 docs; `knowledge_library_content.py` regenerated (verbatim full-file constants follow their sources). Deploy still held — roadmap step 5. |
