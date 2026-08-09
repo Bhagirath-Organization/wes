@@ -3,6 +3,7 @@
 import uuid
 
 from fastapi import APIRouter, Depends, status
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.api.deps import Pagination, get_db, get_work_service, pagination, require_permission
@@ -118,7 +119,33 @@ def project_plan(project_id: uuid.UUID, db: Session = Depends(get_db)) -> dict:
     return {"data": DecompositionService(db).plan(project_id)}
 
 
+class ApprovePlanIn(BaseModel):
+    """Optional single-approval payload (WES-DEC-011): plan + budget in one act."""
+
+    approved_budget: float | None = None
+
+
 @router.post("/{project_id}/approve-plan", dependencies=[_write])
-def approve_project_plan(project_id: uuid.UUID, db: Session = Depends(get_db)) -> dict:
-    """Founder approval of the decomposition plan (unlocks execution phases)."""
-    return {"data": DecompositionService(db).approve_plan(project_id)}
+def approve_project_plan(
+    project_id: uuid.UUID,
+    payload: ApprovePlanIn | None = None,
+    db: Session = Depends(get_db),
+) -> dict:
+    """Founder approval of the decomposition plan (unlocks execution phases).
+
+    With ``approved_budget`` this is the WES-DEC-011 single approval: the plan
+    AND its mission budget envelope are approved together; execution then runs
+    freely inside the envelope (80% notify, 100% hard-stop + escalation).
+    """
+    data = DecompositionService(db).approve_plan(project_id)
+    if payload is not None and payload.approved_budget is not None:
+        from app.services.mission_budget import MissionBudgetService
+
+        env = MissionBudgetService(db).approve(project_id, payload.approved_budget)
+        db.commit()
+        data["budget_envelope"] = {
+            "amount": env.max_cost,
+            "warning_threshold": env.warning_threshold,
+            "hard_stop": env.hard_stop,
+        }
+    return {"data": data}
