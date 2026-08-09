@@ -39,6 +39,7 @@ from app.services.budget_service import BudgetService
 from app.services.knowledge_search import RetrievalService
 from app.services.provider_platform import CostEngine, FailoverService, MetricsService
 from app.services.providers_service import ProviderService
+from app.services.role_prompt_map import role_prompt_code_for
 
 PROMPT_VERSION = "v1"
 MAX_ATTEMPTS = 2
@@ -80,6 +81,19 @@ class ContextBuilder:
                 sprint = self.db.get(ProjectSprint, work_item.sprint_id)
         sop = self.db.scalar(select(SOP).where(SOP.code == "SOP-CODE"))
         prompt = self.db.scalar(select(PromptTemplate).where(PromptTemplate.code == "PROMPT-TASK"))
+        # Governance injection (F9 wiring; WES-DEC-010 step 3): the ratified
+        # Constitution and the employee's ratified Role Prompt, fetched verbatim
+        # from the seeded Prompt Library. Missing rows / unmapped roles yield
+        # None and the composer falls back — nothing is invented.
+        constitution = self.db.scalar(
+            select(PromptTemplate).where(PromptTemplate.code == "PROMPT-SYS")
+        )
+        role_code = role_prompt_code_for(employee.role.title if employee.role else None)
+        role_prompt = (
+            self.db.scalar(select(PromptTemplate).where(PromptTemplate.code == role_code))
+            if role_code
+            else None
+        )
         rules = (
             list(
                 self.db.scalars(
@@ -134,6 +148,16 @@ class ContextBuilder:
             },
             "sop": {"title": sop.title, "content": sop.content} if sop else None,
             "prompt": {"code": prompt.code, "content": prompt.content} if prompt else None,
+            "constitution": (
+                {"content": constitution.content, "version": constitution.version}
+                if constitution
+                else None
+            ),
+            "role_prompt": (
+                {"code": role_prompt.code, "content": role_prompt.content}
+                if role_prompt
+                else None
+            ),
             "decision_rules": [
                 {
                     "type": r.rule_type.value if hasattr(r.rule_type, "value") else r.rule_type,
@@ -155,20 +179,64 @@ class PromptBuilder:
         self, context: dict, previous: list[Message] | None = None
     ) -> tuple[list[Message], str]:
         emp = context["employee"]
-        messages: list[Message] = [
-            Message(
-                role="system",
-                content=f"You are {emp['name']}, {emp['role']} at {context['organization']} Follow the SOP and decision rules.",
-            ),
-            Message(
-                role="system",
-                content=(
-                    "Responsibilities: " + "; ".join(emp["responsibilities"])
-                    if emp["responsibilities"]
-                    else "Responsibilities: role-defined."
-                ),
-            ),
-        ]
+        version = self.version
+        messages: list[Message] = []
+
+        # Governance layers (F9 wiring; WES-DEC-010 step 3) — the ratified
+        # content is injected VERBATIM from the seeded Prompt Library. The
+        # legacy hand-rolled persona lines are retired whenever the ratified
+        # layer is available; each layer falls back independently and honestly
+        # when its source is absent (missing seed row / unmapped role).
+        constitution = context.get("constitution")
+        if constitution:
+            messages.append(Message(role="system", content=constitution["content"]))
+            version = f"v{constitution['version']}"
+        else:
+            messages.append(
+                Message(
+                    role="system",
+                    content=f"You are {emp['name']}, {emp['role']} at {context['organization']} Follow the SOP and decision rules.",
+                )
+            )
+
+        role_prompt = context.get("role_prompt")
+        if role_prompt:
+            messages.append(
+                Message(
+                    role="system",
+                    content=(
+                        f"Your Role Prompt ({role_prompt['code']}) — you are "
+                        f"{emp['name']}, acting in this role:\n\n{role_prompt['content']}"
+                    ),
+                )
+            )
+        else:
+            # Unmapped role (e.g. AI CEO / AI CTO — Founder decision needed,
+            # see role_prompt_map.py): keep the minimal legacy persona; never
+            # invent a role grant.
+            if constitution:
+                messages.append(
+                    Message(
+                        role="system",
+                        content=f"You are {emp['name']}, {emp['role']} at {context['organization']}",
+                    )
+                )
+            messages.append(
+                Message(
+                    role="system",
+                    content=(
+                        "Responsibilities: " + "; ".join(emp["responsibilities"])
+                        if emp["responsibilities"]
+                        else "Responsibilities: role-defined."
+                    ),
+                )
+            )
+
+        # The ratified task-execution activity prompt (PROMPT-TASK), verbatim,
+        # whenever this run executes a concrete task.
+        activity = context.get("prompt")
+        if activity and context.get("task"):
+            messages.append(Message(role="system", content=activity["content"]))
         if context.get("sop"):
             messages.append(
                 Message(
@@ -226,7 +294,7 @@ class PromptBuilder:
             )
         for m in previous or []:
             messages.append(m)
-        return messages, self.version
+        return messages, version
 
 
 # --- Memory -------------------------------------------------------------
