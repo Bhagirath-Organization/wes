@@ -21,7 +21,6 @@ Founder never sees any of this; only the admin AI-Ops dashboard does.
 from __future__ import annotations
 
 import time
-import uuid
 from dataclasses import dataclass, field
 
 from sqlalchemy import func, select
@@ -110,9 +109,14 @@ class AIProviderOrchestrator:
 
     def __init__(self, db: Session):
         self.db = db
+        from app.services.provider_platform import CostEngine
         from app.services.providers_service import ProviderService
 
         self.providers = ProviderService(db)
+        # F6 (WES-DEC-010 step 4): every successful provider execution routed
+        # through this orchestrator — the executive-reasoning, dev-generation
+        # and consensus paths — records real usage so budget counters see it.
+        self.cost_engine = CostEngine(db)
 
     # -- capability registry (static + live health + learned) --------------
 
@@ -162,7 +166,7 @@ class AIProviderOrchestrator:
         if not rows:
             return {"success_rate": None, "avg_latency_ms": None, "requests": 0}
         ok = sum(1 for s, _ in rows if s)
-        lats = [l for _, l in rows if l]
+        lats = [lat for _, lat in rows if lat]
         return {
             "success_rate": round(ok / len(rows), 3),
             "avg_latency_ms": int(sum(lats) / len(lats)) if lats else None,
@@ -260,6 +264,7 @@ class AIProviderOrchestrator:
         attempts = 0
         last_error: Exception | None = None
         used: str | None = None
+        used_row = None
         result = None
         for name in decision.order:
             attempts += 1
@@ -273,6 +278,7 @@ class AIProviderOrchestrator:
                     last_error = RuntimeError(getattr(result, "error", "failed"))
                     continue
                 used = name
+                used_row = row
                 break
             except Exception as exc:  # provider failure -> fall back
                 last_error = exc
@@ -287,6 +293,12 @@ class AIProviderOrchestrator:
             raise RuntimeError(
                 f"All providers failed for '{task_type}' (tried {attempts}): {last_error}"
             )
+        # F6: record the real spend of this reasoning call (ProviderUsage +
+        # billing rollups), exactly like the orchestration pipeline does. No
+        # ExecutionRun exists on this path, so run_id stays None. Caveat
+        # (documented in the PR): recording shares the caller's transaction —
+        # a later rollback discards it with everything else.
+        self.cost_engine.record(used_row, result)
         return result, used
 
     # -- consensus across multiple providers -------------------------------
@@ -306,9 +318,13 @@ class AIProviderOrchestrator:
                 continue
             try:
                 r = row and self.providers.instance_for(row).execute(request)
+                ok = getattr(r, "status", "completed") != "failed"
+                if r is not None and ok:
+                    # F6: consensus calls are real spend too — meter each success.
+                    self.cost_engine.record(row, r)
                 answers.append({"provider": name, "output": getattr(r, "output", ""),
                                 "latency_ms": getattr(r, "latency_ms", None),
-                                "ok": getattr(r, "status", "completed") != "failed"})
+                                "ok": ok})
             except Exception as exc:
                 answers.append({"provider": name, "output": "", "ok": False,
                                 "error": str(exc)[:200]})
