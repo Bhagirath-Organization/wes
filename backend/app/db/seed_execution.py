@@ -12,6 +12,7 @@ from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 
 from app.db.prompt_library_content import GOVERNED_PROMPTS
+from app.db.sop_library_content import RATIFIED_SOPS
 from app.domain.execution_enums import (
     DecisionRuleType,
     ExecutionStatus,
@@ -235,13 +236,58 @@ def sync_prompt_library(db: Session, *, commit: bool = True) -> int:
     return changed
 
 
+def sync_sop_library(db: Session, *, commit: bool = True) -> int:
+    """Idempotently upsert the ratified SOP operative bodies into ``sop_library``.
+
+    Mirrors :func:`sync_prompt_library` for the six runtime SOP rows: each row's
+    content becomes the verbatim operative body of its ratified
+    ``Company/Operating-Instructions`` document (``app/db/sop_library_content.py``),
+    retiring the legacy one-line stubs in place — no destructive re-seed. Inserts
+    a missing row; repairs content/title/category/version drift.
+
+    Returns the number of rows written. ``commit=False`` folds the writes into
+    the caller's transaction (fresh seed).
+    """
+    changed = 0
+    for spec in RATIFIED_SOPS:
+        s = db.query(SOP).filter_by(code=spec.code).one_or_none()
+        if s is None:
+            db.add(
+                SOP(
+                    code=spec.code,
+                    title=spec.title,
+                    category=spec.category,
+                    content=spec.content,
+                    version=spec.version,
+                )
+            )
+            changed += 1
+            continue
+        current_cat = getattr(s.category, "value", s.category)
+        if (
+            s.content != spec.content
+            or s.title != spec.title
+            or current_cat != spec.category.value
+            or s.version != spec.version
+        ):
+            s.content = spec.content
+            s.title = spec.title
+            s.category = spec.category
+            s.version = spec.version
+            changed += 1
+    if changed and commit:
+        db.commit()
+    return changed
+
+
 def seed_execution(db: Session) -> bool:
     """Seed the execution engine. Returns True if seeded, False if already present."""
     if db.query(AIWorkspace).count() > 0:
         # Already seeded: still keep the governed prompts (Constitution + Role and
-        # activity prompts) current in place.
+        # activity prompts) and the ratified SOP bodies current in place.
         sync_prompt_sys(db)
         sync_prompt_library(db)
+        sync_sop_library(db)
         return False
 
     emps = {e.employee_code: e for e in db.query(AIEmployee).all()}
@@ -436,5 +482,6 @@ def seed_execution(db: Session) -> bool:
     # Upgrade the one-line activity placeholders to their verbatim ratified bodies
     # and add the 13 Role Prompts. Commit is deferred to the seed orchestrator.
     sync_prompt_library(db, commit=False)
+    sync_sop_library(db, commit=False)
 
     return True
