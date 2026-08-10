@@ -133,8 +133,23 @@ class FounderOSService:
             "milestones": [m["name"] for m in plan.get("epics", [])],
             "sprints": len(plan.get("sprints", [])),
             "workload": plan.get("totals", {}).get("estimated_hours"),
+            "budget_estimate": self._budget_estimate(project),
             "top_risks": [r.get("title") for r in (plan.get("risks") or [])[:5]],
         }
+
+    def _budget_estimate(self, project: Project) -> dict:
+        """WES-DEC-011: the intake-time envelope estimate that rides with the
+        plan so the Founder approves objective + plan + $X in one act."""
+        from app.models.work import WorkItem as _WI
+        from app.services.mission_budget import MissionBudgetService
+
+        tasks = (
+            self.db.scalar(
+                select(func.count(_WI.id)).where(_WI.project_id == project.id)
+            )
+            or 0
+        )
+        return MissionBudgetService(self.db).estimate(int(tasks))
 
     # ------------------------------------------------------------------
     # 2. Executive dashboard — business information only

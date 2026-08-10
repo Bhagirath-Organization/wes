@@ -298,7 +298,11 @@ class AIProviderOrchestrator:
         # ExecutionRun exists on this path, so run_id stays None. Caveat
         # (documented in the PR): recording shares the caller's transaction —
         # a later rollback discards it with everything else.
-        self.cost_engine.record(used_row, result)
+        # WES-DEC-011: attribute to the active mission when planning runs inside
+        # a mission_context, so envelope accounting sees reasoning spend.
+        from app.services.mission_budget import current_project_id
+
+        self.cost_engine.record(used_row, result, project_id=current_project_id())
         return result, used
 
     # -- consensus across multiple providers -------------------------------
@@ -321,7 +325,9 @@ class AIProviderOrchestrator:
                 ok = getattr(r, "status", "completed") != "failed"
                 if r is not None and ok:
                     # F6: consensus calls are real spend too — meter each success.
-                    self.cost_engine.record(row, r)
+                    from app.services.mission_budget import current_project_id
+
+                    self.cost_engine.record(row, r, project_id=current_project_id())
                 answers.append({"provider": name, "output": getattr(r, "output", ""),
                                 "latency_ms": getattr(r, "latency_ms", None),
                                 "ok": ok})

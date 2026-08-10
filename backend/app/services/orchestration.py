@@ -510,19 +510,67 @@ class OrchestrationService:
             )
         except Exception:  # pragma: no cover - estimation is best-effort
             est_cost = 0.0
-        decision = self.budget.check(estimated_cost=est_cost, estimated_tokens=est_tokens)
-        if not decision.allowed:
-            run.status = RunStatus.FAILED
-            run.error = f"Budget limit: {decision.reason}"
-            run.completed_at = _now()
-            self.metrics.record_event(
-                provider_row.id, "budget.blocked", decision.reason or "budget exceeded", "warning"
-            )
-            self.metrics.notify_founder(
-                provider_row.id, f"Execution blocked by budget: {decision.reason}"
-            )
-            self.db.flush()
-            return self.serialize_run(run)
+        # WES-DEC-011: a mission with an approved envelope is governed by the
+        # envelope ALONE — free run inside it (no per-call prompts, global
+        # per-run max_cost retired for covered runs), 80% notifies the Founder
+        # once, 100% hard-stops with the six-field escalation.
+        envelope_covered = False
+        if work_item is not None and work_item.project_id is not None:
+            from app.services.mission_budget import MissionBudgetService
+
+            mb = MissionBudgetService(self.db)
+            env_check = mb.check(work_item.project_id, estimated_next_call=est_cost)
+            envelope_covered = bool(env_check.get("covered"))
+            if envelope_covered and env_check["status"] == "exceeded":
+                project = self.db.get(Project, work_item.project_id)
+                code = project.code if project else str(work_item.project_id)
+                run.status = RunStatus.FAILED
+                run.error = f"Mission budget envelope exhausted ({env_check['pct']:.0%})."
+                run.completed_at = _now()
+                self.metrics.record_event(
+                    provider_row.id, "envelope.exceeded", f"mission {code}", "critical"
+                )
+                self.metrics.notify_founder(
+                    provider_row.id, mb.escalation_message(code, env_check)
+                )
+                self.db.flush()
+                return self.serialize_run(run)
+            if envelope_covered and env_check["status"] == "warn80":
+                # Notify once per mission (dedupe on a prior warn event).
+                from app.models.provider_platform import ProviderEvent
+
+                project = self.db.get(Project, work_item.project_id)
+                code = project.code if project else str(work_item.project_id)
+                already = self.db.scalar(
+                    select(ProviderEvent).where(
+                        ProviderEvent.event_type == "envelope.warn80",
+                        ProviderEvent.detail == f"mission {code}",
+                    )
+                )
+                if already is None:
+                    self.metrics.record_event(
+                        provider_row.id, "envelope.warn80", f"mission {code}", "warning"
+                    )
+                    self.metrics.notify_founder(
+                        provider_row.id,
+                        f"Mission {code} has used {env_check['pct']:.0%} of its "
+                        f"${env_check['amount']:.2f} budget envelope "
+                        f"(${env_check['spent']:.4f} spent).",
+                    )
+        if not envelope_covered:
+            decision = self.budget.check(estimated_cost=est_cost, estimated_tokens=est_tokens)
+            if not decision.allowed:
+                run.status = RunStatus.FAILED
+                run.error = f"Budget limit: {decision.reason}"
+                run.completed_at = _now()
+                self.metrics.record_event(
+                    provider_row.id, "budget.blocked", decision.reason or "budget exceeded", "warning"
+                )
+                self.metrics.notify_founder(
+                    provider_row.id, f"Execution blocked by budget: {decision.reason}"
+                )
+                self.db.flush()
+                return self.serialize_run(run)
 
         # Failover chain: primary first, then other enabled providers by priority.
         # An explicitly-requested provider is honored strictly (no silent failover);

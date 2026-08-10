@@ -39,6 +39,7 @@ from app.domain.work_enums import (
 from app.models.ai import AIEmployee, AIRole
 from app.models.work import Milestone, Project, ProjectSprint, WorkDependency, WorkItem
 
+
 def _loads(v: str | None) -> list:
     if not v:
         return []
@@ -202,6 +203,16 @@ class DecompositionService:
         if project.plan_status == "approved":
             raise ValidationError("Project plan is already approved; decomposition is locked.")
 
+        # WES-DEC-011: attribute every planning-chain provider call to this
+        # mission so the envelope sees reasoning spend (read by the provider
+        # orchestrator's metering).
+        from app.services.mission_budget import mission_context
+
+        with mission_context(project.id):
+            return self._decompose_inner(project)
+
+    def _decompose_inner(self, project: Project) -> dict:
+
         # Clear any prior (unapproved) decomposition so re-running is idempotent.
         for m in self.db.scalars(
             select(Milestone).where(Milestone.project_id == project.id)
@@ -265,7 +276,6 @@ class DecompositionService:
 
         # Phase 4: recall relevant company memory (similar past projects + learning
         # rules) so this plan reuses experience instead of starting from scratch.
-        from app.services.company_memory import CompanyMemoryService
 
         memory = CompanyMemoryService(self.db)
         memory_context = memory.planning_context(objective, exclude_project=project.id)
