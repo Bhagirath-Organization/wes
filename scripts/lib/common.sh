@@ -15,8 +15,10 @@ VENV_BIN="${VENV_DIR}/bin"
 
 # --- Configuration ---------------------------------------------------------
 BACKEND_HOST="127.0.0.1"
-BACKEND_PORT="8000"
-FRONTEND_PORT="5173"
+# Overridable via environment so the same checks run against any stack
+# (dev defaults below; green production: BACKEND_PORT=8001 FRONTEND_PORT=8081).
+BACKEND_PORT="${BACKEND_PORT:-8000}"
+FRONTEND_PORT="${FRONTEND_PORT:-5173}"
 BACKEND_URL="http://${BACKEND_HOST}:${BACKEND_PORT}"
 FRONTEND_URL="http://localhost:${FRONTEND_PORT}"
 SWAGGER_URL="${BACKEND_URL}/docs"
@@ -262,7 +264,11 @@ login_token() {
   local resp
   resp="$(curl -s -X POST "$API/auth/login" -H 'Content-Type: application/json' \
     -d "{\"email\":\"$DEV_EMAIL\",\"password\":\"$DEV_PASSWORD\"}" 2>/dev/null)"
-  WES_RESP="$resp" "$VENV_PY" -c "import os,json
+  # F13: fall back to system python3 when the project venv is absent (the JSON
+  # parse needs any Python, not the app environment).
+  local pybin="$VENV_PY"
+  [ -x "$pybin" ] || pybin="$(command -v python3)"
+  WES_RESP="$resp" "$pybin" -c "import os,json
 try:
     print(json.loads(os.environ['WES_RESP'])['data']['tokens']['access_token'])
 except Exception:
