@@ -109,10 +109,14 @@ def test_no_seed_at_all_keeps_legacy_v1_behaviour():
     assert any(c.startswith("You are Ritchie, Backend Engineer AI at") for c in joined)
 
 
-def test_previous_messages_still_appended():
+def test_previous_messages_precede_the_current_user_message():
+    # F14: prior conversation is replayed BEFORE the current user message so the
+    # request always ends with a user turn (Anthropic requirement).
     prior = [Message(role="assistant", content="earlier turn")]
     messages, _ = PromptBuilder().build(_ctx(), previous=prior)
-    assert messages[-1].content == "earlier turn"
+    assert messages[-1].role == "user"
+    assert any(m.content == "earlier turn" for m in messages)
+    assert [m.content for m in messages].index("earlier turn") < len(messages) - 1
 
 
 # --- DB-backed context (ContextBuilder) ------------------------------------
@@ -161,3 +165,25 @@ def test_run_stage_persists_governed_messages_end_to_end(db_session):
     assert contents[0] == PROMPT_SYS_CONTENT
     assert any(_content("ROLE-BACKEND-ENGINEER") in c for c in contents)
     assert mock_provider is not None  # the run really went through the provider layer
+
+
+def test_prior_system_messages_are_not_replayed():
+    # F14: only user/assistant turns replay; persisted system layers are NOT
+    # re-injected (governance is composed fresh each run — no doubling/staleness).
+    prior = [
+        Message(role="system", content="STALE governance copy"),
+        Message(role="assistant", content="prior answer"),
+    ]
+    messages, _ = PromptBuilder().build(_ctx(), previous=prior)
+    assert not any(m.content == "STALE governance copy" for m in messages)
+    assert any(m.content == "prior answer" for m in messages)
+
+
+def test_ends_with_user_message_even_with_assistant_tail_prior():
+    # The exact DEC-012 failure shape: a used thread whose last row is assistant.
+    prior = [
+        Message(role="user", content="run 1 task"),
+        Message(role="assistant", content="run 1 output"),
+    ]
+    messages, _ = PromptBuilder().build(_ctx(), previous=prior)
+    assert messages[-1].role == "user"  # would have been assistant before the fix
