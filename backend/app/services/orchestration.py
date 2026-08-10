@@ -273,6 +273,17 @@ class PromptBuilder:
                     ),
                 )
             )
+        # F14 fix: prior thread messages go BEFORE the current user message, and
+        # only the conversational turns are replayed. The old tail appended the
+        # raw thread history AFTER the user message, so any second run on a used
+        # thread ended with an assistant message — Anthropic rejects that with
+        # HTTP 400 ("must end with a user message"; found live at the DEC-012
+        # deploy gate). Filtering to user/assistant also stops re-injecting the
+        # thread's persisted system layers (governance is composed fresh above —
+        # replaying old copies doubled it and could resurrect stale content).
+        for m in previous or []:
+            if m.role in ("user", "assistant"):
+                messages.append(m)
         task = context.get("task")
         if task:
             messages.append(
@@ -292,8 +303,6 @@ class PromptBuilder:
                     role="user", content="Perform your assigned duties for the current project."
                 )
             )
-        for m in previous or []:
-            messages.append(m)
         return messages, version
 
 
