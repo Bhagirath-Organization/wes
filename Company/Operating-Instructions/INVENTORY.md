@@ -127,7 +127,13 @@ Recorded spend **$0.0855** (gated ping + 5 runs on `claude-opus-4-8`, ~$0.017 ea
 2. **Governed `truncate()` PR** — mission artifacts (T001 spec, T002 impl, T003 tests) → real
    SOP-CODING engineering PR, Founder-merged (the charter's PR gate, human-governed).
 3. **F9 fix + mission run #2 — one package**; wiring proven only by run #2's composed prompt.
-4. **F6 / F10 / F11** — one scoped engineering PR each.
+4. **F6 / F10 / F11** — one scoped engineering PR each. F10 proceeds design-first:
+   `Company/Designs/F10-EXECUTION-PR-BRIDGE.md` (Founder decisions A1/A2/A3 gate the PRs);
+   bridge scope explicitly includes lifecycle-truth advancement (dev-task pr_ready→merged,
+   mission work-items, project status) so the mission card reads reality post-F10.
+   **seed_ai reconciliation package scope (formal, Founder 2026-08-08):** CEO/CTO role mapping +
+   seed_ai→canonical renames + Learning Center refresh + orphan-tasks trace + **demo-data
+   archiving/era-tagging** + **envelope `approved_budget` UI affordance**.
 5. **Combined production deploy — LAST, Founder-decided on evidence.** On deploy, confirm
    `PROMPT-SYS` v2 + the ratified libraries appear live (idempotent syncs; no destructive re-seed).
 
