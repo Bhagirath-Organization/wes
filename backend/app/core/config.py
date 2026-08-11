@@ -64,6 +64,17 @@ class Settings(BaseSettings):
     # Default HTTP timeout (seconds) for live provider API calls.
     provider_http_timeout: float = 60.0
 
+    # --- Execution→PR Bridge (F10 design; decisions A1-a/A2-a/A3-a/A4) -----
+    # A4: author mailbox pattern for AI-authored commits ({employee} slug) and
+    # the mechanical committer identity. Configuration, never hard-coded.
+    bridge_author_mailbox_pattern: str = "bots+wes-{employee}@wes.studio"
+    bridge_committer_name: str = "wes-oi-app[bot]"
+    bridge_committer_email: str = "wes-oi-app[bot]@users.noreply.github.com"
+    # §C-2 rule 1: the live working tree the bridge must never touch.
+    bridge_live_tree_guard: str = "/opt/wes-green"
+    # A3-a gate floor (mirrors WES-DEC-004).
+    bridge_coverage_floor: int = 71
+
     # --- Autonomous Development Engine (Sprint 13) ---
     # Base directory for per-task git sandboxes. Every autonomous implementation
     # runs in a real, isolated git repository UNDER this path — never the WES,
