@@ -56,7 +56,11 @@ plan approved (+envelope, one act)                                 [exists ✓]
 Failure honesty at every step: a bridge that cannot parse, apply, or verify **stops and reports
 with evidence** — a failed bridge run is a valid outcome, never silently retried (charter ethos).
 
-## §C — Founder decisions (open — the PRs wait on these)
+## §C — Founder decisions
+
+**DECIDED (Founder, 2026-08-08): A1-a · A2-a · A3-a — all three recommendations approved.**
+The option tables remain for the record; **A4 was identified as missing and ruled by the Founder
+in the same review** (below).
 
 ### A1 — Which lane drives the bridge?
 | Option | Description | Trade-off |
@@ -79,7 +83,63 @@ with evidence** — a failed bridge run is a valid outcome, never silently retri
 | A3-b | Targeted tests only (changed-path) | Faster, weaker; regression risk rides to the PR |
 | A3-c | QA-employee verdict run replaces automated gate | Governance-pure but puts an LLM verdict where a deterministic gate belongs |
 
-## §D — Scoped-PR rollout (after A1/A2/A3)
+### A4 — Commit attribution (Founder ruling, 2026-08-08)
+**Ruled with the design review** (was missing from the draft): every bridge-authored commit
+carries the human-vs-AI distinction **permanently in git history**, plus machine-parseable
+provenance:
+
+- **Author** = the AI employee who produced the approved artifact, in the form
+  `<Name> (WES <Role>) <bots+wes-<employee>@…>` (mailbox pattern design-level; exact domain set
+  at implementation from configuration, never hard-coded).
+- **Committer** = the App-token identity (the mechanical actor), unchanged from WES-DEC-002
+  practice.
+- **Trailers** (machine-parseable, always both):
+  `WES-Run: <run_id>` and `WES-Mission: <mission_id>`.
+
+**git-log preview (the exact shape the bridge writes):**
+
+```
+commit 3f9c2ab7…
+Author: Ritchie (WES Backend Engineer) <bots+wes-ritchie@wes.studio>
+Commit: wes-oi-app[bot] <wes-oi-app[bot]@users.noreply.github.com>
+
+    feat(core): is_blank() text predicate (bridge, TEST-MISSION-01)
+
+    <body per SOP-CODING: what/why, acceptance criteria mapping,
+    verification summary — the discipline every phase PR already carries>
+
+    WES-Run: 7aa4d3a7-eb1f-4371-8ac0-d77bdfd7d8c6
+    WES-Mission: f61b198c-e30e-4540-bb82-0a90221f9551
+```
+
+One glance at `git log` answers "human or AI?" forever; one `git log --format=%(trailers)` feeds
+any future provenance tooling. PR-1 implements this format; a test pins author/committer split
+and both trailers.
+
+## §C-2 — Sandbox hard rules (explicit, Founder-confirmed 2026-08-08)
+The bridge operates ONLY in an isolated checkout it creates and owns. Non-negotiable, testable:
+
+1. **Never the live working tree** — the bridge never reads from or writes to `/opt/wes-green`'s
+   working tree; it clones/checks out into its own sandbox path per run.
+2. **Never ATLAS files** — the standing ruling holds mechanically: the bridge's apply step
+   REFUSES any artifact touching ATLAS paths (`app/api/v1/{planning,engineering}.py`,
+   `app/services/{execution_planning,engineering_execution}.py`, `app/models/{planning,
+   engineering}.py`, `alembic/versions/003{0,1}_*atlas*`, `.s*.txt`) — refusal, not skip.
+3. **Never force-push** (PROMPT-SYS §9) — mechanically absent: the bridge has no force flag.
+4. **Never push to `main`** (PROMPT-SYS §9) — the bridge pushes only `feature/bridge/*` branches;
+   a guard asserts the ref before any push.
+5. **Sandbox failure = preserve-as-evidence** — a failed apply/gate leaves the sandbox intact
+   (read-only), records its path + state in the failure report, and never auto-cleans until the
+   Founder-visible report is filed.
+6. **v1 has NO LLM-repair loop** — if the approved artifact does not apply cleanly (parse
+   failure, conflict, missing file blocks, gate failure), the bridge STOPS and raises a
+   **PROMPT-ESC escalation** (six-field package) with the evidence. It never asks a model to
+   "fix" the artifact, never guesses intent. Repair loops, if ever wanted, are a separate
+   Founder decision with their own design.
+
+Each rule ships with a test in PR-1 (refusal paths are asserted, not assumed).
+
+## §D — Scoped-PR rollout (decisions taken: A1-a / A2-a / A3-a / A4)
 1. **F10-PR-1 — bridge core** (B1–B4 per decisions): parser, branch/apply, gate, PR-open; unit +
    mock-provider integration tests; no lifecycle writes yet.
 2. **F10-PR-2 — lifecycle truth** (B6): merge-success advancement (tasks/work-items/project) +
