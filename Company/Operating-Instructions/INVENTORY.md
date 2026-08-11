@@ -119,6 +119,7 @@ Recorded spend **$0.0855** (gated ping + 5 runs on `claude-opus-4-8`, ~$0.017 ea
 | §6.2 | Retrieval logged (13 rows/run) and surfaced ratified docs — but titles/summaries only; keyword LIKE; SOP slot `limit=5` of 6 | Open (retrieval wiring/depth) |
 | + | Positives: QA plan-review verdict genuinely gated (plan blocked until Founder decision); executive reasoning quality high (caught the limit-vs-suffix ambiguity, unicode grapheme risk); T004 honestly reported missing inputs; review verdicts recorded (T004 `returned`) | — |
 | + | Workflow gap: review outcomes do not advance `work_item.status` (tasks stuck `in_progress`) | Open (minor) |
+| **F15** | Envelope scope `mission:<str(uuid)>` = 44 chars overflowed `budget_configs.scope` varchar(40) on Postgres at the 75d6f60 release gate; **SQLite fixtures don't enforce varchar widths**, so 579 green tests missed it. Release rolled back cleanly (0 rows leaked). | Fixed — scope = `mission:<uuid.hex>` (40 chars exactly) + loud in-code width guard + len==40 pinning test + real-Postgres INSERT proof |
 
 ## Pending actions — the reconciliation roadmap (WES-DEC-010, ordered)
 
@@ -138,6 +139,12 @@ Recorded spend **$0.0855** (gated ping + 5 runs on `claude-opus-4-8`, ~$0.017 ea
   and `scripts/test.sh` wired with `--cov=app --cov-fail-under=71`. Delivered as the docs phase's
   **first code change, following `SOP-CODING` end-to-end** (branch `feature/coverage-ci-enforcement`;
   **PR #5 merged** `0f661a8`).
+- **SOP-TESTING v2 learning (F15, Founder-directed 2026-08-08):** DB-boundary features need a
+  **Postgres-parity check** — SQLite test fixtures do not enforce varchar widths (or several other
+  constraints), so column-limit bugs pass a green suite and surface only at the production gate.
+  Fold into the SOP-TESTING v2 revision: any feature writing new value *shapes* to existing
+  columns ships either a real-Postgres test or an explicit in-code width/constraint guard with a
+  pinning test (the F15 pattern).
 - **Frontend coverage floor** — deferred (WES-DEC-004); set by ratchet after the frontend suite
   matures (revisit at the end of the Operating Instructions phase).
 - **Watch (doc 27 live test) — OBSERVED 2026-08-07, reframed by F12:** the live mission showed AI
