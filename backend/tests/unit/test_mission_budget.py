@@ -57,11 +57,11 @@ def test_approve_creates_scoped_envelope(db_session):
     pid = uuid.uuid4()
     svc = MissionBudgetService(db_session)
     env = svc.approve(pid, 3.50)
-    assert env.scope == f"mission:{pid}"
+    assert env.scope == f"mission:{pid.hex}"  # F15: hex form fits varchar(40)
     assert env.max_cost == 3.50 and env.hard_stop and env.warning_threshold == 0.8
     # Idempotent update, not duplicate rows.
     svc.approve(pid, 5.00)
-    rows = db_session.query(BudgetConfig).filter_by(scope=f"mission:{pid}").all()
+    rows = db_session.query(BudgetConfig).filter_by(scope=f"mission:{pid.hex}").all()
     assert len(rows) == 1 and rows[0].max_cost == 5.00
     with pytest.raises(ValueError):
         svc.approve(pid, 0)
@@ -158,3 +158,30 @@ def test_envelope_covered_run_ignores_global_per_run_cap(db_session):
     MissionBudgetService(db_session).approve(wi.project_id, 10.00)
     run = OrchestrationService(db_session).run_stage(ritchie.id, wi.id, provider_name="mock")
     assert run["status"] == "completed"
+
+
+class TestF15ScopeWidth:
+    """F15 — the scope string must fit budget_configs.scope varchar(40) exactly.
+
+    The re-release gate caught ``mission:<str(uuid)>`` at 44 chars overflowing on
+    Postgres while SQLite fixtures (no varchar enforcement) stayed green. These
+    tests pin the fixed format and the loud in-code guard. SOP-TESTING v2
+    learning: DB-boundary features need Postgres-parity checks — this pin is the
+    targeted parity guard for this feature.
+    """
+
+    def test_scope_is_exactly_column_width(self):
+        from app.services.mission_budget import _SCOPE_COLUMN_WIDTH, _scope
+
+        for _ in range(20):
+            s = _scope(uuid.uuid4())
+            assert len(s) == 40 == _SCOPE_COLUMN_WIDTH  # exact fit, every uuid
+
+    def test_overflowing_format_fails_loudly_in_any_database(self, monkeypatch):
+        import app.services.mission_budget as mb
+
+        # Simulate a future format change that would overflow the column: the
+        # guard must raise BEFORE any INSERT reaches a database.
+        monkeypatch.setattr(mb, "_SCOPE_COLUMN_WIDTH", 39)
+        with pytest.raises(ValueError, match="exceeds the"):
+            mb._scope(uuid.uuid4())

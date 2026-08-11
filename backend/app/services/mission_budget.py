@@ -63,8 +63,23 @@ def mission_context(project_id: uuid.UUID):
         _current_project_id.reset(token)
 
 
+# The exact width of ``budget_configs.scope`` (``String(40)``,
+# app/models/provider_platform.py). F15: ``mission:<str(uuid)>`` was 44 chars and
+# overflowed on Postgres at the re-release gate — SQLite fixtures don't enforce
+# varchar widths, so only the real database caught it. ``mission:<uuid.hex>`` is
+# 8 + 32 = 40 chars: it fits the column exactly, and the guard below makes any
+# future overflow fail loudly in EVERY database, not just Postgres.
+_SCOPE_COLUMN_WIDTH = 40
+
+
 def _scope(project_id: uuid.UUID) -> str:
-    return f"mission:{project_id}"
+    scope = f"mission:{project_id.hex}"
+    if len(scope) > _SCOPE_COLUMN_WIDTH:
+        raise ValueError(
+            f"envelope scope {scope!r} is {len(scope)} chars — exceeds the "
+            f"budget_configs.scope column width ({_SCOPE_COLUMN_WIDTH})"
+        )
+    return scope
 
 
 class EnvelopeExceededError(Exception):
