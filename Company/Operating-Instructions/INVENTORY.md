@@ -151,6 +151,15 @@ Recorded spend **$0.0855** (gated ping + 5 runs on `claude-opus-4-8`, ~$0.017 ea
   Fold into the SOP-TESTING v2 revision: any feature writing new value *shapes* to existing
   columns ships either a real-Postgres test or an explicit in-code width/constraint guard with a
   pinning test (the F15 pattern).
+- **SOP-TESTING v2 learning (F19, Founder-directed 2026-08-12):** **feed parser tests the real
+  tool output — a stubbed collaborator can hide a broken parser.** The F18 bridge collection guard
+  mis-read `pytest --collect-only -q` (which prints `<file>.py: <n>` per file, *not* node-ids), so
+  its parser returned an **empty set** and the guard refused **every** artifact — yet every F18
+  unit test injected a `collect_check` **stub**, so a green suite concealed the broken parser; it
+  surfaced only on the first real bridge run. Fold into the SOP-TESTING v2 revision: when a unit
+  parses or serializes an external tool's output, at least one test must feed a **captured real
+  sample** of that output. Mock a collaborator's *invocation* if you must, never the *format* the
+  code under test has to parse (the F19 pattern).
 - **Frontend coverage floor** — deferred (WES-DEC-004); set by ratchet after the frontend suite
   matures (revisit at the end of the Operating Instructions phase).
 - **Watch (doc 27 live test) — OBSERVED 2026-08-07, reframed by F12:** the live mission showed AI
