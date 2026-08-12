@@ -25,6 +25,11 @@ ARTIFACT = (
     "def normalize_whitespace(text):\n"
     "    return re.sub(r'\\s+', ' ', text).strip()\n"
     "<<<END>>>\n"
+    "<<<FILE: tests/unit/test_whitespace.py>>>\n"
+    "from app.core.whitespace import normalize_whitespace\n"
+    "def test_normalize():\n"
+    "    assert normalize_whitespace('a  b\\t c') == 'a b c'\n"
+    "<<<END>>>\n"
 )
 
 
@@ -53,6 +58,9 @@ def _runner(tmp_path, **over):
         author_name="Ritchie", author_role="Backend Engineer",
         repo="Bhagirath-Organization/WES", base="main",
         cloner=_local_clone(tmp_path), gate=gate,
+        # F18: keep the runner wiring test hermetic — the artifact ships
+        # tests/unit/test_whitespace.py, so the collection stub reports it.
+        collect_check=lambda root: {"tests/unit/test_whitespace.py"},
     )
     kw.update(over)
     r = LiveBridgeRunner(**kw)
@@ -68,7 +76,12 @@ def test_live_cycle_clones_commits_and_opens_pr(tmp_path):
     r = _runner(tmp_path)
     result = r.run(artifact_text=ARTIFACT, task_code="ACCEPT-WS", title="feat(core): normalize_whitespace", token="t")
     assert result.status == "opened" and result.pr_number == 4242
-    assert result.files == ["app/core/whitespace.py"]
+    assert result.files == ["app/core/whitespace.py", "tests/unit/test_whitespace.py"]
+    # F17: the machine-authored files land under the repo subdir (backend/), the
+    # tree the gate runs in — the honest fix for the PR #25 false-green.
+    import os
+    assert os.path.isfile(os.path.join(result.sandbox_path, "backend", "app", "core", "whitespace.py"))
+    assert not os.path.isfile(os.path.join(result.sandbox_path, "app", "core", "whitespace.py"))
     # The commit landed in the clone with A4 attribution (real git log).
     log = subprocess.run(
         ["git", "log", "-1", "--format=%an|%ae|%cn|%(trailers:key=WES-Run,valueonly)"],
@@ -96,6 +109,17 @@ def test_atlas_artifact_refused_in_live_runner(tmp_path):
     with pytest.raises(BridgeEscalation, match="ATLAS"):
         r.run(artifact_text=bad, task_code="ACCEPT-ATLAS", title="t", token="t")
     assert r._captured == {}
+
+
+def test_runner_refuses_untested_artifact_and_opens_no_pr(tmp_path):
+    # F18 at the live layer: an artifact that ships no test is refused before the
+    # gate — the honest counter to PR #25's false-green (code with no runnable
+    # test would have opened a PR that the gate never validated).
+    r = _runner(tmp_path)
+    untested = "<<<FILE: app/core/whitespace.py>>>\n# code, no test\n<<<END>>>\n"
+    with pytest.raises(BridgeEscalation, match="no test"):
+        r.run(artifact_text=untested, task_code="ACCEPT-NOTEST", title="t", token="t")
+    assert r._captured == {}  # nothing pushed, no PR
 
 
 def test_gate_env_is_hermetic_strips_wes_vars(monkeypatch):

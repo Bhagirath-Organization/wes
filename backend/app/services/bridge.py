@@ -93,11 +93,21 @@ class ExecutionPRBridge:
         gate=None,
         pr_opener=None,
         workspace=None,
+        repo_subdir: str | None = None,
+        collect_check=None,
     ):
         self.run_id = run_id
         self.mission_id = mission_id
         self.author_name = author_name
         self.author_role = author_role
+        # F17: the app root under the clone (WES nests it under ``backend/``).
+        self.repo_subdir = (
+            repo_subdir if repo_subdir is not None else get_settings().bridge_repo_subdir
+        )
+        # F18: returns the set of collected pytest node paths for a gated tree, so
+        # the bridge can PROVE the artifact's tests actually ran. Injected in tests;
+        # the default shells out to ``pytest --collect-only`` (see _collected_nodes).
+        self._collect_check = collect_check or self._collected_nodes
         # A3-a gate: callable(sandbox_path) -> (ok: bool, report: str). The
         # default runs the full suite + coverage floor in the sandbox; tests
         # inject a stub. Injection keeps PR-1 unit-testable without a container.
@@ -179,7 +189,10 @@ class ExecutionPRBridge:
         branch = f"{BRANCH_PREFIX}{task_code.lower()}"
         git.create_branch(branch)
         for change in changes:
-            target = git._assert_within(change.path)
+            # F17: artifact paths are app-root-relative; write them under the
+            # configured repo subdir so they land in the tree the gate runs in.
+            rel = os.path.join(self.repo_subdir, change.path) if self.repo_subdir else change.path
+            target = git._assert_within(rel)
             os.makedirs(os.path.dirname(target), exist_ok=True)
             with open(target, "w", encoding="utf-8") as fh:
                 fh.write(change.content)
@@ -210,16 +223,88 @@ class ExecutionPRBridge:
             raise SandboxError(f"bridge commit failed: {proc.stderr.strip()[:300]}")
         return branch
 
-    # -- A3-a: the gate ----------------------------------------------------
+    # -- F17/F18: the artifact must land in, and be tested by, the gated tree ---
 
     @staticmethod
-    def _default_gate(sandbox_path: str) -> tuple[bool, str]:
-        """Full suite + coverage floor inside the sandbox checkout."""
+    def _is_test_path(path: str) -> bool:
+        return (
+            path.startswith("tests/")
+            or "/tests/" in path
+            or os.path.basename(path).startswith("test_")
+        )
+
+    def _gated_root(self, sandbox: str) -> str:
+        return os.path.join(sandbox, self.repo_subdir) if self.repo_subdir else sandbox
+
+    def _collected_nodes(self, gated_root: str) -> set[str]:
+        """Paths of every test file pytest collects in ``gated_root`` (hermetic)."""
+        env = {k: v for k, v in os.environ.items() if not k.startswith("WES_")}
+        proc = subprocess.run(
+            ["python", "-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider"],
+            cwd=gated_root, env=env, capture_output=True, text=True, timeout=600,
+        )
+        nodes = set()
+        for line in (proc.stdout or "").splitlines():
+            node = line.split("::", 1)[0].strip()
+            if node.endswith(".py"):
+                nodes.add(node)
+        return nodes
+
+    def _verify_gated(self, sandbox: str, changes: list) -> None:
+        """F17/F18: refuse unless every changed file lands in the gated tree AND
+        the artifact's own test file is actually collected by the gate — so a
+        false-green (an artifact the suite never touched) is impossible."""
+        gated_root = self._gated_root(sandbox)
+        missing = [c.path for c in changes if not os.path.isfile(os.path.join(gated_root, c.path))]
+        if missing:
+            raise BridgeEscalation(
+                f"changed files are not inside the gated tree: {missing}",
+                _six_fields(
+                    f"artifact files {missing} did not land under the gated tree "
+                    f"({self.repo_subdir or '<clone root>'}) — the gate cannot test them (F17)",
+                    f"gated_root={gated_root}; repo_subdir={self.repo_subdir!r}",
+                    "(a) fix bridge_repo_subdir for this repo; (b) fix the artifact paths",
+                    "refuse — a change the gate cannot see must never open a PR",
+                ),
+            )
+        test_files = [c.path for c in changes if self._is_test_path(c.path)]
+        if not test_files:
+            raise BridgeEscalation(
+                "artifact ships no test the gate can run",
+                _six_fields(
+                    "the artifact changes code but ships no test file — the gate cannot "
+                    "validate the change (SOP-TESTING; F18)",
+                    f"changed files: {[c.path for c in changes]}",
+                    "(a) author adds tests; (b) task returns to Engineering",
+                    "refuse — code without a runnable test is not a verifiable change",
+                ),
+            )
+        collected = self._collect_check(gated_root)
+        not_collected = [
+            t for t in test_files if not any(node.endswith(t) or node == t for node in collected)
+        ]
+        if not_collected:
+            raise BridgeEscalation(
+                f"artifact tests are not collected by the gate: {not_collected}",
+                _six_fields(
+                    f"the artifact's test files {not_collected} are NOT in the gate's "
+                    "collection — the gate would pass without running them (F18 false-green)",
+                    f"collected {len(collected)} test files in {gated_root}",
+                    "(a) fix the test path/location; (b) fix bridge_repo_subdir",
+                    "refuse — a green gate that never ran the change's tests is a lie",
+                ),
+            )
+
+    # -- A3-a: the gate ----------------------------------------------------
+
+    def _default_gate(self, sandbox_path: str) -> tuple[bool, str]:
+        """Full suite + coverage floor inside the gated tree."""
+        env = {k: v for k, v in os.environ.items() if not k.startswith("WES_")}
         proc = subprocess.run(
             ["python", "-m", "pytest", "-q", "--cov=app",
              f"--cov-fail-under={get_settings().bridge_coverage_floor}",
              "-p", "no:cacheprovider"],
-            cwd=os.path.join(sandbox_path, "backend"),
+            cwd=self._gated_root(sandbox_path), env=env,
             capture_output=True, text=True, timeout=1800,
         )
         tail = (proc.stdout or "")[-2000:]
@@ -249,6 +334,7 @@ class ExecutionPRBridge:
                         "fix naming; nothing was pushed",
                     ),
                 )
+            self._verify_gated(sandbox, changes)  # F17/F18: artifact is in + tested by the gated tree
             ok, report = self._gate(sandbox)  # B3
             if not ok:
                 raise BridgeEscalation(

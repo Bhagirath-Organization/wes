@@ -74,6 +74,11 @@ class Settings(BaseSettings):
     bridge_live_tree_guard: str = "/opt/wes-green"
     # A3-a gate floor (mirrors WES-DEC-004).
     bridge_coverage_floor: int = 71
+    # F17: the app root under the clone root. WES nests the app under ``backend/``;
+    # other repos may differ, so this is configuration, never hard-coded. Artifact
+    # paths (``app/core/...``, ``tests/...``) are written under, and the gate runs
+    # in, ``<clone>/<bridge_repo_subdir>``. Empty string => the clone root is the app root.
+    bridge_repo_subdir: str = "backend"
 
     # --- Autonomous Development Engine (Sprint 13) ---
     # Base directory for per-task git sandboxes. Every autonomous implementation
