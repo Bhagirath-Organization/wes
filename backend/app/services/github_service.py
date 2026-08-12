@@ -161,6 +161,34 @@ class GitHubService:
             "permissions": data.get("permissions", {}),
         }
 
+    def list_pulls(
+        self, *, state: str = "closed", base: str | None = None,
+        per_page: int = 50, max_pages: int = 5,
+    ) -> list[dict]:
+        """READ-ONLY: list Pull Requests (App token, ``pull_requests:read``).
+
+        Used by the merge detector to reconcile which bridge PRs GitHub has
+        merged. Never modifies anything — no new credential; the installation
+        token's read scope is sufficient. Returns [] if the App is not configured.
+        Each item carries ``number``, ``head.ref``, ``merged_at`` (None unless
+        merged), and ``base.ref`` — enough to identify a merged bridge PR.
+        """
+        if not self.configured():
+            return []
+        out: list[dict] = []
+        page = 1
+        while page <= max_pages:
+            q = f"state={state}&per_page={per_page}&page={page}&sort=updated&direction=desc"
+            if base:
+                q += f"&base={base}"
+            data = self._ok(self._request("GET", f"/repos/{self.repo}/pulls?{q}"), 200)
+            batch = data if isinstance(data, list) else []
+            out.extend(batch)
+            if len(batch) < per_page:
+                break
+            page += 1
+        return out
+
     def list_installation_repositories(self) -> list[dict]:
         """READ-ONLY discovery: every repository the GitHub App installation can see.
 
