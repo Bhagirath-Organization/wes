@@ -236,6 +236,33 @@ class ExecutionPRBridge:
     def _gated_root(self, sandbox: str) -> str:
         return os.path.join(sandbox, self.repo_subdir) if self.repo_subdir else sandbox
 
+    @staticmethod
+    def _parse_collected(stdout: str) -> set[str]:
+        """Test-file paths from ``pytest --collect-only -q`` output.
+
+        F19: the ``-q`` collect format is one line PER FILE as ``<relpath>: <n>``
+        (e.g. ``tests/unit/test_x.py: 3``) — a file/count summary, NOT node-ids.
+        The first implementation split on ``::`` and required the token to end in
+        ``.py``, so every ``… .py: N`` line was discarded and the set came back
+        EMPTY — making ``_verify_gated`` refuse every artifact. We parse the ``-q``
+        form here and still tolerate the node-id form (``<relpath>::<test>``), so
+        the parser is robust to either pytest output shape.
+        """
+        nodes: set[str] = set()
+        for raw in stdout.splitlines():
+            line = raw.strip()
+            if not line:
+                continue
+            if "::" in line:  # node-id form: path/test.py::TestX::test_fn
+                cand = line.split("::", 1)[0].strip()
+            elif ".py:" in line:  # -q form: path/test.py: 3
+                cand = line.rsplit(":", 1)[0].strip()
+            else:  # trailing summary line ("579 tests collected …"), blanks, etc.
+                cand = line
+            if cand.endswith(".py"):
+                nodes.add(cand)
+        return nodes
+
     def _collected_nodes(self, gated_root: str) -> set[str]:
         """Paths of every test file pytest collects in ``gated_root`` (hermetic)."""
         env = {k: v for k, v in os.environ.items() if not k.startswith("WES_")}
@@ -243,12 +270,7 @@ class ExecutionPRBridge:
             ["python", "-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider"],
             cwd=gated_root, env=env, capture_output=True, text=True, timeout=600,
         )
-        nodes = set()
-        for line in (proc.stdout or "").splitlines():
-            node = line.split("::", 1)[0].strip()
-            if node.endswith(".py"):
-                nodes.add(node)
-        return nodes
+        return self._parse_collected(proc.stdout or "")
 
     def _verify_gated(self, sandbox: str, changes: list) -> None:
         """F17/F18: refuse unless every changed file lands in the gated tree AND

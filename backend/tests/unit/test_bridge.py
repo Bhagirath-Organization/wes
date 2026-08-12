@@ -329,6 +329,61 @@ def test_f18_run_verifies_before_gate_so_false_green_is_blocked(tmp_path):
     assert gate_calls["n"] == 0  # verify blocked the run before the gate could lie
 
 
+# --- F19: the REAL collection parser (regression — was untested vs pytest output)
+
+
+# A representative sample of actual `pytest --collect-only -q` output (the -q form
+# is "<relpath>: <n-tests>", one line per file, then a trailing summary line).
+_REAL_Q_COLLECT = (
+    "tests/api/test_ai_api.py: 15\n"
+    "tests/integration/test_company_engine_flow.py: 1\n"
+    "tests/unit/test_bridge.py: 20\n"
+    "tests/unit/test_whitespace.py: 1\n"
+    "\n"
+    "579 tests collected in 3.14s\n"
+)
+
+
+def test_f19_parse_collected_reads_q_file_count_format():
+    nodes = ExecutionPRBridge._parse_collected(_REAL_Q_COLLECT)
+    # The exact path the guard compares against MUST be present…
+    assert "tests/unit/test_whitespace.py" in nodes
+    assert "tests/unit/test_bridge.py" in nodes
+    assert "tests/api/test_ai_api.py" in nodes
+    assert "tests/integration/test_company_engine_flow.py" in nodes
+    # …the trailing "N tests collected" summary line must NOT be mistaken for a file.
+    assert not any("collected" in n for n in nodes)
+    assert all(n.endswith(".py") for n in nodes)
+
+
+def test_f19_parse_collected_also_tolerates_node_id_format():
+    node_ids = (
+        "tests/unit/test_whitespace.py::test_normalize\n"
+        "tests/unit/test_bridge.py::TestGate::test_x\n"
+    )
+    nodes = ExecutionPRBridge._parse_collected(node_ids)
+    assert nodes == {"tests/unit/test_whitespace.py", "tests/unit/test_bridge.py"}
+
+
+def test_f19_verify_gated_passes_on_real_q_output(tmp_path):
+    # End-to-end of the guard against REAL -q output: a correctly-placed, actually
+    # collected test must PASS _verify_gated (the honest inverse of the F18 refusals).
+    sandbox = tmp_path / "sb-f19"
+    (sandbox / "backend" / "app" / "core").mkdir(parents=True)
+    (sandbox / "backend" / "tests" / "unit").mkdir(parents=True)
+    (sandbox / "backend" / "app" / "core" / "whitespace.py").write_text("x")
+    (sandbox / "backend" / "tests" / "unit" / "test_whitespace.py").write_text("x")
+    bridge = _bridge(
+        tmp_path,
+        collect_check=lambda root: ExecutionPRBridge._parse_collected(_REAL_Q_COLLECT),
+    )
+    # Must NOT raise — files under the gated tree AND the test is in the collection.
+    bridge._verify_gated(
+        str(sandbox),
+        [_Change("app/core/whitespace.py"), _Change("tests/unit/test_whitespace.py")],
+    )
+
+
 def test_f18_collected_match_is_suffix_exact(tmp_path):
     # A same-basename test elsewhere must NOT satisfy the collection check — the
     # match is on the app-relative path, not just the filename.
