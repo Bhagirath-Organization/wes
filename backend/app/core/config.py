@@ -79,6 +79,13 @@ class Settings(BaseSettings):
     # paths (``app/core/...``, ``tests/...``) are written under, and the gate runs
     # in, ``<clone>/<bridge_repo_subdir>``. Empty string => the clone root is the app root.
     bridge_repo_subdir: str = "backend"
+    # B6 merge detection (auto-advance a bridge-opened PR's dev-task on merge).
+    # Ships default-OFF: enable in prod (.env.green) alongside the durable worker.
+    bridge_merge_detection_enabled: bool = False
+    # Poll cadence for the reconciliation pass (seconds). Each pass is a stateless
+    # reconciliation of GitHub's merged state vs the DB, so a longer interval only
+    # delays detection — a merge missed while down is caught on the next pass.
+    bridge_merge_detection_interval_s: int = 300
 
     # --- Autonomous Development Engine (Sprint 13) ---
     # Base directory for per-task git sandboxes. Every autonomous implementation

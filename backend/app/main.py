@@ -47,8 +47,25 @@ async def lifespan(app: FastAPI):
         worker.start()
         logger.info("Durable job worker started.")
 
+    # B6 merge detection: auto-advance a bridge-opened PR's lifecycle on merge.
+    # Opt-in (default off) so the sync test suite and default runs are unaffected;
+    # enabled in prod via WES_BRIDGE_MERGE_DETECTION_ENABLED alongside the worker.
+    detector = None
+    if settings.bridge_merge_detection_enabled:
+        from app.core.database import SessionLocal
+        from app.services.merge_detection import BridgeMergeDetector
+
+        detector = BridgeMergeDetector(SessionLocal)
+        detector.start()
+        logger.info(
+            "Bridge merge detector started (interval %ss).",
+            settings.bridge_merge_detection_interval_s,
+        )
+
     yield
 
+    if detector is not None:
+        detector.stop()
     if worker is not None:
         worker.stop()
 
