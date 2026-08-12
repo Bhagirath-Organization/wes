@@ -208,6 +208,12 @@ def seed(db: Session) -> Company | None:
         db.flush()
         seed_execution(db)
         db.flush()
+        # F10-PR-2: one-time idempotent lifecycle reconciliation of the
+        # TEST-MISSION-01 mirrors (no-op once reconciled). Deploy-time only.
+        from app.services.bridge_lifecycle import reconcile_test_mission_01
+
+        reconcile_test_mission_01(db, commit=False)
+        db.flush()
         seed_orchestration(db)
         db.flush()
         seed_knowledge(db)

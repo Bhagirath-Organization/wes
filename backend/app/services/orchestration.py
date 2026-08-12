@@ -20,6 +20,7 @@ from sqlalchemy.orm import Session
 
 from app.core.exceptions import NotFoundError, ValidationError
 from app.domain.orchestration_enums import MessageRole, ReviewOutcome, RunStatus
+from app.domain.work_enums import WorkStatus
 from app.models.ai import AIEmployee
 from app.models.execution import SOP, DecisionRule, Handoff, PromptTemplate
 from app.models.orchestration import (
@@ -864,6 +865,17 @@ class OrchestrationService:
             raise NotFoundError(f"Run {run_id} not found")
         run.review_outcome = outcome
         run.review_notes = notes
+        # F10-PR-2 review-verdict trigger: an APPROVED verdict advances the linked
+        # work item off the perpetual ``in_progress`` to ``review`` — it has been
+        # reviewed and is awaiting the merge that completes it (the finding that
+        # "review outcomes don't advance task status"). Non-approved verdicts are
+        # recorded but do not advance; the bridge's merge (B6) does the ``done``.
+        if outcome == ReviewOutcome.APPROVED and run.work_item_id is not None:
+            wi = self.db.get(WorkItem, run.work_item_id)
+            if wi is not None and (
+                wi.status.value if hasattr(wi.status, "value") else wi.status
+            ) == WorkStatus.IN_PROGRESS.value:
+                wi.status = WorkStatus.REVIEW
         self.db.flush()
         return self.serialize_run(run)
 
