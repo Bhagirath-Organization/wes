@@ -49,6 +49,8 @@ class LiveBridgeRunner:
         base: str = "main",
         cloner=None,
         gate=None,
+        repo_subdir: str | None = None,
+        collect_check=None,
     ):
         self.run_id = run_id
         self.mission_id = mission_id
@@ -58,6 +60,8 @@ class LiveBridgeRunner:
         self.base = base
         self._cloner = cloner or self._real_clone
         self._gate = gate or self._real_gate
+        self._repo_subdir = repo_subdir
+        self._collect_check = collect_check
 
     # -- real implementations (injected out in tests) ----------------------
 
@@ -93,12 +97,18 @@ class LiveBridgeRunner:
         return {k: v for k, v in os.environ.items() if not k.startswith("WES_")}
 
     def _real_gate(self, sandbox: str) -> tuple[bool, str]:
-        """A3-a: full suite + coverage floor inside the cloned checkout, hermetic."""
+        """A3-a: full suite + coverage floor inside the cloned checkout, hermetic.
+
+        Runs in the configured app subdir (F17), so the gate tree contains the
+        applied artifact.
+        """
+        subdir = get_settings().bridge_repo_subdir
+        gated_root = os.path.join(sandbox, subdir) if subdir else sandbox
         proc = subprocess.run(
             ["python", "-m", "pytest", "-q", "--cov=app",
              f"--cov-fail-under={get_settings().bridge_coverage_floor}",
              "-p", "no:cacheprovider"],
-            cwd=os.path.join(sandbox, "backend"),
+            cwd=gated_root,
             env=self._hermetic_env(),
             capture_output=True, text=True, timeout=1800,
         )
@@ -121,6 +131,8 @@ class LiveBridgeRunner:
             # A2-a: real PR via the bridge's default _open_pr (push_via_app + PR),
             # but on the runner's explicit repo (not the ambient github_repo).
             pr_opener=self._open_pr_on_repo,
+            repo_subdir=self._repo_subdir,
+            collect_check=self._collect_check,
         )
         return bridge.run(artifact_text=artifact_text, task_code=task_code, title=title, git=git)
 

@@ -49,6 +49,14 @@ class _Workspace:
         return str(p)
 
 
+class _Change:
+    """Minimal stand-in for a parsed change (path + content) for guard tests."""
+
+    def __init__(self, path: str, content: str = "x"):
+        self.path = path
+        self.content = content
+
+
 def _bridge(tmp_path, **over):
     kw = dict(
         run_id=RUN_ID,
@@ -58,6 +66,10 @@ def _bridge(tmp_path, **over):
         gate=lambda sandbox: (True, "gate stub: pass"),
         pr_opener=lambda **kwargs: {"number": 999, "url": "local://pr/999"},
         workspace=_Workspace(tmp_path),
+        # F18: the collection check is injected so the core tests stay hermetic
+        # (no pytest-in-pytest). GOOD_ARTIFACT ships tests/unit/test_blank.py, so
+        # the stub reports exactly that as collected — a truthful default.
+        collect_check=lambda root: {"tests/unit/test_blank.py"},
     )
     kw.update(over)
     return ExecutionPRBridge(**kw)
@@ -191,7 +203,9 @@ def test_rule5_failed_gate_preserves_sandbox(tmp_path):
     assert "sandbox preserved" in exc.value.escalation
     preserved = [p for p in tmp_path.iterdir() if p.name == "sandbox-gate-t"]
     assert len(preserved) == 1
-    assert os.path.isfile(preserved[0] / "app" / "core" / "blank.py")
+    # F17: the applied change lives under the repo subdir (backend/), the tree
+    # the gate runs in — not at the clone root (the F17 bug).
+    assert os.path.isfile(preserved[0] / "backend" / "app" / "core" / "blank.py")
 
 
 # --- §C-2 rule 6: no LLM-repair loop — escalate, never guess ------------------
@@ -227,3 +241,106 @@ def test_rule6_gate_failure_never_retries(tmp_path):
     with pytest.raises(BridgeEscalation):
         bridge.run(artifact_text=GOOD_ARTIFACT, task_code="RETRY-T", title="t")
     assert gate_calls["n"] == 1  # one gate run; the bridge never retries itself
+
+
+# --- F17: the artifact must land in the tree the gate runs in ----------------
+
+
+def test_f17_artifact_written_under_repo_subdir(tmp_path):
+    import os
+
+    result = _bridge(tmp_path).run(
+        artifact_text=GOOD_ARTIFACT, task_code="SUBDIR-T", title="t"
+    )
+    sb = result.sandbox_path
+    # The bridge nests app-root-relative paths under the configured subdir…
+    assert os.path.isfile(os.path.join(sb, "backend", "app", "core", "blank.py"))
+    assert os.path.isfile(os.path.join(sb, "backend", "tests", "unit", "test_blank.py"))
+    # …and NOT at the clone root, which is the exact F17 misplacement bug.
+    assert not os.path.isfile(os.path.join(sb, "app", "core", "blank.py"))
+    # The reported files stay app-root-relative (the caller/PR sees clean paths).
+    assert result.files == ["app/core/blank.py", "tests/unit/test_blank.py"]
+
+
+def test_f17_subdir_is_configurable_not_hardcoded(tmp_path):
+    # A future repo with a different layout: subdir="" (app at clone root).
+    import os
+
+    result = _bridge(tmp_path, repo_subdir="").run(
+        artifact_text=GOOD_ARTIFACT, task_code="FLAT-T", title="t"
+    )
+    sb = result.sandbox_path
+    assert os.path.isfile(os.path.join(sb, "app", "core", "blank.py"))
+    assert not os.path.isdir(os.path.join(sb, "backend"))
+
+
+def test_f17_files_outside_gated_tree_refused(tmp_path):
+    # Files present at the clone root but NOT under the gated subdir → refuse:
+    # a change the gate can't see must never open a PR.
+    sandbox = tmp_path / "sb-f17"
+    (sandbox / "app" / "core").mkdir(parents=True)
+    (sandbox / "app" / "core" / "blank.py").write_text("x")
+    bridge = _bridge(tmp_path)  # repo_subdir defaults to "backend"
+    with pytest.raises(BridgeEscalation, match="not inside the gated tree"):
+        bridge._verify_gated(str(sandbox), [_Change("app/core/blank.py")])
+
+
+# --- F18: false-green is impossible — the artifact's test must actually run ---
+
+
+def test_f18_no_test_file_refused(tmp_path):
+    # Code with no accompanying test — the gate could not validate the change.
+    sandbox = tmp_path / "sb-f18a"
+    (sandbox / "backend" / "app" / "core").mkdir(parents=True)
+    (sandbox / "backend" / "app" / "core" / "blank.py").write_text("x")
+    bridge = _bridge(tmp_path)
+    with pytest.raises(BridgeEscalation, match="no test"):
+        bridge._verify_gated(str(sandbox), [_Change("app/core/blank.py")])
+
+
+def test_f18_test_not_collected_refused(tmp_path):
+    # The test file exists on disk but the gate's collection does NOT include it
+    # (e.g. wrong location / import error) → the green would be a lie → refuse.
+    sandbox = tmp_path / "sb-f18b"
+    (sandbox / "backend" / "app" / "core").mkdir(parents=True)
+    (sandbox / "backend" / "tests" / "unit").mkdir(parents=True)
+    (sandbox / "backend" / "app" / "core" / "blank.py").write_text("x")
+    (sandbox / "backend" / "tests" / "unit" / "test_blank.py").write_text("x")
+    bridge = _bridge(tmp_path, collect_check=lambda root: set())  # collects nothing
+    with pytest.raises(BridgeEscalation, match="not collected by the gate"):
+        bridge._verify_gated(
+            str(sandbox),
+            [_Change("app/core/blank.py"), _Change("tests/unit/test_blank.py")],
+        )
+
+
+def test_f18_run_verifies_before_gate_so_false_green_is_blocked(tmp_path):
+    # The linchpin: even a gate that would return GREEN is never reached when the
+    # artifact's test is not in the gate's collection. False-green is impossible.
+    gate_calls = {"n": 0}
+
+    def would_be_green(sandbox):
+        gate_calls["n"] += 1
+        return True, "green — but it never ran the change"
+
+    bridge = _bridge(tmp_path, gate=would_be_green, collect_check=lambda root: set())
+    with pytest.raises(BridgeEscalation, match="not collected"):
+        bridge.run(artifact_text=GOOD_ARTIFACT, task_code="FALSEGREEN-T", title="t")
+    assert gate_calls["n"] == 0  # verify blocked the run before the gate could lie
+
+
+def test_f18_collected_match_is_suffix_exact(tmp_path):
+    # A same-basename test elsewhere must NOT satisfy the collection check — the
+    # match is on the app-relative path, not just the filename.
+    sandbox = tmp_path / "sb-f18c"
+    (sandbox / "backend" / "app" / "core").mkdir(parents=True)
+    (sandbox / "backend" / "tests" / "unit").mkdir(parents=True)
+    (sandbox / "backend" / "app" / "core" / "blank.py").write_text("x")
+    (sandbox / "backend" / "tests" / "unit" / "test_blank.py").write_text("x")
+    # collection reports a DIFFERENT test_blank.py (different dir) → still refused.
+    bridge = _bridge(tmp_path, collect_check=lambda root: {"tests/other/test_blank.py"})
+    with pytest.raises(BridgeEscalation, match="not collected by the gate"):
+        bridge._verify_gated(
+            str(sandbox),
+            [_Change("app/core/blank.py"), _Change("tests/unit/test_blank.py")],
+        )
